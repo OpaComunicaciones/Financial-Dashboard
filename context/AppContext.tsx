@@ -455,6 +455,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const newTransactions: BankTransaction[] = [];
     const { sharedDate } = state;
 
+    let ventasDirectasConcept = state.incomeTypes.find(it => it.name === 'Ventas Directas');
+    let incomeTypes = [...state.incomeTypes];
+    if (!ventasDirectasConcept) {
+        ventasDirectasConcept = { id: `ventas-directas_${Date.now()}`, name: 'Ventas Directas', isIncome: true };
+        incomeTypes.push(ventasDirectasConcept);
+    }
+    const ventasDirectasConceptId = ventasDirectasConcept.id;
+
     cardSales.forEach(cs => {
         const terminal = state.bankAccounts.find(ba => ba.id === cs.accountId);
         const amount = parseFloat(cs.amount);
@@ -466,6 +474,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 description: `Credit Card Sales (${terminal.name}) for ${sharedDate}`,
                 amount: amount,
                 type: 'income',
+                conceptId: ventasDirectasConceptId,
             });
         }
     });
@@ -480,12 +489,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 description: `Bank Transfer Sales for ${sharedDate}`,
                 amount: amount,
                 type: 'income',
+                conceptId: ventasDirectasConceptId,
             });
         }
     });
     
     const newState = {
       ...state,
+      incomeTypes,
       dailySales: [...state.dailySales, ...newSalesWithIds],
       transactions: [...state.transactions, ...newTransactions],
     }
@@ -493,11 +504,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const updateDailySale = (updatedSale: DailySale, transfers: any[], cardSales: any[]) => {
+    let ventasDirectasConcept = state.incomeTypes.find(it => it.name === 'Ventas Directas');
+    let incomeTypes = [...state.incomeTypes];
+    if (!ventasDirectasConcept) {
+        ventasDirectasConcept = { id: `ventas-directas_${Date.now()}`, name: 'Ventas Directas', isIncome: true };
+        incomeTypes.push(ventasDirectasConcept);
+    }
+    const ventasDirectasConceptId = ventasDirectasConcept.id;
+
     // Get all transactions that are NOT sales-related for the specific day and currency
     const saleCurrency = updatedSale.currencyCode;
     const otherTransactions = state.transactions.filter(t => {
         const account = state.bankAccounts.find(ba => ba.id === t.bankAccountId);
-        const isSameDaySale = t.date === updatedSale.date && account?.currencyCode === saleCurrency && (t.description.includes('Credit Card Sales') || t.description.includes('Bank Transfer Sales'));
+        
+        const isOldSaleTransaction = t.description.includes('Credit Card Sales') || t.description.includes('Bank Transfer Sales');
+        const isNewSaleTransaction = t.conceptId === ventasDirectasConceptId;
+        
+        const isSameDaySale = t.date === updatedSale.date && account?.currencyCode === saleCurrency && (isOldSaleTransaction || isNewSaleTransaction);
+        
         return !isSameDaySale;
     });
 
@@ -515,6 +539,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 description: `Credit Card Sales (${terminal.name}) for ${updatedSale.date}`,
                 amount: amount,
                 type: 'income',
+                conceptId: ventasDirectasConceptId,
             });
         }
     });
@@ -530,12 +555,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 description: `Bank Transfer Sales for ${updatedSale.date}`,
                 amount: amount,
                 type: 'income',
+                conceptId: ventasDirectasConceptId,
             });
         }
     });
 
     const newState = {
       ...state,
+      incomeTypes,
       dailySales: state.dailySales.map(sale => 
         sale.id === updatedSale.id ? updatedSale : sale
       ),
