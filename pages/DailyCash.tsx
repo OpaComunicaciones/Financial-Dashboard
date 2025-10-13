@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import PageHeader from '../components/PageHeader';
-import { Download, Plus, Trash2, Save, Pencil } from 'lucide-react';
+import { Download, Plus, Trash2, Save, Pencil, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/i18n';
 import { useAppContext } from '../context/AppContext';
 import AddCashExpenseModal from '../components/AddCashExpenseModal';
@@ -298,7 +298,12 @@ const DailyCash: React.FC = () => {
                         <tr key={expense.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
                             <td className="px-6 py-4 font-medium text-white">{expense.supplier}</td>
                             <td className="px-6 py-4">{getExpenseConceptName(expense.conceptId)}</td>
-                            <td className="px-6 py-4">{expense.detail}</td>
+                            <td className="px-6 py-4">
+                                {expense.detail}
+                                {expense.isNonDeductible && 
+                                    <span className='block text-xs text-yellow-400 flex items-center gap-1'><AlertTriangle size={12}/> {t('banks_col_non_deductible')}</span>
+                                }
+                            </td>
                             <td className="px-6 py-4">{expense.invoiceNumber}</td>
                             <td className="px-6 py-4 text-right font-mono">{formatCurrency(expense.amount)}</td>
                             <td className="px-6 py-4 text-center flex items-center justify-center gap-2">

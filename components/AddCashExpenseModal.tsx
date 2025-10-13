@@ -21,12 +21,18 @@ const AddCashExpenseModal: React.FC<AddCashExpenseModalProps> = ({ isOpen, onClo
     conceptId: state.expenseTypes[0]?.id || '',
     invoiceNumber: '',
     amount: '',
+    isNonDeductible: false,
   });
 
   if (!isOpen) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+        setFormData({ ...formData, [name]: (e.target as HTMLInputElement).checked });
+    } else {
+        setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,6 +52,7 @@ const AddCashExpenseModal: React.FC<AddCashExpenseModalProps> = ({ isOpen, onClo
       conceptId: state.expenseTypes[0]?.id || '',
       invoiceNumber: '',
       amount: '',
+      isNonDeductible: false,
     });
   };
 
@@ -84,6 +91,13 @@ const AddCashExpenseModal: React.FC<AddCashExpenseModalProps> = ({ isOpen, onClo
                     <label htmlFor="amount" className="block text-sm font-medium text-gray-300">{t('daily_cash_col_amount')}</label>
                     <input type="number" name="amount" id="amount" value={formData.amount} onChange={handleChange} required step="0.01" className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
                 </div>
+            </div>
+
+            <div>
+                <label htmlFor="isNonDeductible" className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                    <input type="checkbox" name="isNonDeductible" id="isNonDeductible" checked={formData.isNonDeductible} onChange={handleChange} className="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500" />
+                    <span>{t('banks_col_non_deductible')}</span>
+                </label>
             </div>
 
           <div className="flex justify-end gap-4 pt-4">

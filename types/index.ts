@@ -96,6 +96,7 @@ export type CashExpense = {
   conceptId: string;
   invoiceNumber?: string;
   amount: number;
+  isNonDeductible?: boolean;
 };
 
 export type CashClosure = {
