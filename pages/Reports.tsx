@@ -28,7 +28,7 @@ const Reports: React.FC = () => {
     { id: 'pl', label: t('reports_tab_pl') },
     { id: 'cashflow', label: t('reports_tab_cash_flow') },
     { id: 'sales', label: t('reports_tab_sales') },
-    { id: 'expenses', label: t('reports_tab_expenses') },
+    { id: 'expenses', label: 'Control de Egresos' },
     { id: 'budget', label: t('reports_tab_budget') },
   ];
 
