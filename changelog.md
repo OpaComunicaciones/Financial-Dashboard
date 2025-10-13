@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-10-13 12:00:00]
+
+- **Feature:** Añadida la función de "Reiniciar Base de Datos" en la página de Configuración.
+  - Creada una "Zona Peligrosa" para acciones destructivas.
+  - Implementado un modal de confirmación para evitar el borrado accidental de datos.
+
 ## [2025-10-13 11:00:00]
 
 - **Feature:** Asignado el concepto "Ventas Directas" a las ventas diarias registradas con tarjeta o transferencia en el módulo de bancos.
