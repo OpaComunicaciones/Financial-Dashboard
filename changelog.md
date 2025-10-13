@@ -2,12 +2,14 @@
 
 ## [2025-10-13 13:00:00]
 
-- **Feature:** Mejorado el informe de "Control de Egresos".
-  - El informe ahora incluye tanto gastos de caja como de banco.
-  - Añadida una tabla con el desglose de cada egreso.
-  - Implementada la visualización de gastos no deducibles.
-  - Añadido un filtro para mostrar solo los gastos no deducibles.
-- **Fix:** Renombrada la pestaña del informe a "Control de Egresos".
+- **Feature:** Mejoras importantes en el informe de "Control de Egresos".
+  - Se reemplazó el gráfico de pastel por un gráfico de barras horizontales para mayor claridad.
+  - El informe ahora consolida tanto los gastos de caja como los de banco.
+  - Se añadió una tabla con el desglose detallado de cada egreso.
+  - Se implementó la visualización de gastos no deducibles.
+  - Se añadió un filtro para mostrar solo los gastos no deducibles.
+- **Fix:** Se renombró la pestaña del informe a "Control de Egresos".
+- **UX:** Se corrigió el color del texto en el tooltip del gráfico para mejorar el contraste y la legibilidad.
 
 ## [2025-10-13 12:00:00]
 
