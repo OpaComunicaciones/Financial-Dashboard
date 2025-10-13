@@ -1,0 +1,193 @@
+
+import React, { useMemo } from 'react';
+import { useTranslation } from '../../i18n/i18n';
+import { useAppContext } from '../../context/AppContext';
+import { FileText, FileDown, AlertCircle } from 'lucide-react';
+import { formatNumber } from '../../utils/formatting';
+
+interface ReportProps {
+  startDate: string;
+  endDate: string;
+  reportingCurrency: string;
+}
+
+const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCurrency }) => {
+  const { t } = useTranslation();
+  const { state } = useAppContext();
+
+  const { consolidatedReport, unconvertedCurrencies } = useMemo(() => {
+    const report: {
+      incomes: Record<string, { name: string, amount: number }>,
+      expenses: Record<string, { name: string, amount: number }>,
+      totalIncome: number,
+      totalExpenses: number,
+      netProfit: number
+    } = { incomes: {}, expenses: {}, totalIncome: 0, totalExpenses: 0, netProfit: 0 };
+    
+    const unconverted = new Set<string>();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const getConversionRate = (fromCode: string): number | null => {
+        if (fromCode === reportingCurrency) return 1;
+        const rates = state.exchangeRates
+            .filter(r => r.fromCurrencyCode === fromCode && r.toCurrencyCode === reportingCurrency && new Date(r.date) <= end)
+            .sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return rates.length > 0 ? rates[0].rate : null;
+    }
+
+    const processEntry = (dateStr: string, currencyCode: string, amount: number, conceptId: string, conceptName: string, type: 'income' | 'expense') => {
+        const d = new Date(dateStr);
+        if (d < start || d > end) return;
+
+        const rate = getConversionRate(currencyCode);
+        if (rate === null) {
+            if (currencyCode !== reportingCurrency) unconverted.add(currencyCode);
+            return;
+        }
+        const convertedAmount = amount * rate;
+        if (type === 'income') {
+            if (!report.incomes[conceptId]) report.incomes[conceptId] = { name: conceptName, amount: 0 };
+            report.incomes[conceptId].amount += convertedAmount;
+            report.totalIncome += convertedAmount;
+        } else {
+            if (!report.expenses[conceptId]) report.expenses[conceptId] = { name: conceptName, amount: 0 };
+            report.expenses[conceptId].amount += convertedAmount;
+            report.totalExpenses += convertedAmount;
+        }
+    };
+    
+    // 1. Direct Sales
+    state.dailySales.forEach(sale => {
+      const totalSale = sale.cash + sale.card + sale.transfer;
+      if (totalSale > 0) processEntry(sale.date, sale.currencyCode, totalSale, 'direct_sales', t('daily_cash_direct_sales_concept'), 'income');
+    });
+
+    // 2. Misc Incomes from cash
+    state.miscIncomes.forEach(income => {
+        const concept = state.incomeTypes.find(c => c.id === income.conceptId);
+        if (concept && concept.isIncome) {
+            processEntry(income.date, income.currencyCode, income.amount, income.conceptId, concept.name, 'income');
+        }
+    });
+
+    // 3. Cash Expenses
+    state.cashExpenses.forEach(expense => {
+        const concept = state.expenseTypes.find(c => c.id === expense.conceptId);
+        if (concept && concept.isExpense) {
+            processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, concept.name, 'expense');
+        }
+    });
+
+    // 4. Bank Transactions
+    state.transactions.forEach(tx => {
+        if (tx.type === 'income' && tx.conceptId) {
+            const concept = state.incomeTypes.find(c => c.id === tx.conceptId);
+            const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
+            if (concept && concept.isIncome && bankAccount) {
+                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, concept.name, 'income');
+            }
+        } else if (tx.type === 'expense' && tx.conceptId) {
+            const concept = state.expenseTypes.find(c => c.id === tx.conceptId);
+            const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
+            if (concept && concept.isExpense && bankAccount) {
+                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, concept.name, 'expense');
+            }
+        }
+    });
+      
+    report.netProfit = report.totalIncome - report.totalExpenses;
+
+    return { consolidatedReport: report, unconvertedCurrencies: Array.from(unconverted) };
+  }, [state, startDate, endDate, reportingCurrency, t]);
+  
+  const currencySymbol = state.currencies.find(c=>c.code === reportingCurrency)?.symbol || '$';
+
+  const handleExportCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += `${t('reports_pl_statement')} (${startDate} - ${endDate})\n`;
+    csvContent += `Reporting Currency: ${reportingCurrency}\n\n`;
+    csvContent += `Category,Concept,Amount\n`;
+    csvContent += "INCOME\n";
+    Object.values(consolidatedReport.incomes).forEach(item => csvContent += `,${item.name.replace(/,/g, '')},${formatNumber(item.amount)}\n`);
+    csvContent += `TOTAL INCOME,,${formatNumber(consolidatedReport.totalIncome)}\n\n`;
+    csvContent += "EXPENSES\n";
+    Object.values(consolidatedReport.expenses).forEach(item => csvContent += `,${item.name.replace(/,/g, '')},${formatNumber(item.amount)}\n`);
+    csvContent += `TOTAL EXPENSES,,${formatNumber(consolidatedReport.totalExpenses)}\n\n`;
+    csvContent += `NET PROFIT/LOSS,,${formatNumber(consolidatedReport.netProfit)}\n\n`;
+    if (unconvertedCurrencies.length > 0) csvContent += `Warning: Data for the following currencies was not included due to missing exchange rates: ${unconvertedCurrencies.join(', ')}\n`;
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Consolidated_P&L_${startDate}_to_${endDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportPDF = () => window.print();
+  const hasData = consolidatedReport.totalIncome > 0 || consolidatedReport.totalExpenses > 0;
+
+  const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
+
+  return (
+    <div id="report-content" className="space-y-8">
+      <div className="text-center hidden print:block mb-4">
+        <h1 className="text-2xl font-bold">RestoFin</h1>
+        <h2 className="text-xl">{t('reports_pl_statement')} ({t('reports_consolidated_in')} {reportingCurrency})</h2>
+        <p>{`${t('reports_date_range')}: ${startDate} - ${endDate}`}</p>
+      </div>
+      
+      {unconvertedCurrencies.length > 0 && (
+          <div className="bg-yellow-900/50 border border-yellow-700 text-yellow-300 p-4 rounded-lg flex items-center gap-3 print:hidden">
+              <AlertCircle size={24} />
+              <p>{t('reports_unconverted_warning')}: {unconvertedCurrencies.join(', ')}</p>
+          </div>
+      )}
+      
+      <div className="flex justify-end gap-2 print:hidden">
+          <button onClick={handleExportCSV} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <FileText size={18} /> {t('reports_export_excel')}
+          </button>
+          <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <FileDown size={18} /> {t('reports_export_pdf')}
+          </button>
+        </div>
+
+      {!hasData && (
+        <div className="text-center py-10 bg-gray-800 rounded-lg"><p className="text-gray-400">{t('reports_no_data')}</p></div>
+      )}
+      
+      {hasData && (
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 print:border-none print:p-0 print:bg-transparent">
+            <h3 className="text-2xl font-bold text-indigo-400 mb-4 print:text-xl print:text-black">
+              {t('reports_pl_statement')} ({t('reports_consolidated_in')} {reportingCurrency})
+            </h3>
+            <table className="w-full text-lg print:text-sm">
+              <tbody>
+                <tr className="border-b-2 border-gray-600 print:border-black"><td className="font-bold py-2 text-green-400 print:text-green-600">{t('reports_income_header')}</td><td></td></tr>
+                {Object.values(consolidatedReport.incomes).map((item, index) => (
+                  <tr key={`inc-${index}`} className="border-b border-gray-700 print:border-gray-300">
+                    <td className="pl-4 py-2">{item.name}</td>
+                    <td className="text-right font-mono">{formatCurrency(item.amount)}</td>
+                  </tr>
+                ))}
+                <tr className="bg-gray-700/50 print:bg-gray-200"><td className="font-bold py-2">{t('reports_total_income')}</td><td className="text-right font-bold font-mono">{formatCurrency(consolidatedReport.totalIncome)}</td></tr>
+                <tr className="border-b-2 border-gray-600 print:border-black mt-4"><td className="font-bold py-2 text-red-400 print:text-red-600">{t('reports_expenses_header')}</td><td></td></tr>
+                {Object.values(consolidatedReport.expenses).map((item, index) => (
+                  <tr key={`exp-${index}`} className="border-b border-gray-700 print:border-gray-300">
+                    <td className="pl-4 py-2">{item.name}</td>
+                    <td className="text-right font-mono">({formatCurrency(item.amount)})</td>
+                  </tr>
+                ))}
+                <tr className="bg-gray-700/50 print:bg-gray-200"><td className="font-bold py-2">{t('reports_total_expenses')}</td><td className="text-right font-bold font-mono">({formatCurrency(consolidatedReport.totalExpenses)})</td></tr>
+                <tr className={`text-xl font-extrabold ${consolidatedReport.netProfit >= 0 ? 'bg-green-900/50' : 'bg-red-900/50'} print:bg-gray-300`}><td className="py-3">{t('reports_net_profit')}</td><td className="text-right font-mono">{formatCurrency(consolidatedReport.netProfit)}</td></tr>
+              </tbody>
+            </table>
+          </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfitLossReport;

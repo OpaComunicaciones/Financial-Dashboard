@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Financial Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom scrollbar for a more polished look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a202c; /* dark-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #4a5568; /* gray-600 */
+        border-radius: 4px;
+        border: 2px solid #1a202c; /* dark-800 */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #718096; /* gray-500 */
+      }
+      
+      /* Print-specific styles for PDF export */
+      @media print {
+        body {
+          background-color: white !important;
+          color: black !important;
+          font-family: sans-serif;
+        }
+        main {
+          padding: 1rem !important;
+        }
+        .print\:hidden {
+          display: none !important;
+        }
+        .print\:block {
+          display: block !important;
+        }
+        .print\:bg-transparent {
+          background-color: transparent !important;
+        }
+        .print\:p-0 {
+          padding: 0 !important;
+        }
+        .print\:border-none {
+          border: none !important;
+        }
+        .print\:text-black {
+          color: black !important;
+        }
+        .print\:text-xl {
+          font-size: 1.25rem;
+        }
+         .print\:text-sm {
+          font-size: 0.875rem;
+        }
+        .print\:border-black {
+            border-color: black !important;
+        }
+        .print\:border-gray-300 {
+            border-color: #d1d5db !important;
+        }
+        .print\:bg-gray-200 {
+            background-color: #e5e7eb !important;
+        }
+        .print\:bg-gray-300 {
+            background-color: #d1d5db !important;
+        }
+        .print\:text-green-600 {
+            color: #059669 !important;
+        }
+        .print\:text-red-600 {
+            color: #dc2626 !important;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.1",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.544.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-900 text-gray-100">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

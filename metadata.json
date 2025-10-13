@@ -1,0 +1,5 @@
+{
+  "name": "Restaurant Financial Dashboard",
+  "description": "A comprehensive web application for managing and evaluating the financial operations of a restaurant, including daily cash reconciliation, accounts payable, sales tracking, and AI-powered reporting.",
+  "requestFramePermissions": []
+}
