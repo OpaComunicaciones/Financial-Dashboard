@@ -256,8 +256,9 @@ const ExpenseTypeManagement: React.FC = () => {
 
 const DataManagement: React.FC = () => {
   const { t } = useTranslation();
-  const { exportData, importData, isLoading } = useAppContext();
+  const { exportData, importData, isLoading, resetDatabase } = useAppContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
@@ -279,22 +280,60 @@ const DataManagement: React.FC = () => {
       event.target.value = '';
     }
   };
+
+  const handleResetDatabase = async () => {
+    await resetDatabase();
+    setIsResetModalOpen(false);
+  };
   
   const buttonClasses = "font-semibold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed";
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-       <h3 className="text-xl font-semibold text-white mb-4">{t('configuration_data_management')}</h3>
-       {isLoading && <p className="text-sm text-gray-400 mb-4">{t('configuration_loading_data')}</p>}
-       <div className="flex flex-col md:flex-row gap-4">
-          <button onClick={exportData} disabled={isLoading} className={`${buttonClasses} bg-green-600 text-white hover:bg-green-700`}>
-            <Download size={18} /> {t('configuration_export_button')}
-          </button>
-          <button onClick={handleImportClick} disabled={isLoading} className={`${buttonClasses} bg-blue-600 text-white hover:bg-blue-700`}>
-            <Upload size={18} /> {t('configuration_import_button')}
-          </button>
-          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
-       </div>
+    <div className="space-y-6">
+      <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+        <h3 className="text-xl font-semibold text-white mb-4">{t('configuration_data_management', 'Gestión de Datos')}</h3>
+        {isLoading && <p className="text-sm text-gray-400 mb-4">{t('configuration_loading_data')}</p>}
+        <div className="flex flex-col md:flex-row gap-4">
+            <button onClick={exportData} disabled={isLoading} className={`${buttonClasses} bg-green-600 text-white hover:bg-green-700`}>
+              <Download size={18} /> {t('configuration_export_button')}
+            </button>
+            <button onClick={handleImportClick} disabled={isLoading} className={`${buttonClasses} bg-blue-600 text-white hover:bg-blue-700`}>
+              <Upload size={18} /> {t('configuration_import_button')}
+            </button>
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
+        </div>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="bg-gray-800 p-6 rounded-xl border border-red-500/50">
+        <h3 className="text-xl font-semibold text-red-400 mb-2">Zona Peligrosa</h3>
+        <p className="text-gray-400 mb-4">Estas acciones son destructivas y no se pueden deshacer.</p>
+        <button onClick={() => setIsResetModalOpen(true)} disabled={isLoading} className={`${buttonClasses} bg-red-600 text-white hover:bg-red-700`}>
+            <Trash2 size={18} /> Reiniciar la aplicación
+        </button>
+      </div>
+
+      {isResetModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
+            <div className="bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-red-500/50">
+                <div className="text-center">
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900">
+                        <Trash2 className="h-6 w-6 text-red-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mt-4">Borrar todos los datos</h3>
+                    <p className="text-gray-400 mt-2">Estás a punto de borrar permanentemente TODOS los datos de la aplicación, incluyendo configuraciones, ventas, y transacciones. Esta acción no se puede deshacer. ¿Estás absolutamente seguro?</p>
+                </div>
+                <div className="flex justify-center gap-4 mt-8">
+                    <button onClick={() => setIsResetModalOpen(false)} className="bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button onClick={handleResetDatabase} className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700">
+                        Sí, borrar todo
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
     </div>
   );
 };

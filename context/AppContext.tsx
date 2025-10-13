@@ -69,6 +69,7 @@ interface AppContextType {
   setSharedDate: (date: string) => void;
   exportData: () => void;
   importData: (json: string) => void;
+  resetDatabase: () => Promise<void>;
   // Config
   addConfigItem: (category: ConfigCategory, name: string) => void;
   updateConfigItem: (category: ConfigCategory, id: string, name: string) => void;
@@ -758,12 +759,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateStateAndDB(newState);
   };
 
+  const resetDatabase = async () => {
+    if (!db) return;
+    return new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.clear();
+        request.onsuccess = () => {
+            console.log("Database cleared.");
+            // Also reset the state to initialData
+            setState(initialData);
+            // Force a reload to ensure a clean state
+            location.reload();
+            resolve();
+        };
+        request.onerror = () => {
+            console.error("Error clearing database");
+            reject("Error clearing database");
+        };
+    });
+  };
+
   const contextValue: AppContextType = {
     state,
     isLoading,
     setSharedDate,
     exportData,
     importData,
+    resetDatabase,
     addConfigItem,
     updateConfigItem,
     deleteConfigItem,
