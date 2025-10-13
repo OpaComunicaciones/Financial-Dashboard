@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { formatNumber } from '../../utils/formatting';
 import { AlertTriangle } from 'lucide-react';
 
@@ -96,46 +96,45 @@ const ExpenseReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCur
 
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-gray-900/80 p-3 border border-gray-700 rounded-lg shadow-lg">
+          <p className="label text-base font-semibold text-gray-200">{label}</p>
+          <p className="intro" style={{ color: payload[0].color }}>
+            <span className="font-medium">{`${payload[0].name}: `}</span>
+            <span className="font-bold">{formatCurrency(payload[0].value)}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                <h3 className="text-xl font-semibold mb-4 text-white">{t('reports_expenses_by_category')}</h3>
-                <ResponsiveContainer width="100%" height={400}>
-                    <PieChart>
-                        <Pie data={expenseData.expenseList} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                            {expenseData.expenseList.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                        </Pie>
-                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
-            </div>
-            <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                <h3 className="text-xl font-semibold mb-4 text-white">{t('reports_expenses_details')}</h3>
-                <div className="max-h-[400px] overflow-y-auto">
-                    <table className="w-full text-sm text-left text-gray-300">
-                        <thead className="text-xs text-gray-400 uppercase bg-gray-700 sticky top-0">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">{t('planning_category')}</th>
-                                <th scope="col" className="px-6 py-3 text-right">{t('daily_cash_col_amount')}</th>
-                                <th scope="col" className="px-6 py-3 text-right">% of Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {expenseData.expenseList.map((item, index) => (
-                                <tr key={index} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
-                                    <td className="px-6 py-4 font-medium text-white">{item.name}</td>
-                                    <td className="px-6 py-4 text-right font-mono">{formatCurrency(item.value)}</td>
-                                    <td className="px-6 py-4 text-right font-mono">
-                                        {formatNumber((item.value / expenseData.totalExpenses) * 100)}%
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 text-white">{t('reports_expenses_by_category', 'Egresos por Categoría')}</h3>
+            <ResponsiveContainer width="100%" height={30 + expenseData.expenseList.length * 40}>
+                <BarChart
+                    data={expenseData.expenseList}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
+                    <XAxis type="number" stroke="#9CA3AF" tickFormatter={formatCurrency} />
+                    <YAxis type="category" dataKey="name" stroke="#9CA3AF" width={150} interval={0} />
+                    <Tooltip
+                        cursor={{fill: 'rgba(113, 128, 150, 0.1)'}}
+                        content={<CustomTooltip />}
+                    />
+                    <Bar dataKey="value" name={t('daily_cash_col_amount', 'Monto')}>
+                        {expenseData.expenseList.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
