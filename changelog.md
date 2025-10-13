@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-10-13 15:00:00]
+
+- **Feature:** Implementado un selector de rango de fechas dinámico en el Dashboard.
+  - Todas las métricas y gráficos del dashboard ahora se actualizan según el período seleccionado (Hoy, Últimos 7/30/90 días, o personalizado).
+  - El gráfico de ventas ahora muestra los datos para todo el período seleccionado.
+
 ## [2025-10-13 13:00:00]
 
 - **Feature:** Mejoras importantes en el informe de "Control de Egresos".
