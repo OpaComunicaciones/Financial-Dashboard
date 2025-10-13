@@ -1,5 +1,14 @@
 # Changelog
 
+## [2025-10-13 13:00:00]
+
+- **Feature:** Mejorado el informe de "Control de Egresos".
+  - El informe ahora incluye tanto gastos de caja como de banco.
+  - Añadida una tabla con el desglose de cada egreso.
+  - Implementada la visualización de gastos no deducibles.
+  - Añadido un filtro para mostrar solo los gastos no deducibles.
+- **Fix:** Renombrada la pestaña del informe a "Control de Egresos".
+
 ## [2025-10-13 12:00:00]
 
 - **Feature:** Añadida la función de "Reiniciar Base de Datos" en la página de Configuración.
