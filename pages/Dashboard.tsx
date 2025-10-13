@@ -7,105 +7,104 @@ import { getFinancialInsights } from '../services/geminiService';
 import { useTranslation } from '../i18n/i18n';
 import { useAppContext } from '../context/AppContext';
 import { formatNumber } from '../utils/formatting';
+import DateRangeSelector from '../components/DateRangeSelector';
 
 const Dashboard: React.FC = () => {
   const { t, language } = useTranslation();
   const { state } = useAppContext();
   const [aiInsights, setAiInsights] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [dateRange, setDateRange] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
 
   const dashboardData = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
+    const from = new Date(dateRange.from);
+    const to = new Date(dateRange.to);
+    from.setHours(0, 0, 0, 0);
+    to.setHours(23, 59, 59, 999);
+
+    const salesInRange = state.dailySales.filter(s => {
+        const saleDate = new Date(s.date + 'T00:00:00');
+        return saleDate >= from && saleDate <= to;
+    });
+    const revenueInRange = salesInRange.reduce((sum, s) => sum + s.cash + s.card + s.transfer, 0);
+    const customersInRange = salesInRange.reduce((sum, s) => sum + s.customers, 0);
     
-    // --- Today's Metrics ---
-    const todaysSales = state.dailySales.filter(s => s.date === todayStr);
-    const todaysRevenue = todaysSales.reduce((sum, s) => sum + s.cash + s.card + s.transfer, 0);
-    const todaysCustomers = todaysSales.reduce((sum, s) => sum + s.customers, 0);
-    const todaysCashExpenses = state.cashExpenses
-      .filter(e => e.date === todayStr)
+    const cashExpensesInRange = state.cashExpenses
+      .filter(e => {
+          const expenseDate = new Date(e.date + 'T00:00:00');
+          return expenseDate >= from && expenseDate <= to;
+      })
       .reduce((sum, e) => sum + e.amount, 0);
 
-    // --- Overall Metrics ---
+    const bankExpensesInRange = state.transactions
+      .filter(t => {
+          const txDate = new Date(t.date + 'T00:00:00');
+          return t.type === 'expense' && txDate >= from && txDate <= to;
+      })
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    const totalExpensesInRange = cashExpensesInRange + bankExpensesInRange;
+
     const totalPendingInvoices = state.invoices
       .filter(inv => inv.status === 'Pending' || inv.status === 'Overdue')
       .reduce((sum, inv) => sum + inv.amount, 0);
 
-    // --- Weekly Sales Chart Data ---
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-    
-    const monthlyIncomeBudget = state.budgetRecords
-      .filter(b => b.year === currentYear && b.month === currentMonth && b.categoryType === 'income')
-      .reduce((sum, b) => sum + b.amount, 0);
-      
-    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-    const projectedDailySales = monthlyIncomeBudget > 0 ? monthlyIncomeBudget / daysInMonth : 0;
+    // --- Sales Chart Data from filtered sales ---
+    const salesByDate: { [date: string]: number } = {};
+    salesInRange.forEach(sale => {
+        const total = sale.cash + sale.card + sale.transfer;
+        salesByDate[sale.date] = (salesByDate[sale.date] || 0) + total;
+    });
 
-
-    const weeklySalesData = [];
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      const dayOfWeek = date.toLocaleDateString(language, { weekday: 'short' });
-      
-      const sales = state.dailySales.filter(s => s.date === dateStr);
-      const totalSale = sales.reduce((sum, s) => sum + s.cash + s.card + s.transfer, 0);
-      
-      weeklySalesData.push({
-        name: dayOfWeek,
-        sales: totalSale,
-        projection: projectedDailySales,
-      });
-    }
-
-    // --- AI Financial Data ---
-    const topExpenseCategory = state.cashExpenses
-      .filter(e => e.date === todayStr)
-      .reduce((acc, expense) => {
-          acc[expense.conceptId] = (acc[expense.conceptId] || 0) + expense.amount;
-          return acc;
-      }, {} as Record<string, number>);
-
-    const topExpenseId = Object.keys(topExpenseCategory).reduce((a, b) => topExpenseCategory[a] > topExpenseCategory[b] ? a : b, '');
-    const topExpense = state.expenseTypes.find(e => e.id === topExpenseId);
+    const salesChartData = Object.entries(salesByDate)
+        .map(([date, total]) => ({
+            date: date,
+            name: new Date(date + 'T00:00:00').toLocaleDateString(language, { day: 'numeric', month: 'short' }),
+            sales: total,
+        }))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     const latestClosure = [...state.cashClosures].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
 
-
     return {
-      todaysRevenue,
-      todaysCustomers,
-      todaysExpenses: todaysCashExpenses,
+      revenueInRange,
+      customersInRange,
+      totalExpensesInRange,
       totalPendingInvoices,
-      weeklySalesData,
+      salesChartData,
       aiFinancialData: {
-        sales: todaysRevenue,
-        expenses: todaysCashExpenses,
-        profitMargin: todaysRevenue > 0 ? ((todaysRevenue - todaysCashExpenses) / todaysRevenue) * 100 : 0,
-        topExpense: { 
-            category: topExpense?.name || 'N/A', 
-            amount: topExpenseCategory[topExpenseId] || 0 
-        },
+        sales: revenueInRange,
+        expenses: totalExpensesInRange,
+        profitMargin: revenueInRange > 0 ? ((revenueInRange - totalExpensesInRange) / revenueInRange) * 100 : 0,
+        topExpense: { category: 'N/A', amount: 0 },
         cashBalance: latestClosure?.finalBalance || 0,
         accountsPayable: totalPendingInvoices,
       }
     };
-  }, [state, language]);
+  }, [state, language, dateRange]);
 
   const handleGetInsights = async () => {
+    // This function would also need to be updated to use range data
+    // For now, it will use the calculated data which is already based on the range
     setIsLoading(true);
     setAiInsights('');
-    const insights = await getFinancialInsights(dashboardData.aiFinancialData, language);
+    const aiFinancialData = {
+        sales: dashboardData.revenueInRange,
+        expenses: dashboardData.totalExpensesInRange,
+        profitMargin: dashboardData.revenueInRange > 0 ? ((dashboardData.revenueInRange - dashboardData.totalExpensesInRange) / dashboardData.revenueInRange) * 100 : 0,
+        accountsPayable: dashboardData.totalPendingInvoices,
+    };
+    const insights = await getFinancialInsights(aiFinancialData, language);
     setAiInsights(insights);
     setIsLoading(false);
   };
 
   const formattedInsights = aiInsights.split('\n').map((line, index) => {
     if (line.startsWith('- **')) {
-      return <p key={index} className="mt-2" dangerouslySetInnerHTML={{ __html: line.replace(/- \*\*(.*?):\*\*/, '<strong>$1:</strong>')}} />;
+      return <p key={index} className="mt-2" dangerouslySetInnerHTML={{ __html: line.replace(/- \*\*\*(.*?):\*\*\*/, '<strong>$1:</strong>')}} />;
     }
     if (line.startsWith('**')) {
       return <h4 key={index} className="text-lg font-semibold text-indigo-400 mt-4">{line.replace(/\*\*/g, '')}</h4>;
@@ -113,39 +112,40 @@ const Dashboard: React.FC = () => {
     return <p key={index}>{line.replace(/- /,'')}</p>;
   });
 
-  // TODO: This should be dynamic based on a user setting
-  const currencySymbol = '$';
+  const currencySymbol = state.currencies[0]?.symbol || '$';
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
 
   return (
     <div className="space-y-8">
-      <PageHeader title={t('dashboard_title')} subtitle={t('dashboard_subtitle')} />
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+        <PageHeader title={t('dashboard_title')} subtitle={t('dashboard_subtitle')} />
+        <DateRangeSelector onDateRangeChange={setDateRange} />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title={t('dashboard_card_revenue')} value={formatCurrency(dashboardData.todaysRevenue)} icon={<DollarSign />} />
-        <Card title={t('dashboard_card_expenses')} value={formatCurrency(dashboardData.todaysExpenses)} icon={<ShoppingCart />} />
-        <Card title={t('dashboard_card_customers')} value={formatNumber(dashboardData.todaysCustomers)} icon={<Users />} />
-        <Card title={t('dashboard_card_invoices')} value={formatCurrency(dashboardData.totalPendingInvoices)} icon={<AlertTriangle />} />
+        <Card title="Ingresos del Período" value={formatCurrency(dashboardData.revenueInRange)} icon={<DollarSign />} />
+        <Card title="Egresos del Período" value={formatCurrency(dashboardData.totalExpensesInRange)} icon={<ShoppingCart />} />
+        <Card title="Clientes del Período" value={formatNumber(dashboardData.customersInRange)} icon={<Users />} />
+        <Card title="Facturas por Pagar" value={formatCurrency(dashboardData.totalPendingInvoices)} icon={<AlertTriangle />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3 bg-gray-800 p-6 rounded-xl border border-gray-700">
-          <h3 className="text-xl font-semibold mb-4 text-white">{t('dashboard_sales_chart_title')}</h3>
+          <h3 className="text-xl font-semibold mb-4 text-white">Ventas del Período</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={dashboardData.weeklySalesData}>
+            <BarChart data={dashboardData.salesChartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
               <XAxis dataKey="name" stroke="#A0AEC0" />
               <YAxis stroke="#A0AEC0" tickFormatter={(value) => formatNumber(value as number)} />
               <Tooltip contentStyle={{ backgroundColor: '#2D3748', border: '1px solid #4A5568' }} formatter={(value: number) => formatCurrency(value)} />
               <Legend />
-              <Bar dataKey="sales" fill="#6366F1" name={t('dashboard_sales_chart_actual')} />
-              <Bar dataKey="projection" fill="#4A5568" name={t('dashboard_sales_chart_projected')} />
+              <Bar dataKey="sales" fill="#6366F1" name="Ventas" />
             </BarChart>
           </ResponsiveContainer>
         </div>
         <div className="lg:col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700">
-           <h3 className="text-xl font-semibold text-white mb-4">{t('dashboard_ai_title')}</h3>
-           <p className="text-gray-400 text-sm mb-4">{t('dashboard_ai_subtitle')}</p>
+           <h3 className="text-xl font-semibold text-white">{t('dashboard_ai_title')}</h3>
+           <p className="text-gray-400 text-sm mb-4">Análisis y recomendaciones basadas en los datos del período seleccionado.</p>
            <button 
              onClick={handleGetInsights}
              disabled={isLoading}
