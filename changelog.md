@@ -1,5 +1,9 @@
 # Changelog
 
+## [2025-10-13 16:00:00]
+
+- **UX:** Las listas desplegables de conceptos de ingresos y egresos ahora se ordenan alfabéticamente en toda la aplicación para mejorar la usabilidad.
+
 ## [2025-10-13 15:00:00]
 
 - **Feature:** Implementado un selector de rango de fechas dinámico en el Dashboard.
