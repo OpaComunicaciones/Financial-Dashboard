@@ -8,13 +8,13 @@ const initialData: AppState = {
     { id: '1', name: 'Dine-in Sales', isIncome: true },
     { id: '2', name: 'Takeout Sales', isIncome: true },
     { id: '3', name: 'Employee Debt Payment', isIncome: false },
-  ],
+  ].sort((a, b) => a.name.localeCompare(b.name)),
   expenseTypes: [
     { id: '1', name: 'Groceries', isExpense: true },
     { id: '2', name: 'Payroll', isExpense: true },
     { id: '3', name: 'Rent', isExpense: true },
     { id: '4', name: 'Asset Purchase', isExpense: false },
-  ],
+  ].sort((a, b) => a.name.localeCompare(b.name)),
   paymentMethods: [
     { id: '1', name: 'Cash' },
     { id: '2', name: 'Credit Card' },
@@ -170,9 +170,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setDb(dbInstance);
         const storedState = await getDataFromDB(dbInstance);
         if (storedState) {
+          // Sort arrays from stored state
+          if (storedState.incomeTypes) {
+            storedState.incomeTypes.sort((a, b) => a.name.localeCompare(b.name));
+          }
+          if (storedState.expenseTypes) {
+            storedState.expenseTypes.sort((a, b) => a.name.localeCompare(b.name));
+          }
           // Ensure new state fields exist
           const mergedState = { ...initialData, ...storedState };
           setState(mergedState);
+        } else {
+          // If no stored state, the initialData is already sorted
+          setState(initialData);
         }
       } catch (error) {
         console.error("Failed to initialize IndexedDB", error);
@@ -211,6 +221,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const newState = JSON.parse(json);
       // Basic validation
       if (newState.incomeTypes && newState.expenseTypes && newState.invoices) {
+        newState.incomeTypes.sort((a: IncomeType, b: IncomeType) => a.name.localeCompare(b.name));
+        newState.expenseTypes.sort((a: ExpenseType, b: ExpenseType) => a.name.localeCompare(b.name));
         const mergedState = { ...initialData, ...newState };
         updateStateAndDB(mergedState);
         alert('Data imported successfully!');
@@ -249,7 +261,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const addIncomeType = (name: string, isIncome: boolean) => {
     const newItem: IncomeType = { id: Date.now().toString(), name, isIncome };
-    const newState = { ...state, incomeTypes: [...state.incomeTypes, newItem] };
+    const newState = { ...state, incomeTypes: [...state.incomeTypes, newItem].sort((a, b) => a.name.localeCompare(b.name)) };
     updateStateAndDB(newState);
   };
 
@@ -258,14 +270,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       ...state,
       incomeTypes: state.incomeTypes.map(item =>
         item.id === id ? { ...item, name, isIncome } : item
-      ),
+      ).sort((a, b) => a.name.localeCompare(b.name)),
     };
     updateStateAndDB(newState);
   };
 
   const addExpenseType = (name: string, isExpense: boolean) => {
     const newItem: ExpenseType = { id: Date.now().toString(), name, isExpense };
-    const newState = { ...state, expenseTypes: [...state.expenseTypes, newItem] };
+    const newState = { ...state, expenseTypes: [...state.expenseTypes, newItem].sort((a, b) => a.name.localeCompare(b.name)) };
     updateStateAndDB(newState);
   };
 
@@ -274,7 +286,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       ...state,
       expenseTypes: state.expenseTypes.map(item =>
         item.id === id ? { ...item, name, isExpense } : item
-      ),
+      ).sort((a, b) => a.name.localeCompare(b.name)),
     };
     updateStateAndDB(newState);
   };
