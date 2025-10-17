@@ -1,5 +1,13 @@
 # Changelog
 
+## [2025-10-14 18:00:00]
+
+- **Feature:** Mejorada la exportación a PDF en todos los informes para generar documentos completos y paginados que no se cortan, usando la librería jsPDF.
+- **Fix:** Corregido un error en el "Informe de Análisis de Ventas" que atribuía las ventas al día incorrecto por problemas de zona horaria.
+- **Fix:** Solucionado un error en el "Informe de Flujo de Caja" que duplicaba el conteo de los pagos de facturas.
+- **Fix:** Corregido un error de inicialización que impedía la carga del "Informe de Bancos".
+- **UX:** Mejorada la legibilidad de los informes de Flujo de Caja y P&G, mostrando solo los nombres de los conceptos y ordenándolos alfabéticamente.
+
 ## [2025-10-14 17:00:00]
 
 - **Feature:** Mejorada la exportación del informe P&G a un archivo `.xlsx` con formato.

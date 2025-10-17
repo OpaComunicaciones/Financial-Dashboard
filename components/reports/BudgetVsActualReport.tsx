@@ -2,6 +2,10 @@ import React, { useMemo } from 'react';
 import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
 import { formatNumber } from '../../utils/formatting';
+import { FileText, FileDown } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReportProps {
   startDate: string;
@@ -86,6 +90,117 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
   const currencySymbol = state.currencies.find(c=>c.code === reportingCurrency)?.symbol || '$';
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const reportTitle = t('reports_tab_budget');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    doc.setFontSize(18);
+    doc.text(reportTitle, 14, 22);
+    doc.setFontSize(11);
+    doc.text(currencyInfo, 14, 30);
+    doc.text(`${startDate} - ${endDate}`, 14, 36);
+
+    const head = [[t('planning_category'), t('reports_budget_budgeted'), t('reports_budget_actual'), t('reports_budget_variance_val'), t('reports_budget_variance_pct')]];
+    
+    const incomeBody = comparisonData.incomeRows.map(row => {
+      const variancePercent = row.budgeted !== 0 ? formatNumber((row.variance / row.budgeted) * 100) : 'N/A';
+      return [row.name, formatCurrency(row.budgeted), formatCurrency(row.actual), formatCurrency(row.variance), `${variancePercent}%`];
+    });
+
+    const expenseBody = comparisonData.expenseRows.map(row => {
+      const variancePercent = row.budgeted !== 0 ? formatNumber((row.variance / row.budgeted) * 100) : 'N/A';
+      return [row.name, formatCurrency(row.budgeted), formatCurrency(row.actual), formatCurrency(row.variance), `${variancePercent}%`];
+    });
+
+    autoTable(doc, {
+      startY: 40,
+      head: [[{ content: t('reports_income_header'), colSpan: 5, styles: { halign: 'center', fillColor: [22, 163, 74] } }]],
+      theme: 'grid',
+    });
+
+    autoTable(doc, {
+      head: head,
+      body: incomeBody,
+      theme: 'grid',
+      headStyles: { fillColor: [55, 65, 81] },
+      columnStyles: { 
+        1: { halign: 'right' }, 
+        2: { halign: 'right' }, 
+        3: { halign: 'right' }, 
+        4: { halign: 'right' } 
+      },
+    });
+
+    autoTable(doc, {
+      head: [[{ content: t('reports_expenses_header'), colSpan: 5, styles: { halign: 'center', fillColor: [220, 38, 38] } }]],
+      theme: 'grid',
+    });
+
+    autoTable(doc, {
+      head: head,
+      body: expenseBody,
+      theme: 'grid',
+      headStyles: { fillColor: [55, 65, 81] },
+      columnStyles: { 
+        1: { halign: 'right' }, 
+        2: { halign: 'right' }, 
+        3: { halign: 'right' }, 
+        4: { halign: 'right' } 
+      },
+    });
+
+    doc.save(`Budget_vs_Actual_${startDate}_to_${endDate}.pdf`);
+  };
+
+  const handleExportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+    const reportTitle = t('reports_tab_budget');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    const headers = [t('planning_category'), t('reports_budget_budgeted'), t('reports_budget_actual'), t('reports_budget_variance_val'), t('reports_budget_variance_pct')];
+
+    const data = [
+      [reportTitle, null, null],
+      [currencyInfo, null, null],
+      [null, null, null], // Spacer
+      [t('reports_income_header'), null, null],
+      headers,
+    ];
+
+    comparisonData.incomeRows.forEach(row => {
+      const variancePercent = row.budgeted !== 0 ? (row.variance / row.budgeted) : 0;
+      data.push([row.name, row.budgeted, row.actual, row.variance, variancePercent]);
+    });
+
+    data.push([null, null, null]); // Spacer
+    data.push([t('reports_expenses_header'), null, null]);
+    data.push(headers);
+
+    comparisonData.expenseRows.forEach(row => {
+      const variancePercent = row.budgeted !== 0 ? (row.variance / row.budgeted) : 0;
+      data.push([row.name, row.budgeted, row.actual, row.variance, variancePercent]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Styling
+    ws['!cols'] = [{ wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }];
+    const currencyFormat = `${currencySymbol} #,##0.00`;
+    const percentFormat = '0.00%';
+
+    for(let i = 4; i < data.length; i++) {
+      if (i === 5 + comparisonData.incomeRows.length || i === 6 + comparisonData.incomeRows.length) continue; // Skip headers
+      if (typeof data[i][1] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 1})].z = currencyFormat;
+      if (typeof data[i][2] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 2})].z = currencyFormat;
+      if (typeof data[i][3] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 3})].z = currencyFormat;
+      if (typeof data[i][4] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 4})].z = percentFormat;
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, reportTitle);
+    XLSX.writeFile(wb, `Budget_vs_Actual_${startDate}_to_${endDate}.xlsx`);
+  };
+
   const renderRow = (row: {name: string, budgeted: number, actual: number, variance: number}) => {
     const isFavorable = row.variance >= 0;
     const varianceColor = isFavorable ? 'text-green-400' : 'text-red-400';
@@ -104,6 +219,14 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
 
   return (
      <div className="space-y-6">
+        <div className="flex justify-end gap-2 print:hidden">
+          <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <FileText size={18} /> {t('reports_export_excel')}
+          </button>
+          <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <FileDown size={18} /> {t('reports_export_pdf')}
+          </button>
+        </div>
         <div className="bg-gray-800 rounded-xl border border-gray-700">
           <h3 className="text-2xl font-bold text-indigo-400 p-6">{t('reports_tab_budget')} ({t('reports_consolidated_in')} {reportingCurrency})</h3>
           <div className="overflow-x-auto">

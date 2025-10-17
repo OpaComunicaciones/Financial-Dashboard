@@ -3,7 +3,10 @@ import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { formatNumber } from '../../utils/formatting';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, FileText, FileDown } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReportProps {
   startDate: string;
@@ -145,8 +148,124 @@ const ExpenseReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCur
     return null;
   };
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const reportTitle = t('reports_tab_expenses');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    doc.setFontSize(18);
+    doc.text(reportTitle, 14, 22);
+    doc.setFontSize(11);
+    doc.text(currencyInfo, 14, 30);
+    doc.text(`${startDate} - ${endDate}`, 14, 36);
+
+    const head = viewType === 'grouped'
+      ? [[t('planning_category'), t('daily_cash_col_amount'), '% vs Ingresos']]
+      : [[t('daily_sales_date'), t('planning_category'), t('daily_cash_col_detail'), t('daily_cash_col_amount'), '% vs Ingresos']];
+
+    const body = reportData.tableData.map((item: any) => {
+      const amount = viewType === 'grouped' ? item.value : item.convertedAmount;
+      const percentage = reportData.totalIncome > 0 ? (amount / reportData.totalIncome * 100) : 0;
+      if (viewType === 'grouped') {
+        return [item.name, formatCurrency(amount), `${percentage.toFixed(2)}%`];
+      } else {
+        return [item.date, item.categoryName, item.detail, formatCurrency(amount), `${percentage.toFixed(2)}%`];
+      }
+    });
+
+    // Add total row
+    const totalPercentage = reportData.totalIncome > 0 ? (reportData.totalOfTableExpenses / reportData.totalIncome * 100) : 0;
+    const totalRow = viewType === 'grouped'
+        ? [{ content: t('daily_sales_total'), styles: { fontStyle: 'bold' } }, { content: formatCurrency(reportData.totalOfTableExpenses), styles: { fontStyle: 'bold' } }, { content: `${totalPercentage.toFixed(2)}%`, styles: { fontStyle: 'bold' } }]
+        : [{ content: t('daily_sales_total'), colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } }, { content: formatCurrency(reportData.totalOfTableExpenses), styles: { fontStyle: 'bold' } }, { content: `${totalPercentage.toFixed(2)}%`, styles: { fontStyle: 'bold' } }];
+    body.push(totalRow as any);
+
+    autoTable(doc, {
+      startY: 40,
+      head: head,
+      body: body,
+      theme: 'grid',
+      headStyles: { fillColor: [55, 65, 81] },
+    });
+
+    doc.save(`Expense_Report_${startDate}_to_${endDate}.pdf`);
+  };
+
+  const handleExportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+    const reportTitle = t('reports_tab_expenses');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    const data = [
+      [reportTitle, null, null],
+      [currencyInfo, null, null],
+      [null, null, null], // Spacer
+    ];
+
+    // Define headers based on view
+    const headers = viewType === 'grouped'
+      ? [t('planning_category'), t('daily_cash_col_amount'), '% vs Ingresos']
+      : [t('daily_sales_date'), t('planning_category'), t('daily_cash_col_detail'), t('daily_cash_col_amount'), '% vs Ingresos'];
+    data.push(headers);
+
+    // Add rows
+    reportData.tableData.forEach((item: any) => {
+      const amount = viewType === 'grouped' ? item.value : item.convertedAmount;
+      const percentage = reportData.totalIncome > 0 ? (amount / reportData.totalIncome) : 0;
+      if (viewType === 'grouped') {
+        data.push([item.name, amount, percentage]);
+      } else {
+        data.push([item.date, item.categoryName, item.detail, amount, percentage]);
+      }
+    });
+
+    // Add footer
+    const totalPercentage = reportData.totalIncome > 0 ? (reportData.totalOfTableExpenses / reportData.totalIncome) : 0;
+    if (viewType === 'grouped') {
+        data.push([t('daily_sales_total'), reportData.totalOfTableExpenses, totalPercentage]);
+    } else {
+        data.push([null, null, t('daily_sales_total'), reportData.totalOfTableExpenses, totalPercentage]);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Styling
+    ws['!cols'] = viewType === 'grouped'
+      ? [{ wch: 30 }, { wch: 15 }, { wch: 10 }]
+      : [{ wch: 12 }, { wch: 25 }, { wch: 40 }, { wch: 15 }, { wch: 10 }];
+    
+    const currencyFormat = `${currencySymbol} #,##0.00`;
+    const percentFormat = '0.00%';
+
+    for(let i = 3; i < data.length; i++) {
+        const amountCol = viewType === 'grouped' ? 1 : 3;
+        const percentCol = viewType === 'grouped' ? 2 : 4;
+        
+        if (typeof data[i][amountCol] === 'number') {
+            const cellRef = XLSX.utils.encode_cell({r: i, c: amountCol});
+            if(ws[cellRef]) ws[cellRef].z = currencyFormat;
+        }
+        if (typeof data[i][percentCol] === 'number') {
+            const cellRef = XLSX.utils.encode_cell({r: i, c: percentCol});
+            if(ws[cellRef]) ws[cellRef].z = percentFormat;
+        }
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, reportTitle);
+    XLSX.writeFile(wb, `Expense_Report_${startDate}_to_${endDate}.xlsx`);
+  };
+
   return (
     <div className="space-y-8">
+        <div className="flex justify-end gap-2 print:hidden">
+          <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <FileText size={18} /> {t('reports_export_excel')}
+          </button>
+          <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <FileDown size={18} /> {t('reports_export_pdf')}
+          </button>
+        </div>
+
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold mb-4 text-white">{t('reports_expenses_by_category', 'Egresos por Categoría')}</h3>
             <ResponsiveContainer width="100%" height={30 + reportData.chartData.length * 40}>

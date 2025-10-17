@@ -3,8 +3,9 @@ import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
 import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import Card from '../Card';
-import { Users } from 'lucide-react';
+import { Users, FileText, FileDown } from 'lucide-react';
 import { formatNumber } from '../../utils/formatting';
+import * as XLSX from 'xlsx';
 
 interface ReportProps {
   startDate: string;
@@ -34,7 +35,8 @@ const SalesAnalysisReport: React.FC<ReportProps> = ({ startDate, endDate, report
     let totalCustomers = 0;
 
     state.dailySales.forEach(sale => {
-      const d = new Date(sale.date);
+      const dateParts = sale.date.split('-').map(Number);
+      const d = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
       // JS getDay() is Sun=0, Mon=1...
       // To make week start on Monday for display, we'll adjust later.
       if (d >= start && d <= end) {
@@ -79,8 +81,56 @@ const SalesAnalysisReport: React.FC<ReportProps> = ({ startDate, endDate, report
 
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
 
+  const handleExportPDF = () => window.print();
+
+  const handleExportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Sales by Day
+    const dayData = [
+        [t('reports_sales_by_day')],
+        [null],
+        [t('reports_sales_avg_ticket'), salesData.averageTicket],
+        [null],
+        ['Día', 'Ventas'],
+        ...salesData.salesByDayChart.map(item => [item.name, item.sales])
+    ];
+    const wsDay = XLSX.utils.aoa_to_sheet(dayData);
+    wsDay['!cols'] = [{ wch: 20 }, { wch: 15 }];
+    if(wsDay['B3']) wsDay['B3'].z = `${currencySymbol} #,##0.00`;
+    for(let i = 5; i < dayData.length; i++) {
+        if(wsDay[`B${i+1}`]) wsDay[`B${i+1}`].z = `${currencySymbol} #,##0.00`;
+    }
+    XLSX.utils.book_append_sheet(wb, wsDay, t('reports_sales_by_day'));
+
+    // Sheet 2: Sales by Payment
+    const paymentData = [
+        [t('reports_sales_by_payment')],
+        [null],
+        ['Método de Pago', 'Valor'],
+        ...salesData.salesByPaymentChart.map(item => [item.name, item.value])
+    ];
+    const wsPayment = XLSX.utils.aoa_to_sheet(paymentData);
+    wsPayment['!cols'] = [{ wch: 20 }, { wch: 15 }];
+    for(let i = 3; i < paymentData.length; i++) {
+        if(wsPayment[`B${i+1}`]) wsPayment[`B${i+1}`].z = `${currencySymbol} #,##0.00`;
+    }
+    XLSX.utils.book_append_sheet(wb, wsPayment, t('reports_sales_by_payment'));
+
+    XLSX.writeFile(wb, `Sales_Analysis_${startDate}_to_${endDate}.xlsx`);
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="space-y-6">
+      <div className="flex justify-end gap-2 print:hidden">
+        <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+          <FileText size={18} /> {t('reports_export_excel')}
+        </button>
+        <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+          <FileDown size={18} /> {t('reports_export_pdf')}
+        </button>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold mb-4 text-white">{t('reports_sales_by_day')}</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -108,6 +158,7 @@ const SalesAnalysisReport: React.FC<ReportProps> = ({ startDate, endDate, report
         <div className="lg:col-span-2">
              <Card title={t('reports_sales_avg_ticket')} value={formatCurrency(salesData.averageTicket)} icon={<Users />} />
         </div>
+      </div>
     </div>
   );
 };

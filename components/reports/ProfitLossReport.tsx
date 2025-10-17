@@ -4,6 +4,8 @@ import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
 import { FileText, FileDown, AlertCircle } from 'lucide-react';
 import { formatNumber } from '../../utils/formatting';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReportProps {
   startDate: string;
@@ -147,7 +149,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
       [t('reports_income_header'), null, '%'],
     ];
 
-    Object.values(consolidatedReport.incomes).forEach(item => {
+    Object.values(consolidatedReport.incomes).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
       const percentage = consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome) : 0;
       data.push([item.name, item.amount, percentage]);
     });
@@ -155,7 +157,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
     data.push([null, null, null]); // Spacer
 
     data.push([t('reports_expenses_header'), null, '%']);
-    Object.values(consolidatedReport.expenses).forEach(item => {
+    Object.values(consolidatedReport.expenses).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
       const percentage = consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome) : 0;
       data.push([item.name, item.amount, percentage]);
     });
@@ -188,7 +190,63 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
     XLSX.writeFile(wb, `P&L_Report_${startDate}_to_${endDate}.xlsx`);
   };
 
-  const handleExportPDF = () => window.print();
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const reportTitle = `${t('reports_pl_statement')} (${startDate} - ${endDate})`;
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    doc.setFontSize(18);
+    doc.text(reportTitle, 14, 22);
+    doc.setFontSize(11);
+    doc.text(currencyInfo, 14, 30);
+
+    const incomeBody = Object.values(consolidatedReport.incomes).sort((a, b) => a.name.localeCompare(b.name)).map(item => [
+      item.name,
+      formatCurrency(item.amount),
+      `${(consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%`
+    ]);
+    incomeBody.push([
+        { content: t('reports_total_income'), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(consolidatedReport.totalIncome), styles: { fontStyle: 'bold' } },
+        { content: '100.00%', styles: { fontStyle: 'bold' } }
+    ]);
+
+    const expenseBody = Object.values(consolidatedReport.expenses).sort((a, b) => a.name.localeCompare(b.name)).map(item => [
+      item.name,
+      `(${formatCurrency(item.amount)})`,
+      `(${(consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%)`
+    ]);
+    expenseBody.push([
+        { content: t('reports_total_expenses'), styles: { fontStyle: 'bold' } },
+        { content: `(${formatCurrency(consolidatedReport.totalExpenses)})`, styles: { fontStyle: 'bold' } },
+        { content: `(${(consolidatedReport.totalIncome > 0 ? (consolidatedReport.totalExpenses / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%)`, styles: { fontStyle: 'bold' } }
+    ]);
+
+    autoTable(doc, {
+      startY: 40,
+      head: [[t('reports_income_header'), 'Monto', '%']],
+      body: incomeBody,
+      theme: 'grid',
+      headStyles: { fillColor: [22, 163, 74], fontStyle: 'bold' },
+    });
+
+    autoTable(doc, {
+      head: [[t('reports_expenses_header'), 'Monto', '%']],
+      body: expenseBody,
+      theme: 'grid',
+      headStyles: { fillColor: [220, 38, 38], fontStyle: 'bold' },
+      didDrawPage: (data) => {
+        // Add Net Profit at the end
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text(t('reports_net_profit'), 14, data.cursor.y + 10);
+        doc.text(formatCurrency(consolidatedReport.netProfit), 150, data.cursor.y + 10, { align: 'right' });
+        doc.text(`${(consolidatedReport.totalIncome > 0 ? (consolidatedReport.netProfit / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%`, 200, data.cursor.y + 10, { align: 'right' });
+      }
+    });
+
+    doc.save(`P&L_Report_${startDate}_to_${endDate}.pdf`);
+  };
   const hasData = consolidatedReport.totalIncome > 0 || consolidatedReport.totalExpenses > 0;
 
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
@@ -234,7 +292,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
                   <td className="text-right font-bold">Monto</td>
                   <td className="text-right font-bold">%</td>
                 </tr>
-                {Object.values(consolidatedReport.incomes).map((item, index) => (
+                {Object.values(consolidatedReport.incomes).sort((a, b) => a.name.localeCompare(b.name)).map((item, index) => (
                   <tr key={`inc-${index}`} className="border-b border-gray-700 print:border-gray-300">
                     <td className="pl-4 py-2">{item.name}</td>
                     <td className="text-right font-mono">{formatCurrency(item.amount)}</td>
@@ -253,7 +311,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
                   <td></td>
                   <td className="text-right font-bold">% vs Ing.</td>
                 </tr>
-                {Object.values(consolidatedReport.expenses).map((item, index) => (
+                {Object.values(consolidatedReport.expenses).sort((a, b) => a.name.localeCompare(b.name)).map((item, index) => (
                   <tr key={`exp-${index}`} className="border-b border-gray-700 print:border-gray-300">
                     <td className="pl-4 py-2">{item.name}</td>
                     <td className="text-right font-mono">({formatCurrency(item.amount)})</td>

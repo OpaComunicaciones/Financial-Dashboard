@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, FileText, FileDown } from 'lucide-react';
 import { formatNumber } from '../../utils/formatting';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReportProps {
   startDate: string;
@@ -42,17 +45,19 @@ const CashFlowReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCu
 
     // 1. Calculate Initial Balances
     state.cashClosures.forEach(c => {
-        if (new Date(c.date) < start) {
-            const rate = getConversionRate(c.currencyCode, start);
+        const d = new Date(c.date);
+        if (d < start) {
+            const rate = getConversionRate(c.currencyCode, d);
             if (rate !== null) cf.initialCashBalance += c.finalBalance * rate;
             else if(c.currencyCode !== reportingCurrency) unconverted.add(c.currencyCode);
         }
     });
      state.transactions.forEach(tx => {
-        if (new Date(tx.date) < start) {
+        const d = new Date(tx.date);
+        if (d < start) {
             const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
             if (account) {
-                 const rate = getConversionRate(account.currencyCode, start);
+                 const rate = getConversionRate(account.currencyCode, d);
                  if (rate !== null) cf.initialBankBalance += tx.amount * rate;
                  else if(account.currencyCode !== reportingCurrency) unconverted.add(account.currencyCode);
             }
@@ -96,47 +101,39 @@ const CashFlowReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCu
     };
     
     // --- INFLOWS ---
+    // Cash Inflows are from daily cash sales and misc cash incomes.
     state.dailySales.forEach(s => {
-        const d = new Date(s.date);
-        if (s.cash > 0) processFlow(d, s.currencyCode, s.cash, t('reports_cash_flow_sales_cash'), 'cashIn');
-        if (s.card > 0) processFlow(d, s.currencyCode, s.card, t('daily_sales_card'), 'bankIn');
-        if (s.transfer > 0) processFlow(d, s.currencyCode, s.transfer, t('daily_sales_transfer'), 'bankIn');
+        if (s.cash > 0) processFlow(new Date(s.date), s.currencyCode, s.cash, t('reports_cash_flow_sales_cash'), 'cashIn');
     });
     state.miscIncomes.forEach(i => {
         let conceptName = state.incomeTypes.find(it => it.id === i.conceptId)?.name || 'Misc Income';
         if (conceptName === 'Surplus') conceptName = t('special_concept_surplus');
         processFlow(new Date(i.date), i.currencyCode, i.amount, conceptName, 'cashIn');
     });
+    
+    // Bank Inflows are all positive bank transactions (which includes card/transfer sales).
     state.transactions.forEach(tx => {
-        const isSaleTransaction = tx.description.includes('Sales');
-        if(tx.amount > 0 && !isSaleTransaction) {
+        if(tx.amount > 0) {
             const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
-            if(account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, tx.description, 'bankIn');
+            const conceptName = state.incomeTypes.find(it => it.id === tx.conceptId)?.name || tx.description;
+            if(account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, conceptName, 'bankIn');
         }
     });
 
     // --- OUTFLOWS ---
+    // Cash Outflows are all cash expenses.
     state.cashExpenses.forEach(e => {
         let conceptName = state.expenseTypes.find(et => et.id === e.conceptId)?.name || 'Cash Expense';
         if (conceptName === 'Shortage') conceptName = t('special_concept_shortage');
         processFlow(new Date(e.date), e.currencyCode, e.amount, conceptName, 'cashOut');
     });
-    state.invoices.forEach(inv => {
-        inv.payments?.forEach(p => {
-            const conceptName = state.expenseTypes.find(et => et.id === inv.conceptId)?.name || 'Invoice Payment';
-            const name = `${conceptName} - ${inv.supplier} #${inv.invoiceNumber}`;
-            if (p.method === 'cash') {
-                processFlow(new Date(p.paymentDate), inv.currencyCode, p.amount, name, 'cashOut');
-            } else {
-                processFlow(new Date(p.paymentDate), inv.currencyCode, p.amount, name, 'bankOut');
-            }
-        });
-    });
+
+    // Bank Outflows are all negative bank transactions.
     state.transactions.forEach(tx => {
-        const isInvoicePayment = tx.description.includes('Payment for invoice #');
-        if(tx.amount < 0 && !isInvoicePayment) {
+        if(tx.amount < 0) {
             const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
-            if(account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, tx.description, 'bankOut');
+            const conceptName = state.expenseTypes.find(et => et.id === tx.conceptId)?.name || tx.description;
+            if(account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, conceptName, 'bankOut');
         }
     });
 
@@ -152,14 +149,140 @@ const CashFlowReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCu
 
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const reportTitle = t('reports_tab_cash_flow');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    doc.setFontSize(18);
+    doc.text(reportTitle, 14, 22);
+    doc.setFontSize(11);
+    doc.text(currencyInfo, 14, 30);
+    doc.text(`${startDate} - ${endDate}`, 14, 36);
+
+    const head = [['Descripción', 'Monto']];
+    const body = [];
+
+    // Initial Balance
+    body.push([{ content: t('reports_cash_flow_initial'), styles: { fontStyle: 'bold' } }, { content: formatCurrency(initialBalance), styles: { fontStyle: 'bold' } }]);
+    body.push([`  ${t('sidebar_daily_cash')}`, formatCurrency(cashFlow.initialCashBalance)]);
+    body.push([`  ${t('sidebar_banks')}`, formatCurrency(cashFlow.initialBankBalance)]);
+
+    // Inflows
+    body.push([{ content: t('reports_cash_flow_inflows'), styles: { fontStyle: 'bold', fillColor: [22, 163, 74] } }, '']);
+    body.push([`  ${t('sidebar_daily_cash')}`, formatCurrency(cashFlow.totalCashInflows)]);
+    Object.values(cashFlow.cashInflows).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => body.push([`    ${item.name}`, formatCurrency(item.amount)]));
+    body.push([`  ${t('sidebar_banks')}`, formatCurrency(cashFlow.totalBankInflows)]);
+    Object.values(cashFlow.bankInflows).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => body.push([`    ${item.name}`, formatCurrency(item.amount)]));
+    body.push([{ content: t('reports_cash_flow_total_inflows'), styles: { fontStyle: 'bold' } }, { content: formatCurrency(totalInflows), styles: { fontStyle: 'bold' } }]);
+
+    // Outflows
+    body.push([{ content: t('reports_cash_flow_outflows'), styles: { fontStyle: 'bold', fillColor: [220, 38, 38] } }, '']);
+    body.push([`  ${t('sidebar_daily_cash')}`, `(${formatCurrency(cashFlow.totalCashOutflows)})`]);
+    Object.values(cashFlow.cashOutflows).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => body.push([`    ${item.name}`, `(${formatCurrency(item.amount)})`]));
+    body.push([`  ${t('sidebar_banks')}`, `(${formatCurrency(cashFlow.totalBankOutflows)})`]);
+    Object.values(cashFlow.bankOutflows).sort((a, b) => a.name.localeCompare(b.name)).forEach(item => body.push([`    ${item.name}`, `(${formatCurrency(item.amount)})`]));
+    body.push([{ content: t('reports_cash_flow_total_outflows'), styles: { fontStyle: 'bold' } }, { content: `(${formatCurrency(totalOutflows)})`, styles: { fontStyle: 'bold' } }]);
+
+    // Totals
+    body.push([{ content: t('reports_cash_flow_net'), styles: { fontStyle: 'bold' } }, { content: formatCurrency(netCashFlow), styles: { fontStyle: 'bold' } }]);
+    body.push([{ content: t('reports_cash_flow_final'), styles: { fontStyle: 'bold' } }, { content: formatCurrency(finalBalance), styles: { fontStyle: 'bold' } }]);
+
+
+    autoTable(doc, {
+      startY: 40,
+      head: head,
+      body: body,
+      theme: 'grid',
+      headStyles: { fillColor: [55, 65, 81] },
+      columnStyles: { 1: { halign: 'right' } },
+      didParseCell: function (data) {
+        if (data.section === 'body') {
+            // Make main section headers bold
+            const boldHeaders = [t('reports_cash_flow_inflows'), t('reports_cash_flow_outflows')];
+            if (typeof data.cell.raw === 'object' && data.cell.raw.content && boldHeaders.includes(data.cell.raw.content)) {
+                data.cell.styles.fontStyle = 'bold';
+            }
+        }
+      }
+    });
+
+    doc.save(`Cash_Flow_Report_${startDate}_to_${endDate}.pdf`);
+  };
+
+  const handleExportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+    const reportTitle = t('reports_tab_cash_flow');
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    const data = [
+      [reportTitle, null],
+      [currencyInfo, null],
+      [null, null], // Spacer
+
+      // Initial Balance
+      [t('reports_cash_flow_initial'), initialBalance],
+      ['  Saldo Inicial de Caja', cashFlow.initialCashBalance],
+      ['  Saldo Inicial de Bancos', cashFlow.initialBankBalance],
+      [null, null], // Spacer
+
+      // Inflows
+      [t('reports_cash_flow_inflows'), null],
+      ['  Caja', cashFlow.totalCashInflows],
+      ...Object.values(cashFlow.cashInflows).sort((a, b) => a.name.localeCompare(b.name)).map(item => [`    ${item.name}`, item.amount]),
+      ['  Bancos', cashFlow.totalBankInflows],
+      ...Object.values(cashFlow.bankInflows).sort((a, b) => a.name.localeCompare(b.name)).map(item => [`    ${item.name}`, item.amount]),
+      [t('reports_cash_flow_total_inflows'), totalInflows],
+      [null, null], // Spacer
+
+      // Outflows
+      [t('reports_cash_flow_outflows'), null],
+      ['  Caja', cashFlow.totalCashOutflows],
+      ...Object.values(cashFlow.cashOutflows).sort((a, b) => a.name.localeCompare(b.name)).map(item => [`    ${item.name}`, item.amount]),
+      ['  Bancos', cashFlow.totalBankOutflows],
+      ...Object.values(cashFlow.bankOutflows).sort((a, b) => a.name.localeCompare(b.name)).map(item => [`    ${item.name}`, item.amount]),
+      [t('reports_cash_flow_total_outflows'), totalOutflows],
+      [null, null], // Spacer
+
+      // Totals
+      [t('reports_cash_flow_net'), netCashFlow],
+      [t('reports_cash_flow_final'), finalBalance],
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Styling
+    ws['!cols'] = [{ wch: 50 }, { wch: 20 }];
+    const currencyFormat = `${currencySymbol} #,##0.00;(${currencySymbol} #,##0.00)`;
+
+    for(let i = 0; i < data.length; i++) {
+        if (typeof data[i][1] === 'number') {
+            const cellRef = XLSX.utils.encode_cell({r: i, c: 1});
+            if(ws[cellRef]) ws[cellRef].z = currencyFormat;
+        }
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, reportTitle);
+    XLSX.writeFile(wb, `Cash_Flow_Report_${startDate}_to_${endDate}.xlsx`);
+  };
+
   const renderRows = (group: Record<string, { name: string, amount: number }>) => {
-      return Object.values(group).map((item, i) => (
+      return Object.values(group).sort((a, b) => a.name.localeCompare(b.name)).map((item, i) => (
           <tr key={`${item.name}-${i}`}><td className="pl-8 py-1 text-sm">{item.name}</td><td className="text-right font-mono text-sm">{formatCurrency(item.amount)}</td></tr>
       ));
   }
 
   return (
      <div className="space-y-6">
+        <div className="flex justify-end gap-2 print:hidden">
+          <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <FileText size={18} /> {t('reports_export_excel')}
+          </button>
+          <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <FileDown size={18} /> {t('reports_export_pdf')}
+          </button>
+        </div>
+
         {unconvertedCurrencies.length > 0 && (
           <div className="bg-yellow-900/50 border border-yellow-700 text-yellow-300 p-4 rounded-lg flex items-center gap-3 print:hidden">
               <AlertCircle size={24} />

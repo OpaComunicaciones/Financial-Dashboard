@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { formatNumber } from '../../utils/formatting';
+import { FileText, FileDown } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReportProps {
   startDate: string;
@@ -71,7 +75,101 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
 
   }, [state, startDate, endDate, accountId]);
 
+  const handleExportPDF = () => {
+    if (!reportData) return;
+    const doc = new jsPDF();
+    const { account, formatCurrency, initialBalance, reportRows, totalIncome, totalExpense, finalBalance } = reportData;
+
+    const reportTitle = `Estado de Cuenta - ${account.name}`;
+    const dateInfo = `${startDate} - ${endDate}`;
+
+    doc.setFontSize(18);
+    doc.text(reportTitle, 14, 22);
+    doc.setFontSize(11);
+    doc.text(dateInfo, 14, 30);
+
+    const head = [['Fecha', 'Ingresos', 'Egresos', 'Saldo']];
+    
+    const body = reportRows.map(row => [
+      row.date,
+      row.income > 0 ? formatCurrency(row.income) : '-',
+      row.expense > 0 ? formatCurrency(row.expense) : '-',
+      formatCurrency(row.balance)
+    ]);
+
+    autoTable(doc, {
+      startY: 40,
+      head: head,
+      body: [
+        [{ content: 'Saldo Inicial', colSpan: 3, styles: { fontStyle: 'bold' } }, { content: formatCurrency(initialBalance), styles: { fontStyle: 'bold', halign: 'right' } }],
+        ...body
+      ],
+      foot: [[ 
+        { content: 'Totales', styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(totalIncome), styles: { fontStyle: 'bold', halign: 'right' } },
+        { content: formatCurrency(totalExpense), styles: { fontStyle: 'bold', halign: 'right' } },
+        { content: formatCurrency(finalBalance), styles: { fontStyle: 'bold', halign: 'right' } }
+      ]],
+      theme: 'grid',
+      headStyles: { fillColor: [55, 65, 81] },
+      footStyles: { fillColor: [55, 65, 81] },
+      columnStyles: { 
+        1: { halign: 'right' }, 
+        2: { halign: 'right' }, 
+        3: { halign: 'right' } 
+      },
+    });
+
+    doc.save(`Bank_Statement_${account.name}.pdf`);
+  };
+
+  const handleExportXLSX = () => {
+    if (!reportData) return;
+
+    const wb = XLSX.utils.book_new();
+    const reportTitle = `Estado de Cuenta - ${reportData.account.name}`;
+    const dateInfo = `${startDate} - ${endDate}`;
+
+    const headers = ['Fecha', 'Ingresos', 'Egresos', 'Saldo'];
+    
+    const data = reportData.reportRows.map(row => [
+      row.date,
+      row.income,
+      row.expense,
+      row.balance
+    ]);
+
+    const finalData = [
+      [reportTitle],
+      [dateInfo],
+      [null],
+      headers,
+      ['Saldo Inicial', null, null, reportData.initialBalance],
+      ...data,
+      ['Totales', reportData.totalIncome, reportData.totalExpense, reportData.finalBalance]
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(finalData);
+
+    // Styling
+    ws['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+    const currencyFormat = `${reportData.account.currencyCode} #,##0.00`;
+
+    for(let i = 4; i < finalData.length; i++) {
+      for (let j = 1; j < 4; j++) {
+        if (typeof finalData[i][j] === 'number') {
+          const cellRef = XLSX.utils.encode_cell({r: i, c: j});
+          if(ws[cellRef]) ws[cellRef].z = currencyFormat;
+        }
+      }
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Estado de Cuenta');
+    XLSX.writeFile(wb, `Bank_Statement_${reportData.account.name}.xlsx`);
+  };
+
   if (!reportData) {
+
     return (
       <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 text-center">
         <p className="text-gray-400">Por favor, selecciona una cuenta para ver el estado de cuenta.</p>
@@ -83,10 +181,20 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
 
   return (
     <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <div className="mb-6">
-        <h3 className="text-2xl font-bold text-white">Informe de Bancos</h3>
-        <p className="text-lg text-indigo-400 font-semibold">{account.name}</p>
-        <p className="text-sm text-gray-400">{`${startDate} - ${endDate}`}</p>
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-2xl font-bold text-white">Informe de Bancos</h3>
+          <p className="text-lg text-indigo-400 font-semibold">{account.name}</p>
+          <p className="text-sm text-gray-400">{`${startDate} - ${endDate}`}</p>
+        </div>
+        <div className="flex justify-end gap-2 print:hidden">
+          <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <FileText size={18} /> Exportar a Excel
+          </button>
+          <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <FileDown size={18} /> Exportar a PDF
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
