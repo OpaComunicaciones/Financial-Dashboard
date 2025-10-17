@@ -59,13 +59,19 @@ const DailyCash: React.FC = () => {
       incomeB[t('daily_cash_direct_sales_concept')] = salesTotal;
     }
     currentMiscIncomes.forEach(income => {
-      const conceptName = state.incomeTypes.find(i => i.id === income.conceptId)?.name || income.conceptId;
+      let conceptName = state.incomeTypes.find(i => i.id === income.conceptId)?.name || income.conceptId;
+      if (conceptName === 'Surplus') {
+        conceptName = 'Sobrante';
+      }
       incomeB[conceptName] = (incomeB[conceptName] || 0) + income.amount;
     });
 
     const expenseB: { [key: string]: number } = {};
     currentDailyExpenses.forEach(expense => {
-      const conceptName = state.expenseTypes.find(e => e.id === expense.conceptId)?.name || expense.conceptId;
+      let conceptName = state.expenseTypes.find(e => e.id === expense.conceptId)?.name || expense.conceptId;
+      if (conceptName === 'Shortage') {
+        conceptName = 'Faltante';
+      }
       expenseB[conceptName] = (expenseB[conceptName] || 0) + expense.amount;
     });
 
@@ -165,11 +171,19 @@ const DailyCash: React.FC = () => {
   };
 
   const getExpenseConceptName = (conceptId: string) => {
-    return state.expenseTypes.find(e => e.id === conceptId)?.name || conceptId;
+    const name = state.expenseTypes.find(e => e.id === conceptId)?.name || conceptId;
+    if (name === 'Shortage') {
+        return 'Faltante';
+    }
+    return name;
   };
   
   const getIncomeConceptName = (conceptId: string) => {
-    return state.incomeTypes.find(i => i.id === conceptId)?.name || conceptId;
+    const name = state.incomeTypes.find(i => i.id === conceptId)?.name || conceptId;
+    if (name === 'Surplus') {
+        return 'Sobrante';
+    }
+    return name;
   };
 
   return (

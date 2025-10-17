@@ -1,5 +1,14 @@
 # Changelog
 
+## [2025-10-14 16:00:00]
+
+- **Feature:** Mejorado el "Informe de Flujo de Caja" para discriminar entre movimientos de caja y de bancos.
+  - Las secciones de Entradas y Salidas ahora se subdividen en "Caja" y "Bancos".
+  - Se corrigió la lógica para incluir correctamente todas las ventas y pagos de facturas.
+- **Feature:** Mejorada la usabilidad de la página de "Planificación".
+  - Las celdas de presupuesto ahora son más fáciles de leer y editar, mostrando el valor formateado por defecto y convirtiéndose en un campo de input al hacer clic.
+- **Fix:** Eliminado el símbolo de moneda hardcodeado del título de la columna "Varianza" en el informe de "Real vs. Presupuesto".
+
 ## [2025-10-14 14:00:00]
 
 - **Feature:** Añadida la opción de "Planificable" para los tipos de ingresos y egresos.

@@ -8,8 +8,9 @@ import CashFlowReport from '../components/reports/CashFlowReport';
 import SalesAnalysisReport from '../components/reports/SalesAnalysisReport';
 import ExpenseReport from '../components/reports/ExpenseReport';
 import BudgetVsActualReport from '../components/reports/BudgetVsActualReport';
+import BankStatementReport from '../components/reports/BankStatementReport';
 
-type ReportTab = 'pl' | 'cashflow' | 'sales' | 'expenses' | 'budget';
+type ReportTab = 'pl' | 'cashflow' | 'sales' | 'expenses' | 'budget' | 'bankStatement';
 
 const Reports: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const Reports: React.FC = () => {
   const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(todayStr);
   const [reportingCurrency, setReportingCurrency] = useState(state.currencies[0]?.code || 'USD');
+  const [selectedAccountId, setSelectedAccountId] = useState<string>(state.bankAccounts[0]?.id || '');
   
   const tabs: { id: ReportTab, label: string }[] = [
     { id: 'pl', label: t('reports_tab_pl') },
@@ -30,6 +32,7 @@ const Reports: React.FC = () => {
     { id: 'sales', label: t('reports_tab_sales') },
     { id: 'expenses', label: 'Control de Egresos' },
     { id: 'budget', label: t('reports_tab_budget') },
+    { id: 'bankStatement', label: 'Informe de Bancos' },
   ];
 
   const renderActiveReport = () => {
@@ -40,6 +43,7 @@ const Reports: React.FC = () => {
       case 'sales': return <SalesAnalysisReport {...props} />;
       case 'expenses': return <ExpenseReport {...props} />;
       case 'budget': return <BudgetVsActualReport {...props} />;
+      case 'bankStatement': return <BankStatementReport startDate={startDate} endDate={endDate} accountId={selectedAccountId} />;
       default: return null;
     }
   }
@@ -61,12 +65,28 @@ const Reports: React.FC = () => {
             <label htmlFor="end-date" className="block text-sm font-medium text-gray-400 mb-1">{t('reports_end_date')}</label>
             <input type="date" id="end-date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
-           <div>
-            <label htmlFor="reporting-currency" className="block text-sm font-medium text-gray-400 mb-1">{t('reports_reporting_currency')}</label>
-            <select id="reporting-currency" value={reportingCurrency} onChange={e => setReportingCurrency(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                {state.currencies.map(c => <option key={c.code} value={c.code}>{c.name} ({c.code})</option>)}
-            </select>
-          </div>
+          {activeTab !== 'bankStatement' && (
+            <div>
+              <label htmlFor="reporting-currency" className="block text-sm font-medium text-gray-400 mb-1">{t('reports_reporting_currency')}</label>
+              <select id="reporting-currency" value={reportingCurrency} onChange={e => setReportingCurrency(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  {state.currencies.map(c => <option key={c.code} value={c.code}>{c.name} ({c.code})</option>)}
+              </select>
+            </div>
+          )}
+          {activeTab === 'bankStatement' && (
+            <div>
+                              <label htmlFor="account-select" className="block text-sm font-medium text-gray-400 mb-1">
+                                Seleccionar Cuenta
+                              </label>              <select
+                id="account-select"
+                value={selectedAccountId}
+                onChange={e => setSelectedAccountId(e.target.value)}
+                className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                {state.bankAccounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name}</option>)}
+              </select>
+            </div>
+          )}
         </div>
       </div>
       

@@ -253,7 +253,7 @@ export default {
   reports_expenses_details: 'Detalles de Gastos',
   reports_budget_budgeted: 'Presupuestado',
   reports_budget_actual: 'Real',
-  reports_budget_variance_val: 'Varianza (€)',
+  reports_budget_variance_val: 'Varianza',
   reports_budget_variance_pct: 'Varianza (%)',
 
   // Planning

@@ -6,6 +6,55 @@ import { useAppContext } from '../context/AppContext';
 import { ConfigItem } from '../types';
 import { Copy } from 'lucide-react';
 
+import { formatNumber } from '../utils/formatting';
+
+const EditableBudgetCell: React.FC<{
+  value: number;
+  onSave: (newValue: string) => void;
+}> = ({ value, onSave }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentValue, setCurrentValue] = useState(value.toString());
+
+  const handleSave = () => {
+    onSave(currentValue);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    }
+    if (e.key === 'Escape') {
+      setCurrentValue(value.toString());
+      setIsEditing(false);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <input 
+        type="number"
+        value={currentValue}
+        onChange={e => setCurrentValue(e.target.value)}
+        onBlur={handleSave}
+        onKeyDown={handleKeyDown}
+        className="w-24 bg-gray-900 rounded p-1 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        placeholder="0.00"
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <div 
+      className="w-24 h-8 flex items-center justify-center rounded p-1 text-center cursor-pointer hover:bg-gray-700"
+      onClick={() => setIsEditing(true)}
+    >
+      {formatNumber(value, { forceDecimals: true })}
+    </div>
+  );
+};
+
 type BudgetTableProps = {
   title: string;
   categories: ConfigItem[];
@@ -62,12 +111,9 @@ const BudgetTable: React.FC<BudgetTableProps> = ({ title, categories, categoryTy
                   const budget = state.budgetRecords.find(b => b.year === selectedYear && b.month === month && b.categoryId === category.id);
                   return (
                     <td key={month} className="px-1 py-1 border border-gray-600">
-                      <input 
-                        type="number"
-                        defaultValue={budget?.amount || ''}
-                        onBlur={e => handleBudgetChange(month, category.id, e.target.value)}
-                        className="w-24 bg-gray-600 rounded p-1 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        placeholder="0.00"
+                      <EditableBudgetCell 
+                        value={budget?.amount || 0}
+                        onSave={(newValue) => handleBudgetChange(month, category.id, newValue)}
                       />
                     </td>
                   );
