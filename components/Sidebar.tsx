@@ -61,6 +61,10 @@ const Sidebar: React.FC = () => {
         <div className="text-center text-gray-500 text-xs">
           <p>&copy; {new Date().getFullYear()} RestoFin Inc.</p>
           <p>{t('sidebar_footer_subtitle')}</p>
+          <div className="mt-4 text-center">
+            <p className="text-xs text-gray-400">Developed by Marketing Gastronómico</p>
+            <img src="/images/MG_logo_2024_FO.png" alt="Marketing Gastronómico Logo" className="w-1/2 mx-auto mt-2" />
+          </div>
         </div>
       </div>
     </aside>

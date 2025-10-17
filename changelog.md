@@ -1,5 +1,10 @@
 # Changelog
 
+## [2025-10-14 17:00:00]
+
+- **Feature:** Mejorada la exportación del informe P&G a un archivo `.xlsx` con formato.
+- **UX:** Añadido el logo y texto "Developed by" en la barra lateral.
+
 ## [2025-10-14 16:00:00]
 
 - **Feature:** Mejorado el "Informe de Flujo de Caja" para discriminar entre movimientos de caja y de bancos.

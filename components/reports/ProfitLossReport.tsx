@@ -11,6 +11,8 @@ interface ReportProps {
   reportingCurrency: string;
 }
 
+import * as XLSX from 'xlsx';
+
 const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCurrency }) => {
   const { t } = useTranslation();
   const { state } = useAppContext();
@@ -132,26 +134,58 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
   
   const currencySymbol = state.currencies.find(c=>c.code === reportingCurrency)?.symbol || '$';
 
-  const handleExportCSV = () => {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += `${t('reports_pl_statement')} (${startDate} - ${endDate})\n`;
-    csvContent += `Reporting Currency: ${reportingCurrency}\n\n`;
-    csvContent += `Category,Concept,Amount\n`;
-    csvContent += "INCOME\n";
-    Object.values(consolidatedReport.incomes).forEach(item => csvContent += `,${item.name.replace(/,/g, '')},${formatNumber(item.amount)}\n`);
-    csvContent += `TOTAL INCOME,,${formatNumber(consolidatedReport.totalIncome)}\n\n`;
-    csvContent += "EXPENSES\n";
-    Object.values(consolidatedReport.expenses).forEach(item => csvContent += `,${item.name.replace(/,/g, '')},${formatNumber(item.amount)}\n`);
-    csvContent += `TOTAL EXPENSES,,${formatNumber(consolidatedReport.totalExpenses)}\n\n`;
-    csvContent += `NET PROFIT/LOSS,,${formatNumber(consolidatedReport.netProfit)}\n\n`;
-    if (unconvertedCurrencies.length > 0) csvContent += `Warning: Data for the following currencies was not included due to missing exchange rates: ${unconvertedCurrencies.join(', ')}\n`;
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Consolidated_P&L_${startDate}_to_${endDate}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleExportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+    const reportTitle = `${t('reports_pl_statement')} (${startDate} - ${endDate})`;
+    const currencyInfo = `(${t('reports_consolidated_in')} ${reportingCurrency})`;
+
+    // --- DATA PREPARATION ---
+    const data = [
+      [reportTitle, null, null],
+      [currencyInfo, null, null],
+      [null, null, null], // Spacer
+      [t('reports_income_header'), null, '%'],
+    ];
+
+    Object.values(consolidatedReport.incomes).forEach(item => {
+      const percentage = consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome) : 0;
+      data.push([item.name, item.amount, percentage]);
+    });
+    data.push([t('reports_total_income'), consolidatedReport.totalIncome, 1]);
+    data.push([null, null, null]); // Spacer
+
+    data.push([t('reports_expenses_header'), null, '%']);
+    Object.values(consolidatedReport.expenses).forEach(item => {
+      const percentage = consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome) : 0;
+      data.push([item.name, item.amount, percentage]);
+    });
+    data.push([t('reports_total_expenses'), consolidatedReport.totalExpenses, consolidatedReport.totalIncome > 0 ? (consolidatedReport.totalExpenses / consolidatedReport.totalIncome) : 0]);
+    data.push([null, null, null]); // Spacer
+
+    data.push([t('reports_net_profit'), consolidatedReport.netProfit, consolidatedReport.totalIncome > 0 ? (consolidatedReport.netProfit / consolidatedReport.totalIncome) : 0]);
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // --- STYLING ---
+    ws['!cols'] = [{ wch: 40 }, { wch: 15 }, { wch: 10 }];
+    const currencyFormat = `${currencySymbol} #,##0.00;(${currencySymbol} #,##0.00)`;
+    const percentFormat = '0.00%';
+
+    for (let i = 0; i < data.length; i++) {
+        // Column B (Amount)
+        if (typeof data[i][1] === 'number') {
+            const cellRef = XLSX.utils.encode_cell({r: i, c: 1});
+            if(ws[cellRef]) ws[cellRef].z = currencyFormat;
+        }
+        // Column C (Percentage)
+        if (typeof data[i][2] === 'number') {
+            const cellRef = XLSX.utils.encode_cell({r: i, c: 2});
+            if(ws[cellRef]) ws[cellRef].z = percentFormat;
+        }
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, t('reports_tab_pl'));
+    XLSX.writeFile(wb, `P&L_Report_${startDate}_to_${endDate}.xlsx`);
   };
 
   const handleExportPDF = () => window.print();
@@ -175,7 +209,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
       )}
       
       <div className="flex justify-end gap-2 print:hidden">
-          <button onClick={handleExportCSV} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+          <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
             <FileText size={18} /> {t('reports_export_excel')}
           </button>
           <button onClick={handleExportPDF} className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 flex items-center gap-2">
