@@ -210,6 +210,8 @@ export default {
   daily_sales_no_history: 'No sales logged in the selected date range.',
   daily_sales_select_bank: 'Select Bank',
   daily_sales_add_transfer_button: 'Add Transfer',
+  daily_sales_summary_title: 'Sales Summary for Period',
+  daily_sales_no_summary: 'No data to display a summary.',
 
   // Reports
   reports_title: 'Reports',

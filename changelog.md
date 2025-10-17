@@ -1,5 +1,24 @@
 # Changelog
 
+## [2025-10-14 12:00:00]
+
+- **Feature:** Mejoras significativas en los informes de P&G y Egresos.
+  - **Informe de P&G:**
+    - El cálculo de gastos ahora se basa en el **principio de devengo**, incluyendo facturas por pagar para mayor precisión.
+    - Se corrigió la duplicación de "Ventas Directas" en efectivo.
+    - Añadida una columna de análisis vertical (%) para todas las partidas.
+  - **Informe de Egresos:**
+    - Añadida la opción de visualización **Agrupado/Detallado**.
+    - Implementado filtro para gastos **No Deducibles**.
+    - Agregada una columna de análisis vertical (`% vs Ingresos`).
+    - El cálculo de gastos ahora también se basa en el principio de devengo.
+- **Feature:** Añadida una sección de totales por forma de pago en el historial de "Ventas Diarias".
+- **i18n:** Actualizadas las traducciones para las nuevas funcionalidades.
+
+## [2025-10-14 10:00:00]
+
+- **i18n:** Se actualizó la traducción de los términos 'surplus' (Sobrante) y 'shortage' (Faltante) en la sección de Caja Diaria y los informes correspondientes.
+
 ## [2025-10-13 16:00:00]
 
 - **UX:** Las listas desplegables de conceptos de ingresos y egresos ahora se ordenan alfabéticamente en toda la aplicación para mejorar la usabilidad.

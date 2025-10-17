@@ -210,6 +210,8 @@ export default {
   daily_sales_no_history: 'No hay ventas registradas en el rango de fechas seleccionado.',
   daily_sales_select_bank: 'Seleccionar Banco',
   daily_sales_add_transfer_button: 'Añadir Transferencia',
+  daily_sales_summary_title: 'Resumen de Ventas por Período',
+  daily_sales_no_summary: 'No hay datos para mostrar un resumen.',
 
   // Reports
   reports_title: 'Informes',

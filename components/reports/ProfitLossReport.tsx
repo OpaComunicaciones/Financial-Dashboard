@@ -66,32 +66,61 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
     // 2. Misc Incomes from cash
     state.miscIncomes.forEach(income => {
         const concept = state.incomeTypes.find(c => c.id === income.conceptId);
-        if (concept && concept.isIncome) {
-            processEntry(income.date, income.currencyCode, income.amount, income.conceptId, concept.name, 'income');
+        // Exclude direct sales from here to avoid double counting, while including other P&L incomes
+        if (concept && concept.isIncome && concept.name !== 'Ventas Directas' && concept.name !== 'Direct Sales') {
+            let conceptName = concept.name;
+            if (conceptName === 'Surplus') {
+                conceptName = t('special_concept_surplus');
+            }
+            processEntry(income.date, income.currencyCode, income.amount, income.conceptId, conceptName, 'income');
         }
     });
 
-    // 3. Cash Expenses
-    state.cashExpenses.forEach(expense => {
-        const concept = state.expenseTypes.find(c => c.id === expense.conceptId);
+    // 3. Invoices (Accounts Payable) - Accrual Basis
+    state.invoices.forEach(invoice => {
+        const concept = state.expenseTypes.find(c => c.id === invoice.conceptId);
         if (concept && concept.isExpense) {
-            processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, concept.name, 'expense');
+            processEntry(invoice.date, invoice.currencyCode, invoice.amount, invoice.conceptId, concept.name, 'expense');
         }
     });
 
-    // 4. Bank Transactions
+    // 4. Cash Expenses (Non-Invoice)
+    state.cashExpenses.forEach(expense => {
+        // Only include cash expenses that are NOT linked to an invoice to avoid double-counting
+        if (!expense.invoiceNumber) {
+            const concept = state.expenseTypes.find(c => c.id === expense.conceptId);
+            if (concept && concept.isExpense) {
+                let conceptName = concept.name;
+                if (conceptName === 'Shortage') {
+                    conceptName = t('special_concept_shortage');
+                }
+                processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, conceptName, 'expense');
+            }
+        }
+    });
+
+    // 5. Bank Transactions (Expenses, Non-Invoice)
     state.transactions.forEach(tx => {
         if (tx.type === 'income' && tx.conceptId) {
             const concept = state.incomeTypes.find(c => c.id === tx.conceptId);
             const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
-            if (concept && concept.isIncome && bankAccount) {
-                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, concept.name, 'income');
+            // Exclude direct sales from here to avoid double counting
+            if (concept && concept.isIncome && bankAccount && concept.name !== 'Ventas Directas' && concept.name !== 'Direct Sales') {
+                let conceptName = concept.name;
+                if (conceptName === 'Surplus') {
+                    conceptName = t('special_concept_surplus');
+                }
+                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, conceptName, 'income');
             }
-        } else if (tx.type === 'expense' && tx.conceptId) {
+        } else if (tx.type === 'expense' && tx.conceptId && !tx.description.includes('Payment for invoice #')) {
             const concept = state.expenseTypes.find(c => c.id === tx.conceptId);
             const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
             if (concept && concept.isExpense && bankAccount) {
-                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, concept.name, 'expense');
+                let conceptName = concept.name;
+                if (conceptName === 'Shortage') {
+                    conceptName = t('special_concept_shortage');
+                }
+                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, conceptName, 'expense');
             }
         }
     });
@@ -165,23 +194,50 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
             </h3>
             <table className="w-full text-lg print:text-sm">
               <tbody>
-                <tr className="border-b-2 border-gray-600 print:border-black"><td className="font-bold py-2 text-green-400 print:text-green-600">{t('reports_income_header')}</td><td></td></tr>
+                {/* Income Section */}
+                <tr className="border-b-2 border-gray-600 print:border-black">
+                  <td className="font-bold py-2 text-green-400 print:text-green-600">{t('reports_income_header')}</td>
+                  <td className="text-right font-bold">Monto</td>
+                  <td className="text-right font-bold">%</td>
+                </tr>
                 {Object.values(consolidatedReport.incomes).map((item, index) => (
                   <tr key={`inc-${index}`} className="border-b border-gray-700 print:border-gray-300">
                     <td className="pl-4 py-2">{item.name}</td>
                     <td className="text-right font-mono">{formatCurrency(item.amount)}</td>
+                    <td className="text-right font-mono text-sm">{(consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%</td>
                   </tr>
                 ))}
-                <tr className="bg-gray-700/50 print:bg-gray-200"><td className="font-bold py-2">{t('reports_total_income')}</td><td className="text-right font-bold font-mono">{formatCurrency(consolidatedReport.totalIncome)}</td></tr>
-                <tr className="border-b-2 border-gray-600 print:border-black mt-4"><td className="font-bold py-2 text-red-400 print:text-red-600">{t('reports_expenses_header')}</td><td></td></tr>
+                <tr className="bg-gray-700/50 print:bg-gray-200">
+                  <td className="font-bold py-2">{t('reports_total_income')}</td>
+                  <td className="text-right font-bold font-mono">{formatCurrency(consolidatedReport.totalIncome)}</td>
+                  <td className="text-right font-bold font-mono text-sm">100.00%</td>
+                </tr>
+
+                {/* Expenses Section */}
+                <tr className="border-b-2 border-gray-600 print:border-black mt-4">
+                  <td className="font-bold py-2 text-red-400 print:text-red-600">{t('reports_expenses_header')}</td>
+                  <td></td>
+                  <td className="text-right font-bold">% vs Ing.</td>
+                </tr>
                 {Object.values(consolidatedReport.expenses).map((item, index) => (
                   <tr key={`exp-${index}`} className="border-b border-gray-700 print:border-gray-300">
                     <td className="pl-4 py-2">{item.name}</td>
                     <td className="text-right font-mono">({formatCurrency(item.amount)})</td>
+                    <td className="text-right font-mono text-sm">({(consolidatedReport.totalIncome > 0 ? (item.amount / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%)</td>
                   </tr>
                 ))}
-                <tr className="bg-gray-700/50 print:bg-gray-200"><td className="font-bold py-2">{t('reports_total_expenses')}</td><td className="text-right font-bold font-mono">({formatCurrency(consolidatedReport.totalExpenses)})</td></tr>
-                <tr className={`text-xl font-extrabold ${consolidatedReport.netProfit >= 0 ? 'bg-green-900/50' : 'bg-red-900/50'} print:bg-gray-300`}><td className="py-3">{t('reports_net_profit')}</td><td className="text-right font-mono">{formatCurrency(consolidatedReport.netProfit)}</td></tr>
+                <tr className="bg-gray-700/50 print:bg-gray-200">
+                  <td className="font-bold py-2">{t('reports_total_expenses')}</td>
+                  <td className="text-right font-bold font-mono">({formatCurrency(consolidatedReport.totalExpenses)})</td>
+                  <td className="text-right font-bold font-mono text-sm">({(consolidatedReport.totalIncome > 0 ? (consolidatedReport.totalExpenses / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%)</td>
+                </tr>
+
+                {/* Net Profit Section */}
+                <tr className={`text-xl font-extrabold ${consolidatedReport.netProfit >= 0 ? 'bg-green-900/50' : 'bg-red-900/50'} print:bg-gray-300`}>
+                  <td className="py-3">{t('reports_net_profit')}</td>
+                  <td className="text-right font-mono">{formatCurrency(consolidatedReport.netProfit)}</td>
+                  <td className="text-right font-mono text-base">{(consolidatedReport.totalIncome > 0 ? (consolidatedReport.netProfit / consolidatedReport.totalIncome * 100) : 0).toFixed(2)}%</td>
+                </tr>
               </tbody>
             </table>
           </div>

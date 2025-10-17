@@ -105,6 +105,22 @@ const DailySales: React.FC = () => {
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [state.dailySales, startDate, endDate]);
 
+    const salesTotalsByCurrency = useMemo(() => {
+        const totals: { [key: string]: { cash: number; card: number; transfer: number; total: number } } = {};
+
+        filteredSales.forEach(sale => {
+            if (!totals[sale.currencyCode]) {
+                totals[sale.currencyCode] = { cash: 0, card: 0, transfer: 0, total: 0 };
+            }
+            totals[sale.currencyCode].cash += sale.cash;
+            totals[sale.currencyCode].card += sale.card;
+            totals[sale.currencyCode].transfer += sale.transfer;
+            totals[sale.currencyCode].total += sale.cash + sale.card + sale.transfer;
+        });
+
+        return totals;
+    }, [filteredSales]);
+
     const getCurrencySymbol = (code: string) => {
         return state.currencies.find(c => c.code === code)?.symbol || '$';
     }
@@ -248,6 +264,30 @@ const DailySales: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                <div className="mt-6 p-4 bg-gray-900/50 rounded-lg">
+                    <h4 className="text-lg font-semibold text-white mb-3">{t('daily_sales_summary_title')}</h4>
+                    {Object.keys(salesTotalsByCurrency).length > 0 ? (
+                        <div className="space-y-4">
+                            {Object.entries(salesTotalsByCurrency).map(([currencyCode, totals]) => {
+                                const symbol = getCurrencySymbol(currencyCode);
+                                return (
+                                    <div key={currencyCode} className="p-3 bg-gray-800 rounded-md">
+                                        <p className="font-bold text-indigo-400 mb-2">{t('daily_sales_currency')}: {currencyCode}</p>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                                            <p>{t('daily_sales_cash')}: <span className="font-mono">{formatNumber(totals.cash, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p>{t('daily_sales_card')}: <span className="font-mono">{formatNumber(totals.card, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p>{t('daily_sales_transfer')}: <span className="font-mono">{formatNumber(totals.transfer, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="font-bold">{t('daily_sales_total')}: <span className="font-mono">{formatNumber(totals.total, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">{t('daily_sales_no_summary')}</p>
+                    )}
                 </div>
             </div>
         </div>
