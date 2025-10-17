@@ -74,6 +74,8 @@ export default {
   configuration_income_is_for_pl: '¿Es Ingreso para PyG?',
   configuration_income_pl_badge: 'Ingreso PyG',
   configuration_income_non_pl_badge: 'No Ingreso PyG',
+  configuration_is_plannable: '¿Es Planificable?',
+  configuration_is_plannable_badge: 'Planificable',
   
   // Daily Cash
   daily_cash_title: 'Cierre de Caja Diario',

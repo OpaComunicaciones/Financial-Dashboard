@@ -74,6 +74,8 @@ export default {
   configuration_income_is_for_pl: 'Is P&L Income?',
   configuration_income_pl_badge: 'P&L Income',
   configuration_income_non_pl_badge: 'Non-P&L Income',
+  configuration_is_plannable: 'Is Plannable?',
+  configuration_is_plannable_badge: 'Plannable',
 
   // Daily Cash
   daily_cash_title: 'Daily Cash Reconciliation',

@@ -5,10 +5,12 @@ export type ConfigItem = {
 
 export type IncomeType = ConfigItem & {
   isIncome: boolean; // True if it's an income for P&L, false otherwise
+  isPlannable?: boolean;
 };
 
 export type ExpenseType = ConfigItem & {
   isExpense: boolean; // True if it's an expense for P&L, false otherwise
+  isPlannable?: boolean;
 };
 
 export type Currency = {

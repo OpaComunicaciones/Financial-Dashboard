@@ -10,19 +10,19 @@ type ConfigCategory = 'paymentMethods';
 const IncomeTypeManagement: React.FC = () => {
   const { t } = useTranslation();
   const { state, addIncomeType, updateIncomeType, deleteConfigItem } = useAppContext();
-  const [newItem, setNewItem] = useState({ name: '', isIncome: true });
+  const [newItem, setNewItem] = useState({ name: '', isIncome: true, isPlannable: true });
   const [editingItem, setEditingItem] = useState<IncomeType | null>(null);
 
   const handleAdd = () => {
     if (newItem.name.trim()) {
-      addIncomeType(newItem.name.trim(), newItem.isIncome);
-      setNewItem({ name: '', isIncome: true });
+      addIncomeType(newItem.name.trim(), newItem.isIncome, newItem.isPlannable);
+      setNewItem({ name: '', isIncome: true, isPlannable: true });
     }
   };
 
   const handleUpdate = () => {
     if (editingItem && editingItem.name.trim()) {
-      updateIncomeType(editingItem.id, editingItem.name.trim(), editingItem.isIncome);
+      updateIncomeType(editingItem.id, editingItem.name.trim(), editingItem.isIncome, editingItem.isPlannable || false);
       setEditingItem(null);
     }
   };
@@ -48,6 +48,10 @@ const IncomeTypeManagement: React.FC = () => {
             <label className="text-sm text-gray-300" htmlFor="isIncome">{t('configuration_expense_is_for_pl')}</label>
             <input type="checkbox" id="isIncome" checked={newItem.isIncome} onChange={(e) => setNewItem({ ...newItem, isIncome: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
         </div>
+        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
+            <label className="text-sm text-gray-300" htmlFor="isPlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
+            <input type="checkbox" id="isPlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        </div>
         <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
@@ -64,7 +68,14 @@ const IncomeTypeManagement: React.FC = () => {
                   className="flex-grow bg-gray-600 border border-gray-500 rounded-md py-1 px-2"
                   autoFocus
                 />
-                 <input type="checkbox" checked={editingItem.isIncome} onChange={(e) => setEditingItem({ ...editingItem, isIncome: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 <div className="flex items-center gap-1">
+                    <label htmlFor="isIncomeEdit" className="text-xs">{t('configuration_income_pl_badge')}</label>
+                    <input id="isIncomeEdit" type="checkbox" checked={editingItem.isIncome} onChange={(e) => setEditingItem({ ...editingItem, isIncome: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 </div>
+                 <div className="flex items-center gap-1">
+                    <label htmlFor="isPlannableEdit" className="text-xs">{t('configuration_is_plannable', 'Plannable')}</label>
+                    <input id="isPlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 </div>
                 <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
                 <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -75,6 +86,11 @@ const IncomeTypeManagement: React.FC = () => {
                   <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isIncome ? 'bg-green-500/30 text-green-300' : 'bg-gray-500/30 text-gray-300'}`}>
                     {item.isIncome ? t('configuration_income_pl_badge') : t('configuration_income_non_pl_badge')}
                   </span>
+                  {item.isPlannable && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-300`}>
+                      {t('configuration_is_plannable_badge', 'Plannable')}
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
@@ -174,19 +190,19 @@ const ConfigSection: React.FC<{
 const ExpenseTypeManagement: React.FC = () => {
   const { t } = useTranslation();
   const { state, addExpenseType, updateExpenseType, deleteConfigItem } = useAppContext();
-  const [newItem, setNewItem] = useState({ name: '', isExpense: true });
+  const [newItem, setNewItem] = useState({ name: '', isExpense: true, isPlannable: true });
   const [editingItem, setEditingItem] = useState<ExpenseType | null>(null);
 
   const handleAdd = () => {
     if (newItem.name.trim()) {
-      addExpenseType(newItem.name.trim(), newItem.isExpense);
-      setNewItem({ name: '', isExpense: true });
+      addExpenseType(newItem.name.trim(), newItem.isExpense, newItem.isPlannable);
+      setNewItem({ name: '', isExpense: true, isPlannable: true });
     }
   };
 
   const handleUpdate = () => {
     if (editingItem && editingItem.name.trim()) {
-      updateExpenseType(editingItem.id, editingItem.name.trim(), editingItem.isExpense);
+      updateExpenseType(editingItem.id, editingItem.name.trim(), editingItem.isExpense, editingItem.isPlannable || false);
       setEditingItem(null);
     }
   };
@@ -212,6 +228,10 @@ const ExpenseTypeManagement: React.FC = () => {
             <label className="text-sm text-gray-300" htmlFor="isExpense">{t('configuration_expense_is_for_pl')}</label>
             <input type="checkbox" id="isExpense" checked={newItem.isExpense} onChange={(e) => setNewItem({ ...newItem, isExpense: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
         </div>
+        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
+            <label className="text-sm text-gray-300" htmlFor="isExpensePlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
+            <input type="checkbox" id="isExpensePlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        </div>
         <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
@@ -228,7 +248,14 @@ const ExpenseTypeManagement: React.FC = () => {
                   className="flex-grow bg-gray-600 border border-gray-500 rounded-md py-1 px-2"
                   autoFocus
                 />
-                 <input type="checkbox" checked={editingItem.isExpense} onChange={(e) => setEditingItem({ ...editingItem, isExpense: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 <div className="flex items-center gap-1">
+                    <label htmlFor="isExpenseEdit" className="text-xs">{t('configuration_expense_pl_badge')}</label>
+                    <input id="isExpenseEdit" type="checkbox" checked={editingItem.isExpense} onChange={(e) => setEditingItem({ ...editingItem, isExpense: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 </div>
+                 <div className="flex items-center gap-1">
+                    <label htmlFor="isExpensePlannableEdit" className="text-xs">{t('configuration_is_plannable', 'Plannable')}</label>
+                    <input id="isExpensePlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 </div>
                 <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
                 <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -239,6 +266,11 @@ const ExpenseTypeManagement: React.FC = () => {
                   <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isExpense ? 'bg-red-500/30 text-red-300' : 'bg-gray-500/30 text-gray-300'}`}>
                     {item.isExpense ? t('configuration_expense_pl_badge') : t('configuration_expense_non_pl_badge')}
                   </span>
+                  {item.isPlannable && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-300`}>
+                      {t('configuration_is_plannable_badge', 'Plannable')}
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>

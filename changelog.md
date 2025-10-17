@@ -1,5 +1,12 @@
 # Changelog
 
+## [2025-10-14 14:00:00]
+
+- **Feature:** Añadida la opción de "Planificable" para los tipos de ingresos y egresos.
+  - En "Configuración", ahora se puede marcar qué conceptos son planificables.
+  - La página de "Planificación" solo mostrará las filas de los conceptos marcados como planificables.
+- **UX:** La columna de "Categoría" en la página de Planificación ahora es fija (sticky) para mejorar la usabilidad al hacer scroll horizontal.
+
 ## [2025-10-14 12:00:00]
 
 - **Feature:** Mejoras significativas en los informes de P&G y Egresos.

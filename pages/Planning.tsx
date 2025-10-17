@@ -47,7 +47,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({ title, categories, categoryTy
         <table className="w-full text-sm text-left text-gray-300 border-collapse">
           <thead className="text-xs text-gray-400 uppercase bg-gray-700 sticky top-0">
             <tr>
-              <th className="px-4 py-3 border border-gray-600">{t('planning_category')}</th>
+              <th className="sticky left-0 bg-gray-700 px-4 py-3 border border-gray-600 z-10">{t('planning_category')}</th>
               {monthNames.map(month => (
                 <th key={month} className="px-4 py-3 border border-gray-600 text-center">{month}</th>
               ))}
@@ -57,7 +57,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({ title, categories, categoryTy
           <tbody className="divide-y divide-gray-700">
             {categories.map(category => (
               <tr key={category.id} className="hover:bg-gray-700/50">
-                <td className="px-4 py-2 font-medium border border-gray-600">{category.name}</td>
+                <td className="sticky left-0 bg-gray-800 hover:bg-gray-700/50 px-4 py-2 font-medium border border-gray-600">{category.name}</td>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(month => {
                   const budget = state.budgetRecords.find(b => b.year === selectedYear && b.month === month && b.categoryId === category.id);
                   return (
@@ -117,13 +117,13 @@ const Planning: React.FC = () => {
 
       <BudgetTable 
         title={t('planning_income_budget')}
-        categories={state.incomeTypes}
+        categories={state.incomeTypes.filter(c => c.isPlannable)}
         categoryType="income"
         selectedYear={selectedYear}
       />
       <BudgetTable 
         title={t('planning_expense_budget')}
-        categories={state.expenseTypes}
+        categories={state.expenseTypes.filter(c => c.isPlannable)}
         categoryType="expense"
         selectedYear={selectedYear}
       />

@@ -5,15 +5,15 @@ import { AppState, ConfigItem, Invoice, InvoiceStatus, BankTransaction, DailySal
 const initialData: AppState = {
   sharedDate: new Date().toISOString().split('T')[0],
   incomeTypes: [
-    { id: '1', name: 'Dine-in Sales', isIncome: true },
-    { id: '2', name: 'Takeout Sales', isIncome: true },
-    { id: '3', name: 'Employee Debt Payment', isIncome: false },
+    { id: '1', name: 'Dine-in Sales', isIncome: true, isPlannable: true },
+    { id: '2', name: 'Takeout Sales', isIncome: true, isPlannable: true },
+    { id: '3', name: 'Employee Debt Payment', isIncome: false, isPlannable: false },
   ].sort((a, b) => a.name.localeCompare(b.name)),
   expenseTypes: [
-    { id: '1', name: 'Groceries', isExpense: true },
-    { id: '2', name: 'Payroll', isExpense: true },
-    { id: '3', name: 'Rent', isExpense: true },
-    { id: '4', name: 'Asset Purchase', isExpense: false },
+    { id: '1', name: 'Groceries', isExpense: true, isPlannable: true },
+    { id: '2', name: 'Payroll', isExpense: true, isPlannable: true },
+    { id: '3', name: 'Rent', isExpense: true, isPlannable: true },
+    { id: '4', name: 'Asset Purchase', isExpense: false, isPlannable: false },
   ].sort((a, b) => a.name.localeCompare(b.name)),
   paymentMethods: [
     { id: '1', name: 'Cash' },
@@ -74,10 +74,10 @@ interface AppContextType {
   addConfigItem: (category: ConfigCategory, name: string) => void;
   updateConfigItem: (category: ConfigCategory, id: string, name: string) => void;
   deleteConfigItem: (category: ConfigCategory | 'expenseTypes' | 'incomeTypes', id: string) => void;
-  addIncomeType: (name: string, isIncome: boolean) => void;
-  updateIncomeType: (id: string, name: string, isIncome: boolean) => void;
-  addExpenseType: (name: string, isExpense: boolean) => void;
-  updateExpenseType: (id: string, name: string, isExpense: boolean) => void;
+  addIncomeType: (name: string, isIncome: boolean, isPlannable: boolean) => void;
+  updateIncomeType: (id: string, name: string, isIncome: boolean, isPlannable: boolean) => void;
+  addExpenseType: (name: string, isExpense: boolean, isPlannable: boolean) => void;
+  updateExpenseType: (id: string, name: string, isExpense: boolean, isPlannable: boolean) => void;
   // Currency
   addCurrency: (currency: Omit<Currency, 'id'>) => void;
   updateCurrency: (currency: Currency) => void;
@@ -259,33 +259,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateStateAndDB(newState);
   };
 
-  const addIncomeType = (name: string, isIncome: boolean) => {
-    const newItem: IncomeType = { id: Date.now().toString(), name, isIncome };
+  const addIncomeType = (name: string, isIncome: boolean, isPlannable: boolean) => {
+    const newItem: IncomeType = { id: Date.now().toString(), name, isIncome, isPlannable };
     const newState = { ...state, incomeTypes: [...state.incomeTypes, newItem].sort((a, b) => a.name.localeCompare(b.name)) };
     updateStateAndDB(newState);
   };
 
-  const updateIncomeType = (id: string, name: string, isIncome: boolean) => {
+  const updateIncomeType = (id: string, name: string, isIncome: boolean, isPlannable: boolean) => {
     const newState = {
       ...state,
       incomeTypes: state.incomeTypes.map(item =>
-        item.id === id ? { ...item, name, isIncome } : item
+        item.id === id ? { ...item, name, isIncome, isPlannable } : item
       ).sort((a, b) => a.name.localeCompare(b.name)),
     };
     updateStateAndDB(newState);
   };
 
-  const addExpenseType = (name: string, isExpense: boolean) => {
-    const newItem: ExpenseType = { id: Date.now().toString(), name, isExpense };
+  const addExpenseType = (name: string, isExpense: boolean, isPlannable: boolean) => {
+    const newItem: ExpenseType = { id: Date.now().toString(), name, isExpense, isPlannable };
     const newState = { ...state, expenseTypes: [...state.expenseTypes, newItem].sort((a, b) => a.name.localeCompare(b.name)) };
     updateStateAndDB(newState);
   };
 
-  const updateExpenseType = (id: string, name: string, isExpense: boolean) => {
+  const updateExpenseType = (id: string, name: string, isExpense: boolean, isPlannable: boolean) => {
     const newState = {
       ...state,
       expenseTypes: state.expenseTypes.map(item =>
-        item.id === id ? { ...item, name, isExpense } : item
+        item.id === id ? { ...item, name, isExpense, isPlannable } : item
       ).sort((a, b) => a.name.localeCompare(b.name)),
     };
     updateStateAndDB(newState);
