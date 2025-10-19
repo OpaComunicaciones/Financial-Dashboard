@@ -25,6 +25,12 @@ const DailyCash: React.FC = () => {
   const [isEditIncomeModalOpen, setIsEditIncomeModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<CashExpense | null>(null);
   const [selectedIncome, setSelectedIncome] = useState<MiscIncome | null>(null);
+  const [isLocked, setIsLocked] = useState(false);
+
+  useEffect(() => {
+    const todaysClosure = state.cashClosures.find(c => c.date === sharedDate && c.currencyCode === selectedCurrencyCode);
+    setIsLocked(!!todaysClosure);
+  }, [sharedDate, selectedCurrencyCode, state.cashClosures]);
 
   const selectedCurrency = useMemo(() => {
     return state.currencies.find(c => c.code === selectedCurrencyCode);
@@ -170,6 +176,18 @@ const DailyCash: React.FC = () => {
     alert(t('daily_cash_save_success'));
   };
 
+  const handleDateChange = (newDate: string) => {
+    // When trying to move to a future date, check if the current day is balanced.
+    if (newDate > sharedDate) {
+      if (Math.abs(difference) > 0.01) {
+        alert(`No puedes avanzar. El día actual (${sharedDate}) no está cuadrado (Diferencia: ${difference.toFixed(4)}).`);
+        return;
+      }
+    }
+    // If the current day is balanced, or moving to the past, allow navigation.
+    setSharedDate(newDate);
+  };
+
   const getExpenseConceptName = (conceptId: string) => {
     const name = state.expenseTypes.find(e => e.id === conceptId)?.name || conceptId;
     if (name === 'Shortage') {
@@ -231,7 +249,7 @@ const DailyCash: React.FC = () => {
               id="cash-date"
               type="date"
               value={sharedDate}
-              onChange={(e) => setSharedDate(e.target.value)}
+              onChange={(e) => handleDateChange(e.target.value)}
               className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -247,7 +265,7 @@ const DailyCash: React.FC = () => {
       <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
         <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-white">{t('daily_cash_misc_income_title')} ({selectedCurrencyCode})</h3>
-            <button onClick={() => setIsIncomeModalOpen(true)} className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2">
+            <button onClick={() => setIsIncomeModalOpen(true)} className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled={isLocked}>
                 <Plus size={18} /> {t('daily_cash_add_income_button')}
             </button>
         </div>
@@ -268,10 +286,10 @@ const DailyCash: React.FC = () => {
                             <td className="px-6 py-4">{income.detail}</td>
                             <td className="px-6 py-4 text-right font-mono">{formatCurrency(income.amount)}</td>
                             <td className="px-6 py-4 text-center flex items-center justify-center gap-2">
-                                <button onClick={() => { setSelectedIncome(income); setIsEditIncomeModalOpen(true); }} className="text-gray-400 hover:text-blue-400">
+                                <button onClick={() => { setSelectedIncome(income); setIsEditIncomeModalOpen(true); }} className="text-gray-400 hover:text-blue-400 disabled:text-gray-600 disabled:cursor-not-allowed" disabled={isLocked}>
                                     <Pencil size={16} />
                                 </button>
-                                <button onClick={() => handleDeleteIncome(income.id)} className="text-gray-400 hover:text-red-400">
+                                <button onClick={() => handleDeleteIncome(income.id)} className="text-gray-400 hover:text-red-400 disabled:text-gray-600 disabled:cursor-not-allowed" disabled={isLocked}>
                                     <Trash2 size={16} />
                                 </button>
                             </td>
@@ -291,7 +309,7 @@ const DailyCash: React.FC = () => {
       <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
         <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-white">{t('daily_cash_expenses_title')} ({selectedCurrencyCode})</h3>
-            <button onClick={() => setIsExpenseModalOpen(true)} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center gap-2">
+            <button onClick={() => setIsExpenseModalOpen(true)} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled={isLocked}>
                 <Plus size={18} /> {t('daily_cash_add_expense_button')}
             </button>
         </div>
@@ -321,10 +339,10 @@ const DailyCash: React.FC = () => {
                             <td className="px-6 py-4">{expense.invoiceNumber}</td>
                             <td className="px-6 py-4 text-right font-mono">{formatCurrency(expense.amount)}</td>
                             <td className="px-6 py-4 text-center flex items-center justify-center gap-2">
-                                <button onClick={() => { setSelectedExpense(expense); setIsEditExpenseModalOpen(true); }} className="text-gray-400 hover:text-blue-400">
+                                <button onClick={() => { setSelectedExpense(expense); setIsEditExpenseModalOpen(true); }} className="text-gray-400 hover:text-blue-400 disabled:text-gray-600 disabled:cursor-not-allowed" disabled={isLocked}>
                                     <Pencil size={16} />
                                 </button>
-                                <button onClick={() => handleDeleteExpense(expense.id)} className="text-gray-400 hover:text-red-400">
+                                <button onClick={() => handleDeleteExpense(expense.id)} className="text-gray-400 hover:text-red-400 disabled:text-gray-600 disabled:cursor-not-allowed" disabled={isLocked}>
                                     <Trash2 size={16} />
                                 </button>
                             </td>
@@ -377,7 +395,7 @@ const DailyCash: React.FC = () => {
                    {currencyDenominations.bills.map(denom => (
                     <div key={denom.id} className="grid grid-cols-3 items-center gap-2 mb-2">
                       <label className="text-gray-400">{selectedCurrency?.symbol}{formatNumber(denom.value)}</label>
-                      <input type="number" value={counts[denom.value.toString()] || ''} onChange={e => handleCountChange(denom.value, e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md p-1 text-center" min="0" />
+                      <input type="number" value={counts[denom.value.toString()] || ''} onChange={e => handleCountChange(denom.value, e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md p-1 text-center disabled:bg-gray-800 disabled:cursor-not-allowed" min="0" disabled={isLocked} />
                       <span className="text-right font-mono text-white">{formatCurrency(denom.value * (counts[denom.value.toString()] || 0))}</span>
                     </div>
                   ))}
@@ -387,7 +405,7 @@ const DailyCash: React.FC = () => {
                    {currencyDenominations.coins.map(denom => (
                     <div key={denom.id} className="grid grid-cols-3 items-center gap-2 mb-2">
                       <label className="text-gray-400">{selectedCurrency?.symbol}{formatNumber(denom.value)}</label>
-                      <input type="number" value={counts[denom.value.toString()] || ''} onChange={e => handleCountChange(denom.value, e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md p-1 text-center" min="0" />
+                      <input type="number" value={counts[denom.value.toString()] || ''} onChange={e => handleCountChange(denom.value, e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md p-1 text-center disabled:bg-gray-800 disabled:cursor-not-allowed" min="0" disabled={isLocked} />
                       <span className="text-right font-mono text-white">{formatCurrency(denom.value * (counts[denom.value.toString()] || 0))}</span>
                     </div>
                   ))}
@@ -415,9 +433,31 @@ const DailyCash: React.FC = () => {
             <div className={`mt-6 px-6 py-3 rounded-full text-white font-bold text-lg ${differenceStatus.color} w-full`}>
                 {differenceStatus.text}
             </div>
-            <button onClick={handleSaveClosure} className="mt-4 w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center gap-2">
-                <Save size={18} /> {t('daily_cash_save_button')}
-            </button>
+            <div className="w-full mt-4 space-y-2">
+              {isLocked ? (
+                <button onClick={() => setIsLocked(false)} className="w-full bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300 flex items-center justify-center gap-2">
+                    <Pencil size={18} /> {t('configuration_edit_button')}
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button onClick={() => {
+                      const todaysClosure = state.cashClosures.find(c => c.date === sharedDate && c.currencyCode === selectedCurrencyCode);
+                      if (todaysClosure) {
+                        setCounts(todaysClosure.counts);
+                        setIsLocked(true);
+                      } else {
+                        // If there was no closure, just lock it, don't reset counts
+                        setIsLocked(true);
+                      }
+                  }} className="w-1/2 bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors duration-300">
+                      {t('configuration_cancel_button')}
+                  </button>
+                  <button onClick={handleSaveClosure} className="w-1/2 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center gap-2">
+                      <Save size={18} /> {t('daily_cash_save_button')}
+                  </button>
+                </div>
+              )}
+            </div>
         </div>
       </div>
     </div>

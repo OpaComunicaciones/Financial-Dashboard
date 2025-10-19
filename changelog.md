@@ -1,5 +1,14 @@
 # Changelog
 
+## [2025-10-14 20:00:00]
+
+- **Feature:** Implementado un sistema de bloqueo y edición para el "Cierre de Caja Diario".
+  - Los cierres guardados ahora aparecen bloqueados (solo lectura).
+  - Se requiere un botón de "Editar" para modificar un cierre existente.
+- **Feature:** Añadida una regla de negocio que impide navegar a un día futuro si el cierre de caja del día actual no está cuadrado.
+- **Fix:** Corregido un error en la regla anterior que leía el valor guardado en lugar del valor en pantalla para la validación.
+- **Fix:** Eliminada una dependencia de la moneda "USD" en la página de Informes. Ahora muestra un mensaje si no hay monedas configuradas.
+
 ## [2025-10-14 19:00:00]
 
 - **Feature:** Añadida una fila de totales para las secciones de Ingresos y Egresos en el informe de "Real vs. Presupuesto".

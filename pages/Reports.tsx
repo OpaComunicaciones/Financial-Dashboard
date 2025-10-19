@@ -23,8 +23,20 @@ const Reports: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ReportTab>('pl');
   const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(todayStr);
-  const [reportingCurrency, setReportingCurrency] = useState(state.currencies[0]?.code || 'USD');
+  const [reportingCurrency, setReportingCurrency] = useState(state.currencies[0]?.code || '');
   const [selectedAccountId, setSelectedAccountId] = useState<string>(state.bankAccounts[0]?.id || '');
+  
+  if (state.currencies.length === 0) {
+    return (
+      <div className="space-y-8">
+        <PageHeader title={t('reports_title')} subtitle={t('reports_subtitle')} />
+        <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 text-center">
+          <p className="text-lg text-gray-300">Por favor, configure al menos una moneda en la página de Configuración para poder generar informes.</p>
+        </div>
+      </div>
+    );
+  }
+
   
   const tabs: { id: ReportTab, label: string }[] = [
     { id: 'pl', label: t('reports_tab_pl') },
