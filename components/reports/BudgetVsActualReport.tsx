@@ -83,7 +83,21 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
         return { name: category?.name || 'Unknown', budgeted, actual, variance };
     });
 
-    return { incomeRows, expenseRows };
+    const incomeTotals = incomeRows.reduce((acc, row) => {
+        acc.budgeted += row.budgeted;
+        acc.actual += row.actual;
+        acc.variance += row.variance;
+        return acc;
+    }, { budgeted: 0, actual: 0, variance: 0 });
+
+    const expenseTotals = expenseRows.reduce((acc, row) => {
+        acc.budgeted += row.budgeted;
+        acc.actual += row.actual;
+        acc.variance += row.variance;
+        return acc;
+    }, { budgeted: 0, actual: 0, variance: 0 });
+
+    return { incomeRows, expenseRows, incomeTotals, expenseTotals };
 
   }, [state, startDate, endDate, reportingCurrency]);
   
@@ -107,11 +121,25 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
       const variancePercent = row.budgeted !== 0 ? formatNumber((row.variance / row.budgeted) * 100) : 'N/A';
       return [row.name, formatCurrency(row.budgeted), formatCurrency(row.actual), formatCurrency(row.variance), `${variancePercent}%`];
     });
+    incomeBody.push([
+        { content: t('reports_total_income'), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.incomeTotals.budgeted), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.incomeTotals.actual), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.incomeTotals.variance), styles: { fontStyle: 'bold' } },
+        { content: `${comparisonData.incomeTotals.budgeted > 0 ? formatNumber((comparisonData.incomeTotals.variance / comparisonData.incomeTotals.budgeted) * 100) : 'N/A'}%`, styles: { fontStyle: 'bold' } },
+    ]);
 
     const expenseBody = comparisonData.expenseRows.map(row => {
       const variancePercent = row.budgeted !== 0 ? formatNumber((row.variance / row.budgeted) * 100) : 'N/A';
       return [row.name, formatCurrency(row.budgeted), formatCurrency(row.actual), formatCurrency(row.variance), `${variancePercent}%`];
     });
+    expenseBody.push([
+        { content: t('reports_total_expenses'), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.expenseTotals.budgeted), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.expenseTotals.actual), styles: { fontStyle: 'bold' } },
+        { content: formatCurrency(comparisonData.expenseTotals.variance), styles: { fontStyle: 'bold' } },
+        { content: `${comparisonData.expenseTotals.budgeted > 0 ? formatNumber((comparisonData.expenseTotals.variance / comparisonData.expenseTotals.budgeted) * 100) : 'N/A'}%`, styles: { fontStyle: 'bold' } },
+    ]);
 
     autoTable(doc, {
       startY: 40,
@@ -172,6 +200,8 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
       const variancePercent = row.budgeted !== 0 ? (row.variance / row.budgeted) : 0;
       data.push([row.name, row.budgeted, row.actual, row.variance, variancePercent]);
     });
+    const incomeTotalVariancePct = comparisonData.incomeTotals.budgeted > 0 ? (comparisonData.incomeTotals.variance / comparisonData.incomeTotals.budgeted) : 0;
+    data.push([t('reports_total_income'), comparisonData.incomeTotals.budgeted, comparisonData.incomeTotals.actual, comparisonData.incomeTotals.variance, incomeTotalVariancePct]);
 
     data.push([null, null, null]); // Spacer
     data.push([t('reports_expenses_header'), null, null]);
@@ -181,6 +211,9 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
       const variancePercent = row.budgeted !== 0 ? (row.variance / row.budgeted) : 0;
       data.push([row.name, row.budgeted, row.actual, row.variance, variancePercent]);
     });
+    const expenseTotalVariancePct = comparisonData.expenseTotals.budgeted > 0 ? (comparisonData.expenseTotals.variance / comparisonData.expenseTotals.budgeted) : 0;
+    data.push([t('reports_total_expenses'), comparisonData.expenseTotals.budgeted, comparisonData.expenseTotals.actual, comparisonData.expenseTotals.variance, expenseTotalVariancePct]);
+
 
     const ws = XLSX.utils.aoa_to_sheet(data);
 
@@ -190,7 +223,7 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
     const percentFormat = '0.00%';
 
     for(let i = 4; i < data.length; i++) {
-      if (i === 5 + comparisonData.incomeRows.length || i === 6 + comparisonData.incomeRows.length) continue; // Skip headers
+      if (i === 5 + comparisonData.incomeRows.length || i === 7 + comparisonData.incomeRows.length) continue; // Skip headers and spacer
       if (typeof data[i][1] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 1})].z = currencyFormat;
       if (typeof data[i][2] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 2})].z = currencyFormat;
       if (typeof data[i][3] === 'number') ws[XLSX.utils.encode_cell({r: i, c: 3})].z = currencyFormat;
@@ -242,7 +275,18 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
                         <th scope="col" className="px-6 py-3 text-right">{t('reports_budget_variance_pct')}</th>
                     </tr>
                 </thead>
-                <tbody>{comparisonData.incomeRows.map(row => renderRow(row))}</tbody>
+                <tbody>
+                    {comparisonData.incomeRows.map(row => renderRow(row))}
+                    <tr className="bg-gray-900/50 font-bold border-t-2 border-gray-600">
+                        <td className="px-6 py-3 text-right">{t('reports_total_income')}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.incomeTotals.budgeted)}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.incomeTotals.actual)}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.incomeTotals.variance)}</td>
+                        <td className="px-6 py-3 text-right font-mono">
+                            {comparisonData.incomeTotals.budgeted > 0 ? `${formatNumber((comparisonData.incomeTotals.variance / comparisonData.incomeTotals.budgeted) * 100)}%` : 'N/A'}
+                        </td>
+                    </tr>
+                </tbody>
                 {/* Expense Section */}
                  <thead className="text-xs text-gray-400 uppercase bg-gray-700">
                     <tr><th colSpan={5} className="px-6 py-3 text-red-400 font-bold text-lg">{t('reports_expenses_header')}</th></tr>
@@ -254,7 +298,18 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
                         <th scope="col" className="px-6 py-3 text-right">{t('reports_budget_variance_pct')}</th>
                     </tr>
                 </thead>
-                <tbody>{comparisonData.expenseRows.map(row => renderRow(row))}</tbody>
+                <tbody>
+                    {comparisonData.expenseRows.map(row => renderRow(row))}
+                    <tr className="bg-gray-900/50 font-bold border-t-2 border-gray-600">
+                        <td className="px-6 py-3 text-right">{t('reports_total_expenses')}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.expenseTotals.budgeted)}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.expenseTotals.actual)}</td>
+                        <td className="px-6 py-3 text-right font-mono">{formatCurrency(comparisonData.expenseTotals.variance)}</td>
+                        <td className="px-6 py-3 text-right font-mono">
+                            {comparisonData.expenseTotals.budgeted > 0 ? `${formatNumber((comparisonData.expenseTotals.variance / comparisonData.expenseTotals.budgeted) * 100)}%` : 'N/A'}
+                        </td>
+                    </tr>
+                </tbody>
             </table>
           </div>
         </div>

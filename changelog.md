@@ -1,5 +1,9 @@
 # Changelog
 
+## [2025-10-14 19:00:00]
+
+- **Feature:** Añadida una fila de totales para las secciones de Ingresos y Egresos en el informe de "Real vs. Presupuesto".
+
 ## [2025-10-14 18:00:00]
 
 - **Feature:** Mejorada la exportación a PDF en todos los informes para generar documentos completos y paginados que no se cortan, usando la librería jsPDF.
