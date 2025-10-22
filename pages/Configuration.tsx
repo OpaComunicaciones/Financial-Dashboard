@@ -3,7 +3,8 @@ import PageHeader from '../components/PageHeader';
 import { Plus, Trash2, Edit, Upload, Download, Save, X, Settings2, Landmark, LineChart, Repeat } from 'lucide-react';
 import { useTranslation } from '../i18n/i18n';
 import { useAppContext } from '../context/AppContext';
-import { ConfigItem, Currency, Denomination, BankAccount, IPCRecord, ExchangeRate, ExpenseType, IncomeType } from '../types';
+import { ConfigItem, Currency, Denomination, BankAccount, IPCRecord, ExchangeRate, ExpenseType, IncomeType, Tax, TaxPaymentFrequency } from '../types';
+
 
 type ConfigCategory = 'paymentMethods';
 
@@ -570,6 +571,114 @@ const CurrencyManagement: React.FC = () => {
   );
 };
 
+const TaxManagement: React.FC = () => {
+  const { t } = useTranslation();
+  const { state, addTax, updateTax, deleteTax } = useAppContext();
+  const [newItem, setNewItem] = useState({ name: '', percentage: '' as any as number, authority: '', paymentFrequency: 'monthly' as TaxPaymentFrequency });
+  const [editingItem, setEditingItem] = useState<Tax | null>(null);
+
+  const paymentFrequencyOptions: { value: TaxPaymentFrequency; label: string }[] = [
+    { value: 'monthly', label: t('tax_frequency_monthly', 'Mensual') },
+    { value: 'bimonthly', label: t('tax_frequency_bimonthly', 'Bimestral') },
+    { value: 'quarterly', label: t('tax_frequency_quarterly', 'Trimestral') },
+    { value: 'semiannual', label: t('tax_frequency_semiannual', 'Semestral') },
+    { value: 'annual', label: t('tax_frequency_annual', 'Anual') },
+  ];
+
+  const handleAdd = () => {
+    if (newItem.name.trim() && newItem.percentage > 0 && newItem.authority.trim()) {
+      addTax(newItem);
+      setNewItem({ name: '', percentage: '' as any as number, authority: '', paymentFrequency: 'monthly' });
+    }
+  };
+
+  const handleUpdate = () => {
+    if (editingItem && editingItem.name.trim() && editingItem.percentage > 0 && editingItem.authority.trim()) {
+      updateTax(editingItem);
+      setEditingItem(null);
+    }
+  };
+
+  const getFrequencyLabel = (frequency: TaxPaymentFrequency) => {
+    return paymentFrequencyOptions.find(opt => opt.value === frequency)?.label || frequency;
+  }
+
+  return (
+    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+      <h3 className="text-xl font-semibold text-white mb-4">{t('tax_management_title', 'Gestión de Impuestos')}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4 p-2 bg-gray-900/50 rounded-md">
+        <input
+          type="text"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+          placeholder={t('tax_management_name_placeholder', 'Nombre del Impuesto (ej. IVA)')}
+          className="md:col-span-2 bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+        />
+        <input
+          type="number"
+          value={newItem.percentage}
+          onChange={(e) => setNewItem({ ...newItem, percentage: parseFloat(e.target.value) || 0 })}
+          placeholder={t('tax_management_percentage_placeholder', 'Porcentaje (%)')}
+          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+        />
+        <select
+          value={newItem.paymentFrequency}
+          onChange={(e) => setNewItem({ ...newItem, paymentFrequency: e.target.value as TaxPaymentFrequency })}
+          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+        >
+          {paymentFrequencyOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        </select>
+        <input
+          type="text"
+          value={newItem.authority}
+          onChange={(e) => setNewItem({ ...newItem, authority: e.target.value })}
+          placeholder={t('tax_management_authority_placeholder', 'Autoridad (ej. DIAN)')}
+          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+        />
+        <button onClick={handleAdd} className="md:col-span-4 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center">
+          <Plus size={18} className="mr-1" /> {t('tax_management_add_button', 'Añadir Impuesto')}
+        </button>
+      </div>
+      <ul className="space-y-2">
+        {state.taxes.map(item => (
+          <li key={item.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+            {editingItem?.id === item.id ? (
+              <div className="flex-grow flex items-center gap-2">
+                <input type="text" value={editingItem.name} onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })} className="flex-grow bg-gray-600 p-1 rounded" />
+                <input type="number" value={editingItem.percentage} onChange={(e) => setEditingItem({ ...editingItem, percentage: parseFloat(e.target.value) || 0 })} className="w-20 bg-gray-600 p-1 rounded" />
+                <select 
+                  value={editingItem.paymentFrequency} 
+                  onChange={(e) => setEditingItem({ ...editingItem, paymentFrequency: e.target.value as TaxPaymentFrequency })} 
+                  className="w-28 bg-gray-600 p-1 rounded"
+                >
+                  {paymentFrequencyOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                </select>
+                <input type="text" value={editingItem.authority} onChange={(e) => setEditingItem({ ...editingItem, authority: e.target.value })} className="flex-grow bg-gray-600 p-1 rounded" />
+                <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
+                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold">{item.name}</span>
+                  <span className="text-sm text-gray-400">({item.percentage}%)</span>
+                  <span className="text-sm text-gray-400">({getFrequencyLabel(item.paymentFrequency)})</span>
+                  <span className="text-sm text-indigo-400">{item.authority}</span>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
+                  <button onClick={() => deleteTax(item.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                </div>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
 const FinancialSettings: React.FC = () => {
   const { t } = useTranslation();
   const { state, setIPCRecord, addExchangeRate, deleteExchangeRate } = useAppContext();
@@ -697,6 +806,7 @@ const Configuration: React.FC = () => {
         <CurrencyManagement />
         <FinancialSettings />
       </div>
+      <TaxManagement />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <IncomeTypeManagement />
         <ExpenseTypeManagement />

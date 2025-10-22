@@ -1,5 +1,16 @@
 # Changelog
 
+## [2025-10-22 18:00:00]
+
+- **Feature:** Overhauled the tax management system with a new, comprehensive workflow.
+  - **Tax Configuration**: Added 'Payment Frequency' (monthly, bimonthly, etc.) to tax settings, replacing the old numeric frequency.
+  - **Tax Declaration Panel**: Implemented a new panel in "Accounts Payable" that calculates and displays tax obligations for distinct fiscal periods based on sales data.
+  - **Period-Based Invoicing**: Users can now generate specific tax invoices for each declaration period directly from the panel.
+  - **Retroactive Adjustments**: The system now automatically detects changes to sales in previously invoiced periods and creates "adjustment" entries for the difference. This ensures perfect traceability.
+  - **Adjustment Invoicing**: Added the ability to generate separate invoices for tax adjustments.
+- **i18n:** Added Spanish and English translations for all new UI elements related to the tax system.
+- **Fix:** Corrected a `ReferenceError` on the "Accounts Payable" page caused by a missing `Card` component import during a previous refactor.
+
 ## [2025-10-14 20:00:00]
 
 - **Feature:** Implementado un sistema de bloqueo y edición para el "Cierre de Caja Diario".

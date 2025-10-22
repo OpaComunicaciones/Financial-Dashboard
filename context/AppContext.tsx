@@ -15,6 +15,7 @@ const initialData: AppState = {
     { id: '3', name: 'Rent', isExpense: true, isPlannable: true },
     { id: '4', name: 'Asset Purchase', isExpense: false, isPlannable: false },
   ].sort((a, b) => a.name.localeCompare(b.name)),
+  taxes: [],
   paymentMethods: [
     { id: '1', name: 'Cash' },
     { id: '2', name: 'Credit Card' },
@@ -78,6 +79,11 @@ interface AppContextType {
   updateIncomeType: (id: string, name: string, isIncome: boolean, isPlannable: boolean) => void;
   addExpenseType: (name: string, isExpense: boolean, isPlannable: boolean) => void;
   updateExpenseType: (id: string, name: string, isExpense: boolean, isPlannable: boolean) => void;
+  // Taxes
+  addTax: (tax: Omit<Tax, 'id'>) => void;
+  updateTax: (tax: Tax) => void;
+    deleteTax: (id: string) => void;
+    generateTaxInvoice: (details: { taxId: string; periodLabel: string; amount: number; originalTaxableAmount: number; }) => void;
   // Currency
   addCurrency: (currency: Omit<Currency, 'id'>) => void;
   updateCurrency: (currency: Currency) => void;
@@ -287,6 +293,29 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       expenseTypes: state.expenseTypes.map(item =>
         item.id === id ? { ...item, name, isExpense, isPlannable } : item
       ).sort((a, b) => a.name.localeCompare(b.name)),
+    };
+    updateStateAndDB(newState);
+  };
+
+  // Tax Functions
+  const addTax = (tax: Omit<Tax, 'id'>) => {
+    const newTax: Tax = { ...tax, id: Date.now().toString() };
+    const newState = { ...state, taxes: [...state.taxes, newTax] };
+    updateStateAndDB(newState);
+  };
+
+  const updateTax = (updatedTax: Tax) => {
+    const newState = {
+      ...state,
+      taxes: state.taxes.map(tax => tax.id === updatedTax.id ? updatedTax : tax),
+    };
+    updateStateAndDB(newState);
+  };
+
+  const deleteTax = (id: string) => {
+    const newState = { 
+      ...state, 
+      taxes: state.taxes.filter(tax => tax.id !== id),
     };
     updateStateAndDB(newState);
   };
@@ -513,6 +542,41 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       dailySales: [...state.dailySales, ...newSalesWithIds],
       transactions: [...state.transactions, ...newTransactions],
     }
+    updateStateAndDB(newState);
+  };
+
+  const generateTaxInvoice = (details: { taxId: string; periodLabel: string; amount: number; originalTaxableAmount: number; }) => {
+    const { taxId, periodLabel, amount, originalTaxableAmount } = details;
+    const tax = state.taxes.find(t => t.id === taxId);
+
+    if (!tax || amount <= 0) return;
+
+    let taxConcept = state.expenseTypes.find(et => et.name === 'Pago de Impuestos');
+    let expenseTypes = [...state.expenseTypes];
+    if (!taxConcept) {
+        taxConcept = { id: `tax-payment_${Date.now()}`, name: 'Pago de Impuestos', isExpense: true, isPlannable: false };
+        expenseTypes.push(taxConcept);
+    }
+
+    const newInvoice: Invoice = {
+      id: Date.now().toString(),
+      date: new Date().toISOString().split('T')[0],
+      supplier: tax.authority,
+      invoiceNumber: `TAX-${tax.name.toUpperCase()}-${periodLabel}`,
+      conceptId: taxConcept.id,
+      amount: amount,
+      dueDate: new Date().toISOString().split('T')[0], // Or calculate a proper due date
+      status: 'Pending',
+      payments: [],
+      currencyCode: state.currencies[0]?.code || '', // This assumes the tax is paid in the base currency.
+      taxInfo: { taxId, periodLabel, originalTaxableAmount },
+    };
+
+    const newState = {
+      ...state,
+      expenseTypes,
+      invoices: [...state.invoices, newInvoice],
+    };
     updateStateAndDB(newState);
   };
 
@@ -806,6 +870,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateIncomeType,
     addExpenseType,
     updateExpenseType,
+    addTax,
+    updateTax,
+    deleteTax,
+    generateTaxInvoice,
+    // Currency
     addCurrency,
     updateCurrency,
     deleteCurrency,

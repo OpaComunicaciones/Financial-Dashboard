@@ -26,62 +26,98 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
         const rates = state.exchangeRates.filter(r => r.fromCurrencyCode === fromCode && r.toCurrencyCode === reportingCurrency && new Date(r.date) <= end).sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         return rates.length > 0 ? rates[0].rate : 0;
     }
-    
-    // Calculate actuals
-    const actuals: Record<'income' | 'expense', Record<string, number>> = { income: {}, expense: {} };
-    
-    state.dailySales.forEach(s => {
-        const d = new Date(s.date);
-        if (d >= start && d <= end) {
-            const rate = getConversionRate(s.currencyCode);
-            const total = (s.cash + s.card + s.transfer) * rate;
-            const incomeCat = state.incomeTypes.find(i => i.name.toLowerCase().includes('sales')); // Heuristic
-            if(incomeCat) {
-                actuals.income[incomeCat.id] = (actuals.income[incomeCat.id] || 0) + total;
-            }
+
+    // Part 1: Calculate Actuals using P&L logic for consistency
+    const actuals: { incomes: Record<string, number>, expenses: Record<string, number> } = { incomes: {}, expenses: {} };
+    const processEntry = (dateStr: string, currencyCode: string, amount: number, conceptId: string, type: 'income' | 'expense') => {
+        const d = new Date(dateStr);
+        if (d < start || d > end) return;
+        const rate = getConversionRate(currencyCode);
+        const convertedAmount = amount * rate;
+
+        if (type === 'income') {
+            if (!actuals.incomes[conceptId]) actuals.incomes[conceptId] = 0;
+            actuals.incomes[conceptId] += convertedAmount;
+        } else {
+            if (!actuals.expenses[conceptId]) actuals.expenses[conceptId] = 0;
+            actuals.expenses[conceptId] += convertedAmount;
+        }
+    };
+
+    // --- Actual Incomes ---
+    // Find the primary, plannable sales category to assign all daily sales to.
+    const primarySalesCategory = state.incomeTypes.find(c => c.isPlannable && c.isIncome);
+    const salesConceptId = primarySalesCategory ? primarySalesCategory.id : 'unassigned_sales'; // Fallback key
+
+    state.dailySales.forEach(sale => {
+      const totalSale = sale.cash + sale.card + sale.transfer;
+      if (totalSale > 0) processEntry(sale.date, sale.currencyCode, totalSale, salesConceptId, 'income');
+    });
+    state.miscIncomes.forEach(income => {
+        const concept = state.incomeTypes.find(c => c.id === income.conceptId);
+        if (concept && concept.isIncome) processEntry(income.date, income.currencyCode, income.amount, income.conceptId, 'income');
+    });
+    state.transactions.forEach(tx => {
+        if (tx.type === 'income' && tx.conceptId) {
+            const concept = state.incomeTypes.find(c => c.id === tx.conceptId);
+            const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
+            // We do NOT filter out sales here, because they are already being assigned to the primary sales concept ID.
+            if (concept && concept.isIncome && bankAccount) processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, 'income');
         }
     });
-    state.miscIncomes.forEach(i => {
-         const d = new Date(i.date);
-        if (d >= start && d <= end) {
-            const rate = getConversionRate(i.currencyCode);
-            actuals.income[i.conceptId] = (actuals.income[i.conceptId] || 0) + (i.amount * rate);
+
+    // --- Actual Expenses (Accrual) ---
+    state.invoices.forEach(invoice => {
+        const concept = state.expenseTypes.find(c => c.id === invoice.conceptId);
+        if (concept && concept.isExpense) processEntry(invoice.date, invoice.currencyCode, invoice.amount, invoice.conceptId, 'expense');
+    });
+    state.cashExpenses.forEach(expense => {
+        if (!expense.invoiceNumber) {
+            const concept = state.expenseTypes.find(c => c.id === expense.conceptId);
+            if (concept && concept.isExpense) processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, 'expense');
         }
     });
-     state.cashExpenses.forEach(e => {
-        const d = new Date(e.date);
-        if (d >= start && d <= end) {
-            const rate = getConversionRate(e.currencyCode);
-            actuals.expense[e.conceptId] = (actuals.expense[e.conceptId] || 0) + (e.amount * rate);
+    state.transactions.forEach(tx => {
+        if (tx.type === 'expense' && tx.conceptId && !tx.description.includes('Payment for invoice #')) {
+            const concept = state.expenseTypes.find(c => c.id === tx.conceptId);
+            const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
+            if (concept && concept.isExpense && bankAccount) processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, 'expense');
         }
     });
-    
-    // Calculate budget for the period
-    const budget: Record<'income' | 'expense', Record<string, number>> = { income: {}, expense: {} };
+
+    // Part 2: Calculate Budget for the period
+    const budget: { incomes: Record<string, number>, expenses: Record<string, number> } = { incomes: {}, expenses: {} };
     state.budgetRecords.forEach(b => {
-        const budgetDate = new Date(b.year, b.month - 1, 15); // Use mid-month to be safe
+        const budgetDate = new Date(b.year, b.month - 1, 15);
         if (budgetDate >= start && budgetDate <= end) {
-            budget[b.categoryType][b.categoryId] = (budget[b.categoryType][b.categoryId] || 0) + b.amount;
+            const target = b.categoryType === 'income' ? budget.incomes : budget.expenses;
+            target[b.categoryId] = (target[b.categoryId] || 0) + b.amount;
         }
     });
     
-    const allIncomeKeys = new Set([...Object.keys(budget.income), ...Object.keys(actuals.income)]);
-    const allExpenseKeys = new Set([...Object.keys(budget.expense), ...Object.keys(actuals.expense)]);
+    // Part 3: Build rows from all categories that have a budget or an actual value
+    const allIncomeKeys = new Set([...Object.keys(budget.incomes), ...Object.keys(actuals.incomes)]);
+    const allExpenseKeys = new Set([...Object.keys(budget.expenses), ...Object.keys(actuals.expenses)]);
 
     const incomeRows = Array.from(allIncomeKeys).map(id => {
         const category = state.incomeTypes.find(c => c.id === id);
-        const budgeted = budget.income[id] || 0;
-        const actual = actuals.income[id] || 0;
+        if (!category || category.name === 'Surplus') return null;
+
+        const budgeted = budget.incomes[id] || 0;
+        const actual = actuals.incomes[id] || 0;
         const variance = actual - budgeted;
-        return { name: category?.name || 'Unknown', budgeted, actual, variance };
-    });
+        return { name: category.name, budgeted, actual, variance };
+    }).filter(Boolean) as { name: string, budgeted: number, actual: number, variance: number }[];
+
     const expenseRows = Array.from(allExpenseKeys).map(id => {
         const category = state.expenseTypes.find(c => c.id === id);
-        const budgeted = budget.expense[id] || 0;
-        const actual = actuals.expense[id] || 0;
+        if (!category || category.name === 'Shortage') return null;
+
+        const budgeted = budget.expenses[id] || 0;
+        const actual = actuals.expenses[id] || 0;
         const variance = budgeted - actual; // Favorable if actual is less
-        return { name: category?.name || 'Unknown', budgeted, actual, variance };
-    });
+        return { name: category.name, budgeted, actual, variance };
+    }).filter(Boolean) as { name: string, budgeted: number, actual: number, variance: number }[];
 
     const incomeTotals = incomeRows.reduce((acc, row) => {
         acc.budgeted += row.budgeted;
@@ -99,7 +135,7 @@ const BudgetVsActualReport: React.FC<ReportProps> = ({ startDate, endDate, repor
 
     return { incomeRows, expenseRows, incomeTotals, expenseTotals };
 
-  }, [state, startDate, endDate, reportingCurrency]);
+  }, [state, startDate, endDate, reportingCurrency, t]);
   
   const currencySymbol = state.currencies.find(c=>c.code === reportingCurrency)?.symbol || '$';
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol });

@@ -270,4 +270,24 @@ export default {
   // Special Concepts
   special_concept_surplus: 'Sobrante',
   special_concept_shortage: 'Faltante',
+
+  // Tax Management
+  tax_frequency_monthly: 'Mensual',
+  tax_frequency_bimonthly: 'Bimestral',
+  tax_frequency_quarterly: 'Trimestral',
+  tax_frequency_semiannual: 'Semestral',
+  tax_frequency_annual: 'Anual',
+  tax_management_title: 'Gestión de Impuestos',
+  tax_management_name_placeholder: 'Nombre del Impuesto (ej. IVA)',
+  tax_management_percentage_placeholder: 'Porcentaje (%)',
+  tax_management_authority_placeholder: 'Autoridad (ej. DIAN)',
+  tax_management_add_button: 'Añadir Impuesto',
+  tax_declaration_panel_title: 'Panel de Declaración de Impuestos',
+  tax_declaration_panel_pay_to: 'Pagar a:',
+  tax_declaration_panel_frequency: 'Frecuencia:',
+  tax_declaration_panel_total_sale: 'Venta Total:',
+  tax_declaration_panel_invoiced: 'Facturado',
+  tax_declaration_panel_generate_adjustment_invoice: 'Generar Factura de Ajuste',
+  tax_declaration_panel_generate_invoice: 'Generar Factura',
+  tax_declaration_panel_no_data: 'No hay datos de ventas para este impuesto.',
 };

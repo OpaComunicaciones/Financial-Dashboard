@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import PageHeader from '../components/PageHeader';
 import { Plus, Edit, Trash2, CheckCircle, AlertTriangle } from 'lucide-react';
@@ -10,6 +9,7 @@ import EditInvoiceModal from '../components/EditInvoiceModal';
 import PayInvoiceModal from '../components/PayInvoiceModal';
 import Card from '../components/Card';
 import { formatNumber } from '../utils/formatting';
+import TaxDeclarationPanel from '../components/TaxDeclarationPanel';
 
 const statusStyles: Record<InvoiceStatus, string> = {
   Paid: 'bg-green-500/20 text-green-400',
@@ -142,6 +142,8 @@ const AccountsPayable: React.FC = () => {
             {t('accounts_payable_add_button')}
         </button>
       </div>
+
+      <TaxDeclarationPanel />
       
       <div>
         <h3 className="text-lg font-semibold text-white mb-2">{t('accounts_payable_debt_by_currency')}</h3>

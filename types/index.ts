@@ -13,6 +13,16 @@ export type ExpenseType = ConfigItem & {
   isPlannable?: boolean;
 };
 
+export type TaxPaymentFrequency = 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'annual';
+
+export type Tax = {
+  id: string;
+  name: string;
+  percentage: number;
+  authority: string; // The entity to whom the tax is paid (e.g., government agency)
+  paymentFrequency: TaxPaymentFrequency; // e.g., 'monthly', 'bimonthly', 'annual'
+};
+
 export type Currency = {
   id: string;
   name: string;
@@ -48,6 +58,7 @@ export type Invoice = {
   status: InvoiceStatus;
   payments: InvoicePayment[];
   currencyCode: string;
+  taxInfo?: { taxId: string; periodLabel: string; originalTaxableAmount: number; };
 };
 
 export type TransactionType = 'deposit' | 'withdrawal';
@@ -139,6 +150,7 @@ export interface AppState {
   sharedDate: string;
   incomeTypes: IncomeType[];
   expenseTypes: ExpenseType[];
+  taxes: Tax[];
   paymentMethods: ConfigItem[];
   currencies: Currency[];
   denominations: Denomination[];

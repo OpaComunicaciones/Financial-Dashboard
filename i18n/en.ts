@@ -270,4 +270,24 @@ export default {
   // Special Concepts
   special_concept_surplus: 'Surplus',
   special_concept_shortage: 'Shortage',
+
+  // Tax Management
+  tax_frequency_monthly: 'Monthly',
+  tax_frequency_bimonthly: 'Bimonthly',
+  tax_frequency_quarterly: 'Quarterly',
+  tax_frequency_semiannual: 'Semiannual',
+  tax_frequency_annual: 'Annual',
+  tax_management_title: 'Tax Management',
+  tax_management_name_placeholder: 'Tax Name (e.g. VAT)',
+  tax_management_percentage_placeholder: 'Percentage (%)',
+  tax_management_authority_placeholder: 'Authority (e.g. IRS)',
+  tax_management_add_button: 'Add Tax',
+  tax_declaration_panel_title: 'Tax Declaration Panel',
+  tax_declaration_panel_pay_to: 'Pay to:',
+  tax_declaration_panel_frequency: 'Frequency:',
+  tax_declaration_panel_total_sale: 'Total Sale:',
+  tax_declaration_panel_invoiced: 'Invoiced',
+  tax_declaration_panel_generate_adjustment_invoice: 'Generate Adjustment Invoice',
+  tax_declaration_panel_generate_invoice: 'Generate Invoice',
+  tax_declaration_panel_no_data: 'No sales data for this tax.',
 };
