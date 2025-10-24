@@ -679,6 +679,39 @@ const TaxManagement: React.FC = () => {
 }
 
 
+const ApiManagement: React.FC = () => {
+  const { t } = useTranslation();
+  const { state, setGeminiApiKey } = useAppContext();
+  const [apiKey, setApiKey] = useState(state.geminiApiKey || '');
+
+  const handleSave = () => {
+    setGeminiApiKey(apiKey);
+    alert(t('api_management_save_success', 'API Key saved successfully!'));
+  };
+
+  return (
+    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+      <h3 className="text-xl font-semibold text-white mb-4">{t('api_management_title', 'API Key Management')}</h3>
+      <p className="text-gray-400 text-sm mb-4">{t('api_management_subtitle', 'Store your Gemini API Key to enable AI-powered features.')}</p>
+      <div className="flex gap-2">
+        <input
+          type="password"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder={t('api_management_placeholder', 'Enter your API Key')}
+          className="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <button onClick={handleSave} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center">
+          <Save size={18} className="mr-1" /> {t('configuration_save_button', 'Save')}
+        </button>
+      </div>
+      {state.geminiApiKey && (
+        <p className="text-xs text-gray-500 mt-2">{t('api_management_key_saved', 'An API Key is currently saved.')}</p>
+      )}
+    </div>
+  );
+};
+
 const FinancialSettings: React.FC = () => {
   const { t } = useTranslation();
   const { state, setIPCRecord, addExchangeRate, deleteExchangeRate } = useAppContext();
@@ -804,7 +837,12 @@ const Configuration: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CurrencyManagement />
-        <FinancialSettings />
+        <div>
+          <FinancialSettings />
+          <div className="mt-6">
+            <ApiManagement />
+          </div>
+        </div>
       </div>
       <TaxManagement />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

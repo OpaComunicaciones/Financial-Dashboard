@@ -1,7 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";import { GoogleGenAI } from "@google/genai";
 import { formatNumber } from "../utils/formatting";
-
-const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
 
 const getPrompt = (data: Record<string, any>, lang: 'es' | 'en'): string => {
   const formatCurrency = (value: number) => formatNumber(value, { style: 'currency', currencySymbol: '$' });
@@ -46,28 +44,32 @@ const getPrompt = (data: Record<string, any>, lang: 'es' | 'en'): string => {
   `;
 };
 
-export const getFinancialInsights = async (data: Record<string, any>, lang: 'es' | 'en'): Promise<string> => {
-    if (!ai) {
+export const getFinancialInsights = async (data: Record<string, any>, lang: 'es' | 'en', apiKey: string): Promise<string> => {
+    if (!apiKey) {
         return Promise.resolve(
           lang === 'es' 
-          ? "Las funciones de IA están deshabilitadas. Por favor, configure la variable de entorno API_KEY." 
-          : "AI features are disabled. Please configure the API_KEY environment variable."
+          ? "Las funciones de IA están deshabilitadas. Por favor, configure la clave de API de Gemini en la página de Configuración." 
+          : "AI features are disabled. Please configure the Gemini API Key in the Configuration page."
         );
     }
-  const model = 'gemini-2.5-flash';
+
+  const ai = new GoogleGenerativeAI({ apiKey });
+  const modelName = 'gemini-pro';
   
   const prompt = getPrompt(data, lang);
+  console.log("Sending prompt to Gemini:", prompt); // Log the prompt
 
   try {
-    const response = await ai.models.generateContent({
-        model: model,
-        contents: prompt,
-    });
-    return response.text;
+    const model = ai.getGenerativeModel({ model: modelName });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    return text;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return lang === 'es'
-      ? "Ocurrió un error al generar el análisis de IA. Por favor, revise la consola para más detalles."
-      : "An error occurred while generating AI insights. Please check the console for details.";
+      ? `Ocurrió un error al generar el análisis de IA. Por favor, revise la consola para más detalles. Error: ${errorMessage}`
+      : `An error occurred while generating AI insights. Please check the console for details. Error: ${errorMessage}`;
   }
 };

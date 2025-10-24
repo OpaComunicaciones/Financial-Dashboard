@@ -290,4 +290,11 @@ export default {
   tax_declaration_panel_generate_adjustment_invoice: 'Generar Factura de Ajuste',
   tax_declaration_panel_generate_invoice: 'Generar Factura',
   tax_declaration_panel_no_data: 'No hay datos de ventas para este impuesto.',
+
+  // API Management
+  api_management_title: 'Gestión de API Key',
+  api_management_subtitle: 'Guarda tu API Key de Gemini para habilitar las funciones de IA.',
+  api_management_placeholder: 'Ingresa tu API Key',
+  api_management_save_success: '¡API Key guardada con éxito!',
+  api_management_key_saved: 'Una API Key está guardada actualmente.',
 };

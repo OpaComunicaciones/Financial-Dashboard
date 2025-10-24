@@ -4,6 +4,7 @@ import { AppState, ConfigItem, Invoice, InvoiceStatus, BankTransaction, DailySal
 // --- INITIAL MOCK DATA ---
 const initialData: AppState = {
   sharedDate: new Date().toISOString().split('T')[0],
+  geminiApiKey: '',
   incomeTypes: [
     { id: '1', name: 'Dine-in Sales', isIncome: true, isPlannable: true },
     { id: '2', name: 'Takeout Sales', isIncome: true, isPlannable: true },
@@ -71,6 +72,7 @@ interface AppContextType {
   exportData: () => void;
   importData: (json: string) => void;
   resetDatabase: () => Promise<void>;
+  setGeminiApiKey: (key: string) => void;
   // Config
   addConfigItem: (category: ConfigCategory, name: string) => void;
   updateConfigItem: (category: ConfigCategory, id: string, name: string) => void;
@@ -208,6 +210,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const setSharedDate = (date: string) => {
     const newState = { ...state, sharedDate: date };
+    updateStateAndDB(newState);
+  };
+
+  const setGeminiApiKey = (key: string) => {
+    const newState = { ...state, geminiApiKey: key };
     updateStateAndDB(newState);
   };
 
@@ -863,6 +870,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     exportData,
     importData,
     resetDatabase,
+    setGeminiApiKey,
     addConfigItem,
     updateConfigItem,
     deleteConfigItem,

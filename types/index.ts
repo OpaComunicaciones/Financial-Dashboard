@@ -148,6 +148,7 @@ export type BudgetRecord = {
 
 export interface AppState {
   sharedDate: string;
+  geminiApiKey?: string;
   incomeTypes: IncomeType[];
   expenseTypes: ExpenseType[];
   taxes: Tax[];

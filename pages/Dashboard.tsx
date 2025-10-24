@@ -32,21 +32,25 @@ const Dashboard: React.FC = () => {
     const revenueInRange = salesInRange.reduce((sum, s) => sum + s.cash + s.card + s.transfer, 0);
     const customersInRange = salesInRange.reduce((sum, s) => sum + s.customers, 0);
     
-    const cashExpensesInRange = state.cashExpenses
-      .filter(e => {
-          const expenseDate = new Date(e.date + 'T00:00:00');
-          return expenseDate >= from && expenseDate <= to;
-      })
-      .reduce((sum, e) => sum + e.amount, 0);
+    const expensesByCategory: Record<string, number> = {};
+    state.cashExpenses.forEach(e => {
+        const expenseDate = new Date(e.date + 'T00:00:00');
+        if (expenseDate >= from && expenseDate <= to) {
+            const categoryName = state.expenseTypes.find(c => c.id === e.conceptId)?.name || 'Uncategorized';
+            expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + e.amount;
+        }
+    });
+    state.transactions.forEach(t => {
+        const txDate = new Date(t.date + 'T00:00:00');
+        if (t.type === 'expense' && txDate >= from && txDate <= to) {
+            const categoryName = state.expenseTypes.find(c => c.id === t.conceptId)?.name || 'Uncategorized';
+            expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + Math.abs(t.amount);
+        }
+    });
 
-    const bankExpensesInRange = state.transactions
-      .filter(t => {
-          const txDate = new Date(t.date + 'T00:00:00');
-          return t.type === 'expense' && txDate >= from && txDate <= to;
-      })
-      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    const topExpense = Object.entries(expensesByCategory).reduce((max, entry) => entry[1] > max.amount ? { category: entry[0], amount: entry[1] } : max, { category: 'N/A', amount: 0 });
 
-    const totalExpensesInRange = cashExpensesInRange + bankExpensesInRange;
+    const totalExpensesInRange = Object.values(expensesByCategory).reduce((sum, amount) => sum + amount, 0);
 
     const totalPendingInvoices = state.invoices
       .filter(inv => inv.status === 'Pending' || inv.status === 'Overdue')
@@ -79,7 +83,7 @@ const Dashboard: React.FC = () => {
         sales: revenueInRange,
         expenses: totalExpensesInRange,
         profitMargin: revenueInRange > 0 ? ((revenueInRange - totalExpensesInRange) / revenueInRange) * 100 : 0,
-        topExpense: { category: 'N/A', amount: 0 },
+        topExpense: topExpense,
         cashBalance: latestClosure?.finalBalance || 0,
         accountsPayable: totalPendingInvoices,
       }
@@ -87,17 +91,9 @@ const Dashboard: React.FC = () => {
   }, [state, language, dateRange]);
 
   const handleGetInsights = async () => {
-    // This function would also need to be updated to use range data
-    // For now, it will use the calculated data which is already based on the range
     setIsLoading(true);
     setAiInsights('');
-    const aiFinancialData = {
-        sales: dashboardData.revenueInRange,
-        expenses: dashboardData.totalExpensesInRange,
-        profitMargin: dashboardData.revenueInRange > 0 ? ((dashboardData.revenueInRange - dashboardData.totalExpensesInRange) / dashboardData.revenueInRange) * 100 : 0,
-        accountsPayable: dashboardData.totalPendingInvoices,
-    };
-    const insights = await getFinancialInsights(aiFinancialData, language);
+    const insights = await getFinancialInsights(dashboardData.aiFinancialData, language, state.geminiApiKey || '');
     setAiInsights(insights);
     setIsLoading(false);
   };
@@ -155,8 +151,8 @@ const Dashboard: React.FC = () => {
            </button>
            {isLoading && <div className="text-center mt-4 text-gray-400">{t('dashboard_ai_loading')}</div>}
            {aiInsights && (
-              <div className="mt-4 p-4 bg-gray-900 rounded-lg text-gray-300 text-sm space-y-2">
-                 {formattedInsights}
+              <div className={`mt-4 p-4 bg-gray-900 rounded-lg text-sm space-y-2 ${aiInsights.includes('Error') ? 'text-red-400' : 'text-gray-300'}`}>
+                 {aiInsights.includes('Error') ? aiInsights : formattedInsights}
               </div>
             )}
         </div>

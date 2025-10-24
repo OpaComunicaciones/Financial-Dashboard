@@ -1,5 +1,14 @@
 # Changelog
 
+## [2025-10-22 19:00:00]
+
+- **Feature:** Implementada la configuración de la API Key de Gemini para habilitar el análisis financiero con IA.
+  - Se añadió una sección en "Configuración" para que el usuario pueda introducir y guardar su propia clave de API de Gemini.
+- **Refactor:** El servicio de IA (`geminiService`) fue reestructurado para usar la clave de API desde la configuración de la aplicación, en lugar de depender de variables de entorno.
+- **Fix:** Solucionado un error crítico de dependencias al reemplazar el paquete no oficial `@google/genai` por el paquete oficial `@google/generative-ai`.
+- **Fix:** Corregidos múltiples errores de `ReferenceError` y `TypeError` durante la inicialización y llamada a la API de Gemini, asegurando que la integración funcione correctamente.
+- **UX:** Mejorado el manejo de errores en el panel de análisis de IA. Ahora se muestran mensajes claros si la clave de API es inválida o si ocurre un problema de conexión, en lugar de quedarse en un estado de "cargando" infinito.
+
 ## [2025-10-22 18:00:00]
 
 - **Feature:** Overhauled the tax management system with a new, comprehensive workflow.
