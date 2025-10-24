@@ -18,49 +18,93 @@ const getMonthsForFrequency = (frequency: TaxPaymentFrequency): number => {
 };
 
 // Helper to determine the fiscal period for a given date and frequency
+
 const getFiscalPeriod = (date: Date, frequency: TaxPaymentFrequency): { periodLabel: string; periodKey: string } => {
-  const year = date.getFullYear();
-  const month = date.getMonth(); // 0-11
+
+  const year = date.getUTCFullYear();
+
+  const month = date.getUTCMonth(); // 0-11
+
   const monthsInPeriod = getMonthsForFrequency(frequency);
 
+
+
   if (monthsInPeriod === 12) {
+
     return { periodLabel: `${year}`, periodKey: `${year}` };
+
   }
+
+
 
   if (monthsInPeriod === 6) {
+
     const semester = month < 6 ? 1 : 2;
-    const startMonth = semester === 1 ? 'Ene' : 'Jul';
-    const endMonth = semester === 1 ? 'Jun' : 'Dic';
+
+    const startMonth = new Date(Date.UTC(year, semester === 1 ? 0 : 6, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
+    const endMonth = new Date(Date.UTC(year, semester === 1 ? 5 : 11, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
     return { periodLabel: `${startMonth} - ${endMonth} ${year}`, periodKey: `${year}-S${semester}` };
+
   }
+
   
+
   if (monthsInPeriod === 3) {
+
       const quarter = Math.floor(month / 3) + 1;
-      const startMonth = new Date(year, (quarter-1)*3, 1).toLocaleString('default', { month: 'short' });
-      const endMonth = new Date(year, quarter*3 - 1, 1).toLocaleString('default', { month: 'short' });
+
+      const startMonth = new Date(Date.UTC(year, (quarter-1)*3, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
+      const endMonth = new Date(Date.UTC(year, quarter*3 - 1, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
       return { periodLabel: `${startMonth} - ${endMonth} ${year}`, periodKey: `${year}-Q${quarter}` };
+
   }
+
+
 
   if (monthsInPeriod === 2) {
+
     const bimonthlyPeriod = Math.floor(month / 2) + 1;
-    const startMonth = new Date(year, (bimonthlyPeriod-1)*2, 1).toLocaleString('default', { month: 'short' });
-    const endMonth = new Date(year, bimonthlyPeriod*2 - 1, 1).toLocaleString('default', { month: 'short' });
+
+    const startMonth = new Date(Date.UTC(year, (bimonthlyPeriod-1)*2, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
+    const endMonth = new Date(Date.UTC(year, bimonthlyPeriod*2 - 1, 1)).toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+
     return { periodLabel: `${startMonth} - ${endMonth} ${year}`, periodKey: `${year}-B${bimonthlyPeriod}` };
+
   }
 
+
+
   // Monthly
-  const monthName = date.toLocaleString('default', { month: 'long' });
+
+  const monthName = date.toLocaleString('default', { month: 'long', timeZone: 'UTC' });
+
   return { periodLabel: `${monthName} ${year}`, periodKey: `${year}-${String(month + 1).padStart(2, '0')}` };
+
 };
 
 
+
+
+
 const TaxDeclarationPanel: React.FC = () => {
+
   const { t } = useTranslation();
+
   const { state, generateTaxInvoice } = useAppContext();
+
   const { taxes, dailySales, currencies, invoices } = state;
 
+
+
   const getCurrencySymbol = (code: string) => {
+
     // This is a simplification. Assumes all tax is handled in the primary currency.
+
     return currencies[0]?.symbol || '$';
   }
 

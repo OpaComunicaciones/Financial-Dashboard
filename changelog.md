@@ -1,5 +1,10 @@
 # Changelog
 
+## [2025-10-22 20:00:00]
+
+- **Fix:** Corregido un error de zona horaria en el Panel de Declaración de Impuestos. Las ventas del primer día de un período fiscal ya no se atribuyen incorrectamente al período anterior. Todos los cálculos de fechas ahora se manejan en UTC para garantizar la consistencia.
+- **Fix:** Solucionado un error de sintaxis (`Unterminated string constant`) que impedía la carga de la aplicación después de la corrección anterior.
+
 ## [2025-10-22 19:00:00]
 
 - **Feature:** Implementada la configuración de la API Key de Gemini para habilitar el análisis financiero con IA.
