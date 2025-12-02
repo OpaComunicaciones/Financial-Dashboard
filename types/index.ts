@@ -11,6 +11,7 @@ export type IncomeType = ConfigItem & {
 export type ExpenseType = ConfigItem & {
   isExpense: boolean; // True if it's an expense for P&L, false otherwise
   isPlannable?: boolean;
+  isDeductibleFromSales?: boolean; // True if this expense should be deducted from gross sales for net sales calculation
 };
 
 export type TaxPaymentFrequency = 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'annual';
@@ -146,6 +147,38 @@ export type BudgetRecord = {
 };
 
 
+export type DebtorType = 'delivery_platform' | 'customer' | 'employee';
+
+export type Debtor = {
+  id: string;
+  name: string;
+  type: DebtorType;
+};
+
+export type ReceivablePayment = {
+  id: string;
+  paymentDate: string;
+  amount: number;
+  method: 'cash' | 'bank';
+  bankAccountId?: string; // Only if method is 'bank'
+  commissionAmount?: number; // Amount of commission deducted by platform
+};
+
+export type AccountReceivableStatus = 'Pending' | 'Paid' | 'Partially Paid';
+
+export type AccountReceivable = {
+  id: string;
+  debtorId: string;
+  date: string; // Date the receivable was generated (e.g., sale date)
+  concept: string; // e.g., "Sale from Uber Eats 2025-03-01", "Employee Loan John Doe"
+  amount: number; // Original amount of the receivable
+  dueDate?: string; // Optional due date
+  status: AccountReceivableStatus;
+  payments: ReceivablePayment[];
+  currencyCode: string; // Currency of the receivable
+};
+
+
 export interface AppState {
   sharedDate: string;
   geminiApiKey?: string;
@@ -165,4 +198,6 @@ export interface AppState {
   ipcRecords: IPCRecord[];
   exchangeRates: ExchangeRate[];
   budgetRecords: BudgetRecord[];
+  debtors: Debtor[];
+  accountsReceivable: AccountReceivable[];
 }

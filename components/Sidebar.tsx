@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Settings, Coins, Receipt, Landmark, DollarSign, FileText, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Settings, Coins, Receipt, Landmark, DollarSign, FileText, ClipboardList, TrendingUp } from 'lucide-react';
 import { useTranslation } from '../i18n/i18n';
 
 const Sidebar: React.FC = () => {
@@ -12,6 +12,7 @@ const Sidebar: React.FC = () => {
     { path: '/daily-cash', label: t('sidebar_daily_cash'), icon: Coins },
     { path: '/daily-sales', label: t('sidebar_daily_sales'), icon: DollarSign },
     { path: '/accounts-payable', label: t('sidebar_accounts_payable'), icon: Receipt },
+    { path: '/accounts-receivable', label: t('sidebar_accounts_receivable', 'Cuentas por Cobrar'), icon: TrendingUp },
     { path: '/banks', label: t('sidebar_banks'), icon: Landmark },
     { path: '/reports', label: t('sidebar_reports'), icon: FileText },
     { path: '/planning', label: t('sidebar_planning'), icon: ClipboardList },

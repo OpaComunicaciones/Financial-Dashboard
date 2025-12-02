@@ -191,19 +191,19 @@ const ConfigSection: React.FC<{
 const ExpenseTypeManagement: React.FC = () => {
   const { t } = useTranslation();
   const { state, addExpenseType, updateExpenseType, deleteConfigItem } = useAppContext();
-  const [newItem, setNewItem] = useState({ name: '', isExpense: true, isPlannable: true });
+  const [newItem, setNewItem] = useState({ name: '', isExpense: true, isPlannable: true, isDeductibleFromSales: false });
   const [editingItem, setEditingItem] = useState<ExpenseType | null>(null);
 
   const handleAdd = () => {
     if (newItem.name.trim()) {
-      addExpenseType(newItem.name.trim(), newItem.isExpense, newItem.isPlannable);
-      setNewItem({ name: '', isExpense: true, isPlannable: true });
+      addExpenseType(newItem.name.trim(), newItem.isExpense, newItem.isPlannable, newItem.isDeductibleFromSales);
+      setNewItem({ name: '', isExpense: true, isPlannable: true, isDeductibleFromSales: false });
     }
   };
 
   const handleUpdate = () => {
     if (editingItem && editingItem.name.trim()) {
-      updateExpenseType(editingItem.id, editingItem.name.trim(), editingItem.isExpense, editingItem.isPlannable || false);
+      updateExpenseType(editingItem.id, editingItem.name.trim(), editingItem.isExpense, editingItem.isPlannable || false, editingItem.isDeductibleFromSales || false);
       setEditingItem(null);
     }
   };
@@ -233,6 +233,10 @@ const ExpenseTypeManagement: React.FC = () => {
             <label className="text-sm text-gray-300" htmlFor="isExpensePlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
             <input type="checkbox" id="isExpensePlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
         </div>
+        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
+            <label className="text-sm text-gray-300" htmlFor="isDeductible">{t('configuration_is_deductible_from_sales', 'Deduct from Sales?')}</label>
+            <input type="checkbox" id="isDeductible" checked={newItem.isDeductibleFromSales} onChange={(e) => setNewItem({ ...newItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        </div>
         <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
@@ -257,6 +261,10 @@ const ExpenseTypeManagement: React.FC = () => {
                     <label htmlFor="isExpensePlannableEdit" className="text-xs">{t('configuration_is_plannable', 'Plannable')}</label>
                     <input id="isExpensePlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
                  </div>
+                 <div className="flex items-center gap-1">
+                    <label htmlFor="isDeductibleEdit" className="text-xs">{t('configuration_is_deductible_from_sales_short', 'Deduct?')}</label>
+                    <input id="isDeductibleEdit" type="checkbox" checked={!!editingItem.isDeductibleFromSales} onChange={(e) => setEditingItem({ ...editingItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+                 </div>
                 <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
                 <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -270,6 +278,11 @@ const ExpenseTypeManagement: React.FC = () => {
                   {item.isPlannable && (
                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-300`}>
                       {t('configuration_is_plannable_badge', 'Plannable')}
+                    </span>
+                  )}
+                  {item.isDeductibleFromSales && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-500/30 text-yellow-300`}>
+                      {t('configuration_is_deductible_from_sales_badge', 'Deductible from Sales')}
                     </span>
                   )}
                 </div>

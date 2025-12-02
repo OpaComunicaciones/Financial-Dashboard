@@ -6,6 +6,7 @@ import { useAppContext } from '../context/AppContext';
 import { DailySale } from '../types';
 import EditDailySaleModal from '../components/EditDailySaleModal';
 import { formatNumber } from '../utils/formatting';
+import { calculateNetSalesForDay } from '../utils/calculations';
 
 const DailySales: React.FC = () => {
     const { t } = useTranslation();
@@ -22,6 +23,7 @@ const DailySales: React.FC = () => {
     const [editingSale, setEditingSale] = useState<DailySale | null>(null);
 
     const [transfers, setTransfers] = useState<any[]>([]);
+    const [platformSales, setPlatformSales] = useState<any[]>([]); // New state for platform sales
 
     const handleAddTransfer = (currencyCode: string) => {
         setTransfers([...transfers, { id: Date.now(), currencyCode, accountId: '', amount: '' }]);
@@ -33,6 +35,18 @@ const DailySales: React.FC = () => {
 
     const handleRemoveTransfer = (id: number) => {
         setTransfers(transfers.filter(t => t.id !== id));
+    };
+
+    const handleAddPlatformSale = (currencyCode: string) => {
+        setPlatformSales([...platformSales, { id: Date.now(), debtorId: '', amount: '', currencyCode }]);
+    };
+
+    const handlePlatformSaleChange = (id: number, field: string, value: string) => {
+        setPlatformSales(platformSales.map(ps => ps.id === id ? { ...ps, [field]: value } : ps));
+    };
+
+    const handleRemovePlatformSale = (id: number) => {
+        setPlatformSales(platformSales.filter(ps => ps.id !== id));
     };
 
     const handleLogSales = (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,11 +93,20 @@ const DailySales: React.FC = () => {
             });
         }
         
-        if (salesData.length > 0) {
-            logDailySales(salesData, transfers, cardSales);
+        const platformSalesToLog = platformSales
+            .filter(ps => ps.debtorId && (parseFloat(ps.amount) || 0) > 0)
+            .map(ps => ({
+                debtorId: ps.debtorId,
+                amount: parseFloat(ps.amount) || 0,
+                currencyCode: ps.currencyCode,
+            }));
+
+        if (salesData.length > 0 || platformSalesToLog.length > 0) {
+            logDailySales(salesData, transfers, cardSales, platformSalesToLog);
             alert(t('daily_sales_log_success'));
             (e.target as HTMLFormElement).reset();
             setTransfers([]);
+            setPlatformSales([]); // Clear platform sales after logging
         } else {
             alert(t('daily_sales_no_data_error'));
         }
@@ -107,6 +130,26 @@ const DailySales: React.FC = () => {
 
     const salesTotalsByCurrency = useMemo(() => {
         const totals: { [key: string]: { cash: number; card: number; transfer: number; total: number } } = {};
+        const dailyNetSalesCache = new Map<string, number>();
+
+        // Helper to get or calculate net sales for a day to avoid redundant calculations
+        const getOrCalculateNetSales = (date: string) => {
+            if (!dailyNetSalesCache.has(date)) {
+                dailyNetSalesCache.set(date, calculateNetSalesForDay(date, state));
+            }
+            return dailyNetSalesCache.get(date) as number;
+        };
+
+        const dailyGrossSalesByCurrency = new Map<string, { gross: number, currency: string }>();
+        
+        filteredSales.forEach(sale => {
+            if (!dailyGrossSalesByCurrency.has(sale.date)) {
+                dailyGrossSalesByCurrency.set(sale.date, { gross: 0, currency: sale.currencyCode});
+            }
+            const stat = dailyGrossSalesByCurrency.get(sale.date)!;
+            stat.gross += sale.cash + sale.card + sale.transfer;
+        })
+
 
         filteredSales.forEach(sale => {
             if (!totals[sale.currencyCode]) {
@@ -115,11 +158,19 @@ const DailySales: React.FC = () => {
             totals[sale.currencyCode].cash += sale.cash;
             totals[sale.currencyCode].card += sale.card;
             totals[sale.currencyCode].transfer += sale.transfer;
-            totals[sale.currencyCode].total += sale.cash + sale.card + sale.transfer;
+
+            const netSalesForDay = getOrCalculateNetSales(sale.date);
+            const grossSalesForDayInCurrency = dailyGrossSalesByCurrency.get(sale.date)!.gross;
+            const grossSalesForSale = sale.cash + sale.card + sale.transfer;
+            
+            if (grossSalesForDayInCurrency > 0) {
+                 const proportion = grossSalesForSale / grossSalesForDayInCurrency;
+                 totals[sale.currencyCode].total += netSalesForDay * proportion;
+            }
         });
 
         return totals;
-    }, [filteredSales]);
+    }, [filteredSales, state]);
 
     const getCurrencySymbol = (code: string) => {
         return state.currencies.find(c => c.code === code)?.symbol || '$';
@@ -190,6 +241,34 @@ const DailySales: React.FC = () => {
                         ))}
                     </div>
 
+                    {/* Platform Sales / Credit Sales */}
+                    <div className="space-y-6">
+                        <h3 className="text-xl font-semibold text-white">{t('daily_sales_platform_sales_title', 'Ventas a Plataformas / Crédito')}</h3>
+                        {state.currencies.map(currency => (
+                            <div key={`platform-${currency.id}`} className="p-4 bg-gray-900/50 rounded-lg">
+                                <h4 className="text-lg font-bold text-teal-400 mb-3">{currency.name} ({currency.code})</h4>
+                                <div className="space-y-3">
+                                    {platformSales.filter(ps => ps.currencyCode === currency.code).map((ps, index) => (
+                                        <div key={ps.id} className="flex items-center gap-3">
+                                            <Landmark className="text-teal-400" size={24}/>
+                                            <select value={ps.debtorId} onChange={e => handlePlatformSaleChange(ps.id, 'debtorId', e.target.value)} className="w-32 bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                                                <option value="">{t('ar_select_debtor', 'Seleccionar Deudor')}</option>
+                                                {state.debtors.filter(d => d.type === 'delivery_platform' || d.type === 'customer').map(debtor => (
+                                                    <option key={debtor.id} value={debtor.id}>{debtor.name}</option>
+                                                ))}
+                                            </select>
+                                            <input type="number" value={ps.amount} onChange={e => handlePlatformSaleChange(ps.id, 'amount', e.target.value)} step="0.01" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0,00" />
+                                            <button type="button" onClick={() => handleRemovePlatformSale(ps.id)} className="text-red-500 hover:text-red-400"><Trash2 size={18} /></button>
+                                        </div>
+                                    ))}
+                                    <button type="button" onClick={() => handleAddPlatformSale(currency.code)} className="text-teal-400 hover:text-teal-300 font-semibold py-2 rounded-lg flex items-center gap-2">
+                                        <Plus size={18} /> {t('daily_sales_add_platform_sale_button', 'Añadir Venta a Plataforma')}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                     <div className="space-y-4 pt-4 border-t border-gray-600">
                         <h3 className="text-xl font-semibold text-white">{t('daily_sales_customer_count')}</h3>
                          <div className="flex items-center gap-3">
@@ -237,7 +316,7 @@ const DailySales: React.FC = () => {
                         </thead>
                         <tbody>
                             {filteredSales.map((sale) => {
-                                const total = sale.cash + sale.card + sale.transfer;
+                                const netSales = calculateNetSalesForDay(sale.date, state);
                                 const symbol = getCurrencySymbol(sale.currencyCode);
                                 return (
                                     <tr key={sale.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
@@ -246,7 +325,7 @@ const DailySales: React.FC = () => {
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.cash, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.card, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.transfer, { style: 'currency', currencySymbol: symbol })}</td>
-                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(total, { style: 'currency', currencySymbol: symbol })}</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(netSales, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.customers)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex justify-center gap-4">

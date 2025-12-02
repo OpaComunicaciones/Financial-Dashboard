@@ -1,5 +1,29 @@
 # Changelog
 
+## [2025-10-22 22:00:00]
+
+- **Feature:** Implementado el módulo completo de Cuentas por Cobrar (Accounts Receivable).
+  - **Estructuras de Datos**: Se añadieron nuevos tipos para `Deudor` (Plataforma de delivery, Cliente, Empleado) y `CuentaPorCobrar` (con pagos parciales, consolidados y comisiones).
+  - **Gestión de Deudores**: Nueva sección en la página "Cuentas por Cobrar" para añadir, editar y eliminar deudores.
+  - **Gestión de Cuentas por Cobrar**: Listado, filtrado y adición manual de cuentas por cobrar.
+  - **Integración con Ventas Diarias**: Nueva sección en la página "Ventas Diarias" para registrar ventas a plataformas/crédito, que automáticamente crean entradas en Cuentas por Cobrar.
+  - **Sistema Avanzado de Pagos**: Nuevo modal "Registrar Pago Entrante" que permite aplicar un solo pago a múltiples cuentas por cobrar, manejar pagos parciales y registrar comisiones automáticamente.
+- **Refactor**: Mejora significativa en la precisión del "Estado de Resultados (P&G)" y "Ventas Diarias".
+  - Se introdujo el concepto de gastos "Deducibles de Ventas" (`isDeductibleFromSales`) en los tipos de egreso.
+  - El cálculo de ventas netas ahora considera gastos deducibles, excedentes de caja y ajustes fiscales, proporcionando una visión más precisa de la rentabilidad.
+  - Se creó la utilidad `utils/calculations.ts` para centralizar la lógica de cálculo de ventas netas diarias.
+- **i18n:** Añadidas todas las traducciones necesarias para el nuevo módulo en español e inglés.
+
+## [2025-10-22 21:00:00]
+
+- **Feature:** Implementado el módulo completo de Cuentas por Cobrar (Accounts Receivable).
+  - **Estructuras de Datos**: Se añadieron nuevos tipos para `Deudor` (Plataforma de delivery, Cliente, Empleado) y `CuentaPorCobrar` (con pagos parciales, consolidados y comisiones).
+  - **Gestión de Deudores**: Nueva sección en la página "Cuentas por Cobrar" para añadir, editar y eliminar deudores.
+  - **Gestión de Cuentas por Cobrar**: Listado, filtrado y adición manual de cuentas por cobrar.
+  - **Integración con Ventas Diarias**: Nueva sección en la página "Ventas Diarias" para registrar ventas a plataformas/crédito, que automáticamente crean entradas en Cuentas por Cobrar.
+  - **Sistema Avanzado de Pagos**: Nuevo modal "Registrar Pago Entrante" que permite aplicar un solo pago a múltiples cuentas por cobrar, manejar pagos parciales y registrar comisiones automáticamente.
+- **i18n:** Añadidas todas las traducciones necesarias para el nuevo módulo en español e inglés.
+
 ## [2025-10-22 20:00:00]
 
 - **Fix:** Corregido un error de zona horaria en el Panel de Declaración de Impuestos. Las ventas del primer día de un período fiscal ya no se atribuyen incorrectamente al período anterior. Todos los cálculos de fechas ahora se manejan en UTC para garantizar la consistencia.

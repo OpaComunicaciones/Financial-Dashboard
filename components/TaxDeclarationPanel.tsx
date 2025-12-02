@@ -4,6 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import { useTranslation } from '../i18n/i18n';
 import { formatNumber } from '../utils/formatting';
 import { Tax, TaxPaymentFrequency } from '../types';
+import { calculateNetSalesForDay } from '../utils/calculations';
 
 // Helper to get the number of months for a frequency
 const getMonthsForFrequency = (frequency: TaxPaymentFrequency): number => {
@@ -106,27 +107,44 @@ const TaxDeclarationPanel: React.FC = () => {
     // This is a simplification. Assumes all tax is handled in the primary currency.
 
     return currencies[0]?.symbol || '$';
-  }
-
-  const taxData = React.useMemo(() => {
-    if (!dailySales || dailySales.length === 0) return [];
+    }
+  
+    // ... (rest of the component)
+  
+    const taxData = React.useMemo(() => {    if (!dailySales || dailySales.length === 0) return [];
 
     return taxes.map(tax => {
       const periods: Record<string, { totalSale: number; taxAmount: number; periodLabel: string }> = {};
 
-      dailySales.forEach(sale => {
-        const saleDate = new Date(sale.date);
+      // Create a set of unique dates from dailySales to avoid redundant calculations
+      const uniqueDates = [...new Set(dailySales.map(s => s.date))];
+
+      uniqueDates.forEach(date => {
+        const [year, month, day] = date.split('-').map(Number);
+        const saleDate = new Date(Date.UTC(year, month - 1, day));
+        
         const { periodKey, periodLabel } = getFiscalPeriod(saleDate, tax.paymentFrequency);
         
         if (!periods[periodKey]) {
           periods[periodKey] = { totalSale: 0, taxAmount: 0, periodLabel };
         }
         
-        const totalSaleInDefaultCurrency = sale.cash + sale.card + sale.transfer; // Assuming conversion is 1:1 for now
-        periods[periodKey].totalSale += totalSaleInDefaultCurrency;
-        periods[periodKey].taxAmount = periods[periodKey].totalSale * (tax.percentage / 100);
+        // Calculate net sales for the day using the utility function
+        const netSalesForDay = calculateNetSalesForDay(date, state);
+        
+        // The base for the tax is the net sales *before* the tax was removed.
+        // Our function returns sales *after* tax. We need to reverse it.
+        const taxRate = tax.percentage / 100;
+        const taxableBase = netSalesForDay * (1 + taxRate);
+
+        periods[periodKey].totalSale += taxableBase;
       });
 
+      // Now, calculate the final tax amount for each period
+      Object.keys(periods).forEach(periodKey => {
+        periods[periodKey].taxAmount = periods[periodKey].totalSale * (tax.percentage / 100);
+      });
+      
       const adjustments: any[] = [];
 
       const processedPeriods = Object.entries(periods).map(([periodKey, data]) => {
@@ -161,7 +179,7 @@ const TaxDeclarationPanel: React.FC = () => {
         periods: [...processedPeriods, ...adjustments],
       };
     });
-  }, [taxes, dailySales, invoices]);
+  }, [state]);
 
 
   if (taxes.length === 0) {

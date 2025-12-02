@@ -30,7 +30,14 @@ const AccountsPayable: React.FC = () => {
   
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [filter, setFilter] = useState<FilterStatus>('All');
+  const [conceptFilter, setConceptFilter] = useState<string>('All');
   
+  const today = new Date();
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+  const todayStr = today.toISOString().split('T')[0];
+  const [startDate, setStartDate] = useState(firstDayOfMonth);
+  const [endDate, setEndDate] = useState(todayStr);
+
   const statusTranslation: Record<InvoiceStatus, string> = {
     Pending: t('accounts_payable_status_pending'),
     Paid: t('accounts_payable_status_paid'),
@@ -79,11 +86,24 @@ const AccountsPayable: React.FC = () => {
 
   const filteredInvoices = useMemo(() => {
     let invoices = state.invoices.map(inv => ({...inv, status: getInvoiceStatus(inv)}));
+    
+    // Status filter
     if (filter !== 'All') {
       invoices = invoices.filter(invoice => invoice.status === filter);
     }
+
+    // Date range filter
+    if(startDate && endDate) {
+      invoices = invoices.filter(invoice => invoice.date >= startDate && invoice.date <= endDate);
+    }
+
+    // Concept filter
+    if (conceptFilter !== 'All') {
+      invoices = invoices.filter(invoice => invoice.conceptId === conceptFilter);
+    }
+
     return invoices.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [state.invoices, filter]);
+  }, [state.invoices, filter, startDate, endDate, conceptFilter]);
   
   const pendingDebtByCurrency = useMemo(() => {
     return state.invoices
@@ -164,22 +184,38 @@ const AccountsPayable: React.FC = () => {
 
 
       <div className="bg-gray-800 rounded-xl border border-gray-700">
-        <div className="p-4 flex items-center gap-2 border-b border-gray-700 overflow-x-auto">
-          {filterButtons.map(({ label, value }) => (
-             <button
-                key={value}
-                onClick={() => setFilter(value)}
-                className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors whitespace-nowrap ${filter === value ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-             >
-                {label}
-             </button>
-          ))}
+        <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-700">
+          <div className="flex items-center gap-2 overflow-x-auto">
+            {filterButtons.map(({ label, value }) => (
+               <button
+                  key={value}
+                  onClick={() => setFilter(value)}
+                  className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors whitespace-nowrap ${filter === value ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+               >
+                  {label}
+               </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm" />
+            <span className="text-gray-400">a</span>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm" />
+          </div>
+          <div className="flex items-center gap-2">
+            <select value={conceptFilter} onChange={e => setConceptFilter(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm">
+                <option value="All">{t('accounts_payable_filter_all_concepts', 'Todos los Conceptos')}</option>
+                {state.expenseTypes.map(concept => (
+                    <option key={concept.id} value={concept.id}>{concept.name}</option>
+                ))}
+            </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left text-gray-300">
             <thead className="text-xs text-gray-400 uppercase bg-gray-700">
               <tr>
                 <th scope="col" className="px-6 py-3">{t('accounts_payable_col_supplier')}</th>
+                <th scope="col" className="px-6 py-3">{t('accounts_payable_col_issue_date', 'Fecha Emisión')}</th>
                 <th scope="col" className="px-6 py-3">{t('daily_cash_col_concept')}</th>
                 <th scope="col" className="px-6 py-3">{t('accounts_payable_col_amount')}</th>
                 <th scope="col" className="px-6 py-3">{t('accounts_payable_col_due_date')}</th>
@@ -194,6 +230,7 @@ const AccountsPayable: React.FC = () => {
                   return (
                     <tr key={invoice.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
                       <td className="px-6 py-4 font-medium text-white">{invoice.supplier}<br/><span className='text-xs text-gray-400'>#{invoice.invoiceNumber}</span></td>
+                      <td className="px-6 py-4">{invoice.date}</td>
                       <td className="px-6 py-4">{getConceptName(invoice.conceptId)}</td>
                       <td className="px-6 py-4 font-mono">
                         <div>{formatNumber(invoice.amount, { style: 'currency', currencySymbol: getCurrencySymbol(invoice.currencyCode) })}</div>

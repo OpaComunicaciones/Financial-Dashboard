@@ -60,6 +60,8 @@ const initialData: AppState = {
     { id: '1', date: '2023-01-01', fromCurrencyCode: 'ANG', toCurrencyCode: 'USD', rate: 0.55 }
   ],
   budgetRecords: [],
+  debtors: [],
+  accountsReceivable: [],
 };
 
 type ConfigCategory = 'paymentMethods';
@@ -79,8 +81,8 @@ interface AppContextType {
   deleteConfigItem: (category: ConfigCategory | 'expenseTypes' | 'incomeTypes', id: string) => void;
   addIncomeType: (name: string, isIncome: boolean, isPlannable: boolean) => void;
   updateIncomeType: (id: string, name: string, isIncome: boolean, isPlannable: boolean) => void;
-  addExpenseType: (name: string, isExpense: boolean, isPlannable: boolean) => void;
-  updateExpenseType: (id: string, name: string, isExpense: boolean, isPlannable: boolean) => void;
+  addExpenseType: (name: string, isExpense: boolean, isPlannable: boolean, isDeductibleFromSales?: boolean) => void;
+  updateExpenseType: (id: string, name: string, isExpense: boolean, isPlannable: boolean, isDeductibleFromSales?: boolean) => void;
   // Taxes
   addTax: (tax: Omit<Tax, 'id'>) => void;
   updateTax: (tax: Tax) => void;
@@ -101,12 +103,28 @@ interface AppContextType {
   addExchangeRate: (rate: Omit<ExchangeRate, 'id'>) => void;
   updateExchangeRate: (rate: ExchangeRate) => void;
   deleteExchangeRate: (id: string) => void;
+  // Debtors
+  addDebtor: (debtor: Omit<Debtor, 'id'>) => void;
+  updateDebtor: (debtor: Debtor) => void;
+  deleteDebtor: (id: string) => void;
+  // Accounts Receivable
+  addAccountReceivable: (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>) => void;
+  updateAccountReceivable: (ar: AccountReceivable) => void;
+  receivePaymentForReceivables: (paymentDetails: {
+    debtorId: string;
+    amountReceived: number;
+    paymentDate: string;
+    paymentMethod: 'cash' | 'bank';
+    bankAccountId?: string;
+    commissionAmount?: number;
+    receivablesToApply: { id: string; amountApplied: number }[];
+  }) => void;
   // Financials
   addInvoice: (invoice: Omit<Invoice, 'id' | 'status' | 'payments'>) => void;
   updateInvoice: (invoice: Invoice) => void;
   deleteInvoice: (id: string) => void;
   payInvoice: (invoiceId: string, payment: Omit<InvoicePayment, 'id'>) => void;
-  logDailySales: (sales: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[]) => void;
+  logDailySales: (sales: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[], platformSales: { debtorId: string; amount: number; currencyCode: string; }[]) => void;
   updateDailySale: (sale: DailySale, transfers: any[], cardSales: any[]) => void;
   deleteDailySale: (id: string) => void;
   addMiscIncome: (income: Omit<MiscIncome, 'id'>) => void;
@@ -119,10 +137,129 @@ interface AppContextType {
   updateBankTransaction: (transaction: BankTransaction) => void;
   deleteBankTransaction: (id: string) => void;
   saveCashClosure: (closure: CashClosure) => void;
-  // Planning
-  setIPCRecord: (record: IPCRecord) => void;
-  setBudgetRecord: (record: BudgetRecord) => void;
-  setYearlyBudgetForCategory: (details: { year: number, categoryId: string, categoryType: 'income' | 'expense', amount: number }) => void;
+  const receivePaymentForReceivables = (paymentDetails: {
+    debtorId: string;
+    amountReceived: number;
+    paymentDate: string;
+    paymentMethod: 'cash' | 'bank';
+    bankAccountId?: string;
+    commissionAmount?: number;
+    receivablesToApply: { id: string; amountApplied: number }[];
+  }) => {
+    const { debtorId, amountReceived, paymentDate, paymentMethod, bankAccountId, commissionAmount, receivablesToApply } = paymentDetails;
+
+    let newAccountsReceivable = [...state.accountsReceivable];
+    let newTransactions = [...state.transactions];
+    let newCashClosures = [...state.cashClosures]; // Assuming cash closures can be updated for cash payments
+    let newCashExpenses = [...state.cashExpenses];
+    let newExpenseTypes = [...state.expenseTypes];
+
+    let totalAppliedToReceivables = 0;
+
+    // 1. Update each Account Receivable
+    receivablesToApply.forEach(rToApply => {
+      const arIndex = newAccountsReceivable.findIndex(ar => ar.id === rToApply.id);
+      if (arIndex !== -1) {
+        const ar = { ...newAccountsReceivable[arIndex] };
+        const newPayment: ReceivablePayment = {
+          id: Date.now().toString() + '_' + rToApply.id,
+          paymentDate,
+          amount: rToApply.amountApplied,
+          method: paymentMethod,
+          bankAccountId,
+        };
+        ar.payments = [...ar.payments, newPayment];
+
+        const totalPaidForThisAR = ar.payments.reduce((sum, p) => sum + p.amount, 0);
+
+        if (totalPaidForThisAR >= ar.amount) {
+          ar.status = 'Paid';
+        } else if (totalPaidForThisAR > 0) {
+          ar.status = 'Partially Paid';
+        } else {
+          ar.status = 'Pending'; // Should not happen if amountApplied > 0
+        }
+        newAccountsReceivable[arIndex] = ar;
+        totalAppliedToReceivables += rToApply.amountApplied;
+      }
+    });
+
+    // 2. Register the incoming payment (deposit)
+    if (amountReceived > 0) {
+      if (paymentMethod === 'bank' && bankAccountId) {
+        let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar');
+        let newIncomeTypes = [...state.incomeTypes];
+        if (!arConcept) {
+          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
+          newIncomeTypes.push(arConcept);
+        }
+
+        const newBankTransaction: BankTransaction = {
+          id: Date.now().toString(),
+          bankAccountId,
+          date: paymentDate,
+          description: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name})`,
+          amount: amountReceived,
+          type: 'income',
+          conceptId: arConcept.id,
+        };
+        newTransactions.push(newBankTransaction);
+        state.incomeTypes = newIncomeTypes; // Update income types in state
+      } else if (paymentMethod === 'cash') {
+        // For cash, we'd typically update a cash closure. This is more complex.
+        // For now, we'll assume it affects the current day's cash, which will be reconciled in DailyCash.
+        // Alternatively, it could be recorded as a MiscIncome or added to a temporary cash balance.
+        // Given existing CashClosure, a simple way is to record as MiscIncome.
+        let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar');
+        let newIncomeTypes = [...state.incomeTypes];
+        if (!arConcept) {
+          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
+          newIncomeTypes.push(arConcept);
+        }
+        const newMiscIncome: MiscIncome = {
+            id: Date.now().toString(),
+            date: paymentDate,
+            currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD', // Assumes a default currency
+            conceptId: arConcept.id,
+            detail: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name}) en efectivo`,
+            amount: amountReceived,
+        };
+        state.miscIncomes = [...state.miscIncomes, newMiscIncome];
+        state.incomeTypes = newIncomeTypes;
+      }
+    }
+
+    // 3. Handle Commission Expense (if any)
+    if (commissionAmount && commissionAmount > 0) {
+      let commissionConcept = state.expenseTypes.find(et => et.name === 'Comisiones Plataformas');
+      if (!commissionConcept) {
+        commissionConcept = { id: `comm-exp-${Date.now()}`, name: 'Comisiones Plataformas', isExpense: true, isPlannable: false };
+        newExpenseTypes.push(commissionConcept);
+      }
+      const newCommissionExpense: CashExpense = { // Could be CashExpense or BankTransaction depending on method.
+                                                  // Assuming CashExpense for simplicity if not a bank transfer directly.
+                                                  // For platforms, it's often deducted, so it's an 'expense'.
+        id: Date.now().toString(),
+        date: paymentDetails.paymentDate,
+        currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD',
+        supplier: state.debtors.find(d => d.id === debtorId)?.name || 'Desconocido',
+        detail: `Comisión por pago de ${state.debtors.find(d => d.id === debtorId)?.name}`,
+        conceptId: commissionConcept.id,
+        amount: commissionAmount,
+      };
+      newCashExpenses.push(newCommissionExpense);
+      state.expenseTypes = newExpenseTypes;
+    }
+
+    const newState = {
+      ...state,
+      accountsReceivable: newAccountsReceivable,
+      transactions: newTransactions,
+      cashClosures: newCashClosures,
+      cashExpenses: newCashExpenses,
+    };
+    updateStateAndDB(newState);
+  };
 }
 
 const DB_NAME = 'RestoFinDB';
@@ -185,6 +322,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           if (storedState.expenseTypes) {
             storedState.expenseTypes.sort((a, b) => a.name.localeCompare(b.name));
           }
+          // Data migration for taxes: ensure paymentFrequency is set
+          if (storedState.taxes) {
+            storedState.taxes = storedState.taxes.map(tax => ({
+              ...tax,
+              paymentFrequency: tax.paymentFrequency || 'monthly' // Default to monthly if undefined
+            }));
+          }
           // Ensure new state fields exist
           const mergedState = { ...initialData, ...storedState };
           setState(mergedState);
@@ -236,6 +380,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (newState.incomeTypes && newState.expenseTypes && newState.invoices) {
         newState.incomeTypes.sort((a: IncomeType, b: IncomeType) => a.name.localeCompare(b.name));
         newState.expenseTypes.sort((a: ExpenseType, b: ExpenseType) => a.name.localeCompare(b.name));
+        // Data migration for taxes: ensure paymentFrequency is set for imported data
+        if (newState.taxes) {
+          newState.taxes = newState.taxes.map((tax: Tax) => ({
+            ...tax,
+            paymentFrequency: tax.paymentFrequency || 'monthly' // Default to monthly if undefined
+          }));
+        }
         const mergedState = { ...initialData, ...newState };
         updateStateAndDB(mergedState);
         alert('Data imported successfully!');
@@ -288,17 +439,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateStateAndDB(newState);
   };
 
-  const addExpenseType = (name: string, isExpense: boolean, isPlannable: boolean) => {
-    const newItem: ExpenseType = { id: Date.now().toString(), name, isExpense, isPlannable };
+  const addExpenseType = (name: string, isExpense: boolean, isPlannable: boolean, isDeductibleFromSales?: boolean) => {
+    const newItem: ExpenseType = { id: Date.now().toString(), name, isExpense, isPlannable, isDeductibleFromSales: isDeductibleFromSales || false };
     const newState = { ...state, expenseTypes: [...state.expenseTypes, newItem].sort((a, b) => a.name.localeCompare(b.name)) };
     updateStateAndDB(newState);
   };
 
-  const updateExpenseType = (id: string, name: string, isExpense: boolean, isPlannable: boolean) => {
+  const updateExpenseType = (id: string, name: string, isExpense: boolean, isPlannable: boolean, isDeductibleFromSales?: boolean) => {
     const newState = {
       ...state,
       expenseTypes: state.expenseTypes.map(item =>
-        item.id === id ? { ...item, name, isExpense, isPlannable } : item
+        item.id === id ? { ...item, name, isExpense, isPlannable, isDeductibleFromSales: isDeductibleFromSales || false } : item
       ).sort((a, b) => a.name.localeCompare(b.name)),
     };
     updateStateAndDB(newState);
@@ -410,6 +561,50 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     updateStateAndDB(newState);
   };
+
+  // Debtor Functions
+  const addDebtor = (debtor: Omit<Debtor, 'id'>) => {
+    const newDebtor: Debtor = { ...debtor, id: Date.now().toString() };
+    const newState = { ...state, debtors: [...state.debtors, newDebtor] };
+    updateStateAndDB(newState);
+  };
+
+  const updateDebtor = (updatedDebtor: Debtor) => {
+    const newState = {
+      ...state,
+      debtors: state.debtors.map(d => d.id === updatedDebtor.id ? updatedDebtor : d),
+    };
+    updateStateAndDB(newState);
+  };
+
+  const deleteDebtor = (id: string) => {
+    const newState = {
+      ...state,
+      debtors: state.debtors.filter(d => d.id !== id),
+      accountsReceivable: state.accountsReceivable.filter(ar => ar.debtorId !== id), // Also delete associated receivables
+    };
+    updateStateAndDB(newState);
+  };
+
+  // Account Receivable Functions
+  const addAccountReceivable = (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>) => {
+    const newAR: AccountReceivable = {
+      ...ar,
+      id: Date.now().toString(),
+      status: 'Pending',
+      payments: [],
+    };
+    const newState = { ...state, accountsReceivable: [...state.accountsReceivable, newAR] };
+    updateStateAndDB(newState);
+  };
+
+  const updateAccountReceivable = (updatedAR: AccountReceivable) => {
+    const newState = {
+      ...state,
+      accountsReceivable: state.accountsReceivable.map(ar => ar.id === updatedAR.id ? updatedAR : ar),
+    };
+    updateStateAndDB(newState);
+  };
   
   const addInvoice = (invoice: Omit<Invoice, 'id' | 'status' | 'payments'>) => {
     const newInvoice: Invoice = {
@@ -495,19 +690,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateStateAndDB(newState);
   };
 
-  const logDailySales = (salesData: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[]) => {
+  const logDailySales = (salesData: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[], platformSales: { debtorId: string; amount: number; currencyCode: string; }[]) => {
     const newSalesWithIds: DailySale[] = salesData.map(sale => ({ 
         ...sale, 
         id: `${sale.date}-${sale.currencyCode}-${Date.now()}`
     }));
 
-    const newTransactions: BankTransaction[] = [];
+    let newTransactions: BankTransaction[] = [...state.transactions];
+    let newAccountsReceivable: AccountReceivable[] = [...state.accountsReceivable];
     const { sharedDate } = state;
 
     let ventasDirectasConcept = state.incomeTypes.find(it => it.name === 'Ventas Directas');
     let incomeTypes = [...state.incomeTypes];
     if (!ventasDirectasConcept) {
-        ventasDirectasConcept = { id: `ventas-directas_${Date.now()}`, name: 'Ventas Directas', isIncome: true };
+        ventasDirectasConcept = { id: `ventas-directas_${Date.now()}`, name: 'Ventas Directas', isIncome: true, isPlannable: false };
         incomeTypes.push(ventasDirectasConcept);
     }
     const ventasDirectasConceptId = ventasDirectasConcept.id;
@@ -543,11 +739,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     });
     
+    // Process platform sales
+    platformSales.forEach(ps => {
+      const amount = parseFloat(ps.amount);
+      if (ps.debtorId && amount > 0) {
+        const newAR: AccountReceivable = {
+          id: Date.now().toString(),
+          debtorId: ps.debtorId,
+          date: sharedDate,
+          concept: `Venta a ${state.debtors.find(d => d.id === ps.debtorId)?.name} (${sharedDate})`,
+          amount: amount,
+          currencyCode: ps.currencyCode,
+          status: 'Pending',
+          payments: [],
+        };
+        newAccountsReceivable.push(newAR);
+      }
+    });
+
     const newState = {
       ...state,
       incomeTypes,
       dailySales: [...state.dailySales, ...newSalesWithIds],
-      transactions: [...state.transactions, ...newTransactions],
+      transactions: newTransactions,
+      accountsReceivable: newAccountsReceivable,
     }
     updateStateAndDB(newState);
   };
@@ -894,23 +1109,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     addExchangeRate,
     updateExchangeRate,
     deleteExchangeRate,
-    addInvoice,
-    updateInvoice,
-    deleteInvoice,
-    payInvoice,
-    logDailySales,
-    updateDailySale,
-    deleteDailySale,
-    addMiscIncome,
-    updateMiscIncome,
-    deleteMiscIncome,
-    addCashExpense,
-    updateCashExpense,
-    deleteCashExpense,
-    addBankTransaction,
-    updateBankTransaction,
-    deleteBankTransaction,
-    saveCashClosure,
+    // Debtors
+    addDebtor,
+    updateDebtor,
+    deleteDebtor,
+    // Accounts Receivable
+    addAccountReceivable,
+    updateAccountReceivable,
+    receivePaymentForReceivables,
     setIPCRecord,
     setBudgetRecord,
     setYearlyBudgetForCategory,
