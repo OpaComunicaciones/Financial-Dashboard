@@ -208,7 +208,13 @@ const AccountsReceivable: React.FC = () => {
       <AddAccountReceivableModal
         isOpen={isAddARModalOpen}
         onClose={() => { setIsAddARModalOpen(false); setEditingAR(null); }}
-        onSave={(ar) => { if (editingAR) updateAccountReceivable(ar); else addAccountReceivable(ar); }}
+        onSave={(ar, loanDetails) => { 
+          if (editingAR) {
+            updateAccountReceivable(ar as AccountReceivable);
+          } else {
+            addAccountReceivable(ar, loanDetails);
+          }
+        }}
         accountReceivable={editingAR}
       />
       <RegisterIncomingPaymentModal 

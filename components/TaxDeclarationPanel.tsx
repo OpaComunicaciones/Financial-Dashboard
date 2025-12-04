@@ -130,13 +130,9 @@ const TaxDeclarationPanel: React.FC = () => {
         }
         
         // Calculate net sales for the day using the utility function
-        const netSalesForDay = calculateNetSalesForDay(date, state);
+        const { taxableBase } = calculateNetSalesForDay(date, state);
         
-        // The base for the tax is the net sales *before* the tax was removed.
-        // Our function returns sales *after* tax. We need to reverse it.
-        const taxRate = tax.percentage / 100;
-        const taxableBase = netSalesForDay * (1 + taxRate);
-
+        // The base for the tax is the taxable base (net sales before tax)
         periods[periodKey].totalSale += taxableBase;
       });
 

@@ -2,6 +2,8 @@
 
 ## v0.1.0 - [2025-12-04]
 
+- **Fix:** Corrected the tax calculation logic in the "Tax Declaration Panel". It now correctly uses Net Sales (Gross Sales - Deductible Expenses) as the taxable base, instead of incorrectly using a value that still included tax.
+- **Fix:** Resolved a critical issue where total values in the "Daily Sales" history and summary were appearing blank after a recent refactoring of the sales calculation logic.
 - **Feature:** Enhanced the "Add Account Receivable" modal for employee loans.
   - When creating a receivable for a debtor of type 'Employee', the user can now specify the source of the loan (Cash or a specific Bank Account).
   - The system automatically creates the corresponding withdrawal transaction (either a `CashExpense` or a `BankTransaction`) to ensure accounting consistency.

@@ -108,7 +108,7 @@ interface AppContextType {
   updateDebtor: (debtor: Debtor) => void;
   deleteDebtor: (id: string) => void;
   // Accounts Receivable
-  addAccountReceivable: (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>) => void;
+  addAccountReceivable: (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>, loanDetails?: { source: 'cash' | 'bank'; bankAccountId?: string; }) => void;
   updateAccountReceivable: (ar: AccountReceivable) => void;
   receivePaymentForReceivables: (paymentDetails: {
     debtorId: string;
@@ -468,14 +468,64 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   // Account Receivable Functions
-  const addAccountReceivable = (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>) => {
+  const addAccountReceivable = (
+    ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>,
+    loanDetails?: { source: 'cash' | 'bank'; bankAccountId?: string }
+  ) => {
+    let newTransactions = [...state.transactions];
+    let newCashExpenses = [...state.cashExpenses];
+    let newExpenseTypes = [...state.expenseTypes];
+
     const newAR: AccountReceivable = {
       ...ar,
       id: Date.now().toString(),
       status: 'Pending',
       payments: [],
     };
-    const newState = { ...state, accountsReceivable: [...state.accountsReceivable, newAR] };
+
+    // Handle the disbursement of the loan
+    if (loanDetails) {
+      // Ensure the "Employee Loan" expense type exists
+      let loanConcept = newExpenseTypes.find(et => et.name === 'Préstamo a Empleado');
+      if (!loanConcept) {
+        loanConcept = { id: `loan-exp-${Date.now()}`, name: 'Préstamo a Empleado', isExpense: false, isPlannable: false };
+        newExpenseTypes.push(loanConcept);
+      }
+      
+      const debtorName = state.debtors.find(d => d.id === ar.debtorId)?.name || 'Desconocido';
+
+      if (loanDetails.source === 'cash') {
+        const newExpense: CashExpense = {
+          id: `loan_${newAR.id}`,
+          date: ar.date,
+          currencyCode: ar.currencyCode,
+          supplier: debtorName,
+          detail: `Préstamo a empleado: ${ar.concept}`,
+          conceptId: loanConcept.id,
+          amount: ar.amount,
+        };
+        newCashExpenses.push(newExpense);
+      } else if (loanDetails.source === 'bank' && loanDetails.bankAccountId) {
+        const newTransaction: BankTransaction = {
+          id: `loan_${newAR.id}`,
+          bankAccountId: loanDetails.bankAccountId,
+          date: ar.date,
+          description: `Préstamo a empleado: ${debtorName} - ${ar.concept}`,
+          amount: -Math.abs(ar.amount),
+          type: 'expense',
+          conceptId: loanConcept.id,
+        };
+        newTransactions.push(newTransaction);
+      }
+    }
+
+    const newState = { 
+      ...state, 
+      accountsReceivable: [...state.accountsReceivable, newAR],
+      transactions: newTransactions,
+      cashExpenses: newCashExpenses,
+      expenseTypes: newExpenseTypes,
+    };
     updateStateAndDB(newState);
   };
 

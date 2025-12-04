@@ -133,14 +133,14 @@ const DailySales: React.FC = () => {
 
     const salesTotalsByCurrency = useMemo(() => {
         const totals: { [key: string]: { cash: number; card: number; transfer: number; platform: number; total: number } } = {};
-        const dailyNetSalesCache = new Map<string, number>();
+        const dailyNetSalesCache = new Map<string, { totalRevenueBeforeTax: number, netRevenueAfterTax: number, taxableBase: number }>();
 
         // Helper to get or calculate net sales for a day to avoid redundant calculations
         const getOrCalculateNetSales = (date: string) => {
             if (!dailyNetSalesCache.has(date)) {
                 dailyNetSalesCache.set(date, calculateNetSalesForDay(date, state));
             }
-            return dailyNetSalesCache.get(date) as number;
+            return dailyNetSalesCache.get(date)!;
         };
 
         const dailyGrossSalesByCurrency = new Map<string, { gross: number, currency: string }>();
@@ -163,13 +163,13 @@ const DailySales: React.FC = () => {
             totals[sale.currencyCode].transfer += sale.transfer;
             totals[sale.currencyCode].platform += sale.platform || 0;
 
-            const netSalesForDay = getOrCalculateNetSales(sale.date);
+            const { netRevenueAfterTax } = getOrCalculateNetSales(sale.date);
             const grossSalesForDayInCurrency = dailyGrossSalesByCurrency.get(sale.date)!.gross;
             const grossSalesForSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
             
             if (grossSalesForDayInCurrency > 0) {
                  const proportion = grossSalesForSale / grossSalesForDayInCurrency;
-                 totals[sale.currencyCode].total += netSalesForDay * proportion;
+                 totals[sale.currencyCode].total += netRevenueAfterTax * proportion;
             }
         });
 
@@ -321,7 +321,11 @@ const DailySales: React.FC = () => {
                         </thead>
                         <tbody>
                             {filteredSales.map((sale) => {
-                                const totalSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
+                                const { netRevenueAfterTax } = calculateNetSalesForDay(sale.date, state);
+                                const totalGrossSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
+                                const proportion = totalGrossSale > 0 ? (sale.cash + sale.card + sale.transfer + (sale.platform || 0)) / totalGrossSale : 0;
+                                const netSaleForEntry = netRevenueAfterTax * proportion;
+
                                 const symbol = getCurrencySymbol(sale.currencyCode);
                                 return (
                                     <tr key={sale.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
@@ -331,7 +335,7 @@ const DailySales: React.FC = () => {
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.card, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.transfer, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.platform || 0, { style: 'currency', currencySymbol: symbol })}</td>
-                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(totalSale, { style: 'currency', currencySymbol: symbol })}</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(netSaleForEntry, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.customers)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex justify-center gap-4">
