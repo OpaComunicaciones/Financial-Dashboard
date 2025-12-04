@@ -4,6 +4,7 @@ import { useTranslation } from '../../i18n/i18n';
 import { useAppContext } from '../../context/AppContext';
 import { FileText, FileDown, AlertCircle } from 'lucide-react';
 import { formatNumber } from '../../utils/formatting';
+import { calculateNetSalesForDay } from '../../utils/calculations';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -40,6 +41,33 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
         return rates.length > 0 ? rates[0].rate : null;
     }
 
+    // 1. Calculate Net Sales using the utility function for each day
+    let totalNetSales = 0;
+    const uniqueDates = [...new Set(state.dailySales.filter(s => new Date(s.date) >= start && new Date(s.date) <= end).map(s => s.date))];
+    
+    uniqueDates.forEach(date => {
+        const { taxableBase } = calculateNetSalesForDay(date, state);
+        // We need to find the original currency for this day's sales to convert, this is a simplification
+        // Assuming all sales for a day are in one currency or we convert based on the first entry.
+        const saleForDay = state.dailySales.find(s => s.date === date);
+        if (saleForDay) {
+            const rate = getConversionRate(saleForDay.currencyCode);
+            if (rate !== null) {
+                totalNetSales += taxableBase * rate;
+            } else {
+                 if (saleForDay.currencyCode !== reportingCurrency) unconverted.add(saleForDay.currencyCode);
+            }
+        }
+    });
+
+    if (totalNetSales > 0) {
+      const conceptId = 'direct_sales';
+      const conceptName = t('daily_cash_direct_sales_concept');
+      if (!report.incomes[conceptId]) report.incomes[conceptId] = { name: conceptName, amount: 0 };
+      report.incomes[conceptId].amount += totalNetSales;
+      report.totalIncome += totalNetSales;
+    }
+
     const processEntry = (dateStr: string, currencyCode: string, amount: number, conceptId: string, conceptName: string, type: 'income' | 'expense') => {
         const d = new Date(dateStr);
         if (d < start || d > end) return;
@@ -60,66 +88,8 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
             report.totalExpenses += convertedAmount;
         }
     };
-
-    // 1. Pre-calculate deductions and surpluses
-    let totalDeductibleExpenses = 0;
-    const deductibleExpenseTypeIds = new Set(state.expenseTypes.filter(et => et.isDeductibleFromSales).map(et => et.id));
     
-    state.invoices.forEach(invoice => {
-        const d = new Date(invoice.date);
-        if (deductibleExpenseTypeIds.has(invoice.conceptId) && d >= start && d <= end) {
-            const rate = getConversionRate(invoice.currencyCode);
-            if (rate !== null) {
-                totalDeductibleExpenses += invoice.amount * rate;
-            } else {
-                if (invoice.currencyCode !== reportingCurrency) unconverted.add(invoice.currencyCode);
-            }
-        }
-    });
-
-    let totalSurplus = 0;
-    state.cashClosures.forEach(closure => {
-        const d = new Date(closure.date);
-        if (closure.difference > 0 && d >= start && d <= end) {
-            const rate = getConversionRate(closure.currencyCode);
-            if (rate !== null) {
-                totalSurplus += closure.difference * rate;
-            } else {
-                 if (closure.currencyCode !== reportingCurrency) unconverted.add(closure.currencyCode);
-            }
-        }
-    });
-
-    // 2. Calculate Gross Sales and then adjust
-    let grossSales = 0;
-    state.dailySales.forEach(sale => {
-        const d = new Date(sale.date);
-        if (d >= start && d <= end) {
-            const rate = getConversionRate(sale.currencyCode);
-            if (rate !== null) {
-                grossSales += (sale.cash + sale.card + sale.transfer) * rate;
-            } else {
-                if (sale.currencyCode !== reportingCurrency) unconverted.add(sale.currencyCode);
-            }
-        }
-    });
-
-    const adjustedSales = grossSales - totalDeductibleExpenses - totalSurplus;
-
-    // 3. Apply tax adjustment
-    const tax = state.taxes[0]; // Assuming the first tax is the general one
-    const netSales = tax ? adjustedSales / (1 + tax.percentage / 100) : adjustedSales;
-
-    // 4. Process final net sales as income
-    if (netSales > 0) {
-        const conceptId = 'direct_sales';
-        const conceptName = t('daily_cash_direct_sales_concept');
-        if (!report.incomes[conceptId]) report.incomes[conceptId] = { name: conceptName, amount: 0 };
-        report.incomes[conceptId].amount += netSales;
-        report.totalIncome += netSales;
-    }
-    
-    // 5. Misc Incomes (excluding surplus, which is now a deduction)
+    // 2. Misc Incomes (excluding surplus, which is now accounted for in net sales)
     state.miscIncomes.forEach(income => {
         const concept = state.incomeTypes.find(c => c.id === income.conceptId);
         if (concept && concept.isIncome && concept.name !== 'Surplus') {
@@ -127,7 +97,7 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
         }
     });
 
-    // 6. Invoices (Accounts Payable) - Accrual Basis, excluding deductible expenses
+    // 3. Invoices (Accounts Payable) - Accrual Basis, excluding deductible expenses
     state.invoices.forEach(invoice => {
         const concept = state.expenseTypes.find(c => c.id === invoice.conceptId);
         if (concept && concept.isExpense && !concept.isDeductibleFromSales) {
@@ -135,27 +105,23 @@ const ProfitLossReport: React.FC<ReportProps> = ({ startDate, endDate, reporting
         }
     });
 
-    // 7. Cash Expenses (Non-Invoice)
+    // 4. Cash Expenses (Non-Invoice and not shortage)
     state.cashExpenses.forEach(expense => {
         if (!expense.invoiceNumber) {
             const concept = state.expenseTypes.find(c => c.id === expense.conceptId);
-            if (concept && concept.isExpense) {
-                let conceptName = concept.name;
-                if (conceptName === 'Shortage') conceptName = t('special_concept_shortage');
-                processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, conceptName, 'expense');
+            if (concept && concept.isExpense && concept.name !== 'Shortage') {
+                processEntry(expense.date, expense.currencyCode, expense.amount, expense.conceptId, concept.name, 'expense');
             }
         }
     });
 
-    // 8. Bank Transactions (Expenses only)
+    // 5. Bank Transactions (Expenses only and not shortage)
     state.transactions.forEach(tx => {
         if (tx.type === 'expense' && tx.conceptId && !tx.description.includes('Payment for invoice #')) {
             const concept = state.expenseTypes.find(c => c.id === tx.conceptId);
             const bankAccount = state.bankAccounts.find(b => b.id === tx.bankAccountId);
-            if (concept && concept.isExpense && bankAccount) {
-                let conceptName = concept.name;
-                if (conceptName === 'Shortage') conceptName = t('special_concept_shortage');
-                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, conceptName, 'expense');
+            if (concept && concept.isExpense && bankAccount && concept.name !== 'Shortage') {
+                processEntry(tx.date, bankAccount.currencyCode, Math.abs(tx.amount), tx.conceptId, concept.name, 'expense');
             }
         }
     });

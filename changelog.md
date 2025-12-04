@@ -2,6 +2,7 @@
 
 ## v0.1.0 - [2025-12-04]
 
+- **Fix:** Corrected a `ReferenceError` in the P&L report caused by a missing import for the `calculateNetSalesForDay` function after a refactor.
 - **Fix:** Corrected the tax calculation logic in the "Tax Declaration Panel". It now correctly uses Net Sales (Gross Sales - Deductible Expenses) as the taxable base, instead of incorrectly using a value that still included tax.
 - **Fix:** Resolved a critical issue where total values in the "Daily Sales" history and summary were appearing blank after a recent refactoring of the sales calculation logic.
 - **Feature:** Enhanced the "Add Account Receivable" modal for employee loans.
