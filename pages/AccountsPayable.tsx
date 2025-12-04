@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PageHeader from '../components/PageHeader';
-import { Plus, Edit, Trash2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Plus, Edit, Trash2, CheckCircle, AlertTriangle, FileText } from 'lucide-react';
 import { useTranslation } from '../i18n/i18n';
 import { useAppContext } from '../context/AppContext';
 import { Invoice, InvoicePayment, InvoiceStatus } from '../types';
@@ -10,6 +10,7 @@ import PayInvoiceModal from '../components/PayInvoiceModal';
 import Card from '../components/Card';
 import { formatNumber } from '../utils/formatting';
 import TaxDeclarationPanel from '../components/TaxDeclarationPanel';
+import * as XLSX from 'xlsx';
 
 const statusStyles: Record<InvoiceStatus, string> = {
   Paid: 'bg-green-500/20 text-green-400',
@@ -31,6 +32,7 @@ const AccountsPayable: React.FC = () => {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [filter, setFilter] = useState<FilterStatus>('All');
   const [conceptFilter, setConceptFilter] = useState<string>('All');
+  const [supplierFilter, setSupplierFilter] = useState<string>('All');
   
   const today = new Date();
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
@@ -84,6 +86,11 @@ const AccountsPayable: React.FC = () => {
       return 'Pending';
   }
 
+  const uniqueSuppliers = useMemo(() => {
+    const supplierSet = new Set(state.invoices.map(inv => inv.supplier));
+    return Array.from(supplierSet).sort();
+  }, [state.invoices]);
+
   const filteredInvoices = useMemo(() => {
     let invoices = state.invoices.map(inv => ({...inv, status: getInvoiceStatus(inv)}));
     
@@ -102,8 +109,13 @@ const AccountsPayable: React.FC = () => {
       invoices = invoices.filter(invoice => invoice.conceptId === conceptFilter);
     }
 
+    // Supplier filter
+    if (supplierFilter !== 'All') {
+        invoices = invoices.filter(invoice => invoice.supplier === supplierFilter);
+    }
+
     return invoices.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [state.invoices, filter, startDate, endDate, conceptFilter]);
+  }, [state.invoices, filter, startDate, endDate, conceptFilter, supplierFilter]);
   
   const pendingDebtByCurrency = useMemo(() => {
     return state.invoices
@@ -126,6 +138,36 @@ const AccountsPayable: React.FC = () => {
   const getConceptName = (conceptId: string) => {
       return state.expenseTypes.find(c => c.id === conceptId)?.name || conceptId;
   }
+
+  const handleExportXLSX = () => {
+    const dataToExport = filteredInvoices.map(inv => {
+        const totalPaid = (inv.payments || []).reduce((sum, p) => sum + p.amount, 0);
+        const remaining = inv.amount - totalPaid;
+        return {
+            Proveedor: inv.supplier,
+            'Factura #': inv.invoiceNumber,
+            'Fecha Emisión': inv.date,
+            'Fecha Venc.': inv.dueDate,
+            Concepto: getConceptName(inv.conceptId),
+            Monto: inv.amount,
+            'Saldo Pendiente': remaining,
+            Moneda: inv.currencyCode,
+            Estado: statusTranslation[inv.status],
+        };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Cuentas por Pagar");
+
+    // Adjust column widths
+    const cols = Object.keys(dataToExport[0] || {}).map(key => ({
+      wch: Math.max(key.length, ...dataToExport.map(row => String(row[key as keyof typeof row]).length)) + 2
+    }));
+    worksheet['!cols'] = cols;
+    
+    XLSX.writeFile(workbook, `Cuentas_por_Pagar_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
 
   const filterButtons: { label: string; value: FilterStatus }[] = [
     { label: t('accounts_payable_filter_all'), value: 'All' },
@@ -157,10 +199,15 @@ const AccountsPayable: React.FC = () => {
 
       <div className="flex justify-between items-center">
         <PageHeader title={t('accounts_payable_title')} subtitle={t('accounts_payable_subtitle')} />
-        <button onClick={() => setIsAddModalOpen(true)} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center gap-2">
-            <Plus size={18} />
-            {t('accounts_payable_add_button')}
-        </button>
+        <div className="flex gap-2">
+            <button onClick={handleExportXLSX} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                <FileText size={18} /> {t('reports_export_excel', 'Exportar a Excel')}
+            </button>
+            <button onClick={() => setIsAddModalOpen(true)} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+                <Plus size={18} />
+                {t('accounts_payable_add_button')}
+            </button>
+        </div>
       </div>
 
       <TaxDeclarationPanel />
@@ -206,6 +253,14 @@ const AccountsPayable: React.FC = () => {
                 <option value="All">{t('accounts_payable_filter_all_concepts', 'Todos los Conceptos')}</option>
                 {state.expenseTypes.map(concept => (
                     <option key={concept.id} value={concept.id}>{concept.name}</option>
+                ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <select value={supplierFilter} onChange={e => setSupplierFilter(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm">
+                <option value="All">{t('accounts_payable_filter_all_suppliers', 'Todos los Proveedores')}</option>
+                {uniqueSuppliers.map(supplier => (
+                    <option key={supplier} value={supplier}>{supplier}</option>
                 ))}
             </select>
           </div>

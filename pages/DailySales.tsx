@@ -55,6 +55,14 @@ const DailySales: React.FC = () => {
         const salesData: Omit<DailySale, 'id'>[] = [];
         const cardSales: any[] = [];
         
+        const platformSalesToLog = platformSales
+            .filter(ps => ps.debtorId && (parseFloat(ps.amount) || 0) > 0)
+            .map(ps => ({
+                debtorId: ps.debtorId,
+                amount: parseFloat(ps.amount) || 0,
+                currencyCode: ps.currencyCode,
+            }));
+
         state.currencies.forEach(currency => {
             const cash = parseFloat(formData.get(`cash-${currency.code}`) as string) || 0;
             let cardTotal = 0;
@@ -68,14 +76,17 @@ const DailySales: React.FC = () => {
             });
 
             const transferTotal = transfers.filter(t => t.currencyCode === currency.code).reduce((acc, t) => acc + (parseFloat(t.amount) || 0), 0);
+            
+            const platformTotal = platformSalesToLog.filter(ps => ps.currencyCode === currency.code).reduce((acc, ps) => acc + ps.amount, 0);
 
-            if (cash > 0 || cardTotal > 0 || transferTotal > 0) {
+            if (cash > 0 || cardTotal > 0 || transferTotal > 0 || platformTotal > 0) {
                  salesData.push({
                     date: sharedDate,
                     currencyCode: currency.code,
                     cash,
                     card: cardTotal,
                     transfer: transferTotal,
+                    platform: platformTotal, // Include platform total
                     customers: 0 // Customer count is now global for the day
                 });
             }
@@ -84,23 +95,15 @@ const DailySales: React.FC = () => {
         const customers = parseInt(formData.get('customers') as string) || 0;
         if (salesData.length > 0) {
             salesData[0].customers = customers;
-        } else if (customers > 0) {
+        } else if (customers > 0 || platformSalesToLog.length > 0) { // Also check for platform sales
             salesData.push({
                 date: sharedDate,
-                currencyCode: state.currencies[0]?.code || 'N/A',
-                cash: 0, card: 0, transfer: 0,
+                currencyCode: platformSalesToLog[0]?.currencyCode || state.currencies[0]?.code || 'N/A',
+                cash: 0, card: 0, transfer: 0, platform: platformSalesToLog.reduce((acc, ps) => acc + ps.amount, 0),
                 customers: customers,
             });
         }
         
-        const platformSalesToLog = platformSales
-            .filter(ps => ps.debtorId && (parseFloat(ps.amount) || 0) > 0)
-            .map(ps => ({
-                debtorId: ps.debtorId,
-                amount: parseFloat(ps.amount) || 0,
-                currencyCode: ps.currencyCode,
-            }));
-
         if (salesData.length > 0 || platformSalesToLog.length > 0) {
             logDailySales(salesData, transfers, cardSales, platformSalesToLog);
             alert(t('daily_sales_log_success'));
@@ -129,7 +132,7 @@ const DailySales: React.FC = () => {
     }, [state.dailySales, startDate, endDate]);
 
     const salesTotalsByCurrency = useMemo(() => {
-        const totals: { [key: string]: { cash: number; card: number; transfer: number; total: number } } = {};
+        const totals: { [key: string]: { cash: number; card: number; transfer: number; platform: number; total: number } } = {};
         const dailyNetSalesCache = new Map<string, number>();
 
         // Helper to get or calculate net sales for a day to avoid redundant calculations
@@ -147,21 +150,22 @@ const DailySales: React.FC = () => {
                 dailyGrossSalesByCurrency.set(sale.date, { gross: 0, currency: sale.currencyCode});
             }
             const stat = dailyGrossSalesByCurrency.get(sale.date)!;
-            stat.gross += sale.cash + sale.card + sale.transfer;
+            stat.gross += sale.cash + sale.card + sale.transfer + (sale.platform || 0);
         })
 
 
         filteredSales.forEach(sale => {
             if (!totals[sale.currencyCode]) {
-                totals[sale.currencyCode] = { cash: 0, card: 0, transfer: 0, total: 0 };
+                totals[sale.currencyCode] = { cash: 0, card: 0, transfer: 0, platform: 0, total: 0 };
             }
             totals[sale.currencyCode].cash += sale.cash;
             totals[sale.currencyCode].card += sale.card;
             totals[sale.currencyCode].transfer += sale.transfer;
+            totals[sale.currencyCode].platform += sale.platform || 0;
 
             const netSalesForDay = getOrCalculateNetSales(sale.date);
             const grossSalesForDayInCurrency = dailyGrossSalesByCurrency.get(sale.date)!.gross;
-            const grossSalesForSale = sale.cash + sale.card + sale.transfer;
+            const grossSalesForSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
             
             if (grossSalesForDayInCurrency > 0) {
                  const proportion = grossSalesForSale / grossSalesForDayInCurrency;
@@ -309,6 +313,7 @@ const DailySales: React.FC = () => {
                                 <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_cash')}</th>
                                 <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_card')}</th>
                                 <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_transfer')}</th>
+                                <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_platform_sales_title')}</th>
                                 <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_total')}</th>
                                 <th scope="col" className="px-6 py-3 text-right">{t('daily_sales_customers_served')}</th>
                                 <th scope="col" className="px-6 py-3 text-center">{t('accounts_payable_col_actions')}</th>
@@ -316,7 +321,7 @@ const DailySales: React.FC = () => {
                         </thead>
                         <tbody>
                             {filteredSales.map((sale) => {
-                                const netSales = calculateNetSalesForDay(sale.date, state);
+                                const totalSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
                                 const symbol = getCurrencySymbol(sale.currencyCode);
                                 return (
                                     <tr key={sale.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
@@ -325,7 +330,8 @@ const DailySales: React.FC = () => {
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.cash, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.card, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.transfer, { style: 'currency', currencySymbol: symbol })}</td>
-                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(netSales, { style: 'currency', currencySymbol: symbol })}</td>
+                                        <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.platform || 0, { style: 'currency', currencySymbol: symbol })}</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold">{formatNumber(totalSale, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.customers)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex justify-center gap-4">
@@ -338,7 +344,7 @@ const DailySales: React.FC = () => {
                             })}
                             {filteredSales.length === 0 && (
                                 <tr>
-                                    <td colSpan={8} className="text-center py-6 text-gray-500">{t('daily_sales_no_history')}</td>
+                                    <td colSpan={9} className="text-center py-6 text-gray-500">{t('daily_sales_no_history')}</td>
                                 </tr>
                             )}
                         </tbody>
@@ -354,11 +360,12 @@ const DailySales: React.FC = () => {
                                 return (
                                     <div key={currencyCode} className="p-3 bg-gray-800 rounded-md">
                                         <p className="font-bold text-indigo-400 mb-2">{t('daily_sales_currency')}: {currencyCode}</p>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
                                             <p>{t('daily_sales_cash')}: <span className="font-mono">{formatNumber(totals.cash, { style: 'currency', currencySymbol: symbol })}</span></p>
                                             <p>{t('daily_sales_card')}: <span className="font-mono">{formatNumber(totals.card, { style: 'currency', currencySymbol: symbol })}</span></p>
                                             <p>{t('daily_sales_transfer')}: <span className="font-mono">{formatNumber(totals.transfer, { style: 'currency', currencySymbol: symbol })}</span></p>
-                                            <p className="font-bold">{t('daily_sales_total')}: <span className="font-mono">{formatNumber(totals.total, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p>{t('daily_sales_platform_sales_title')}: <span className="font-mono">{formatNumber(totals.platform, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="font-bold col-span-full md:col-span-1 md:text-right mt-2 md:mt-0">{t('daily_sales_total')}: <span className="font-mono">{formatNumber(totals.total, { style: 'currency', currencySymbol: symbol })}</span></p>
                                         </div>
                                     </div>
                                 );

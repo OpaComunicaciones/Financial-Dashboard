@@ -4,6 +4,7 @@ export default {
   sidebar_daily_cash: 'Caja Diaria',
   sidebar_daily_sales: 'Ventas Diarias',
   sidebar_accounts_payable: 'Cuentas por Pagar',
+  sidebar_accounts_receivable: 'Cuentas por Cobrar',
   sidebar_banks: 'Bancos',
   sidebar_reports: 'Informes',
   sidebar_planning: 'Planificación',
@@ -155,6 +156,7 @@ export default {
   accounts_payable_no_invoices: 'No se encontraron facturas con el filtro actual.',
   accounts_payable_filter_all: 'Todas',
   accounts_payable_filter_all_concepts: 'Todos los Conceptos',
+  accounts_payable_filter_all_suppliers: 'Todos los Proveedores',
   accounts_payable_delete_confirm: '¿Está seguro de que desea eliminar esta factura?',
   accounts_payable_edit_modal_title: 'Editar Factura',
   accounts_payable_pay_modal_title: 'Pagar Factura',
@@ -216,6 +218,10 @@ export default {
   daily_sales_add_transfer_button: 'Añadir Transferencia',
   daily_sales_summary_title: 'Resumen de Ventas por Período',
   daily_sales_no_summary: 'No hay datos para mostrar un resumen.',
+
+  // Daily Sales - Platform Sales Section
+  daily_sales_platform_sales_title: 'Ventas a Plataformas / Crédito',
+  daily_sales_add_platform_sale_button: 'Añadir Venta a Plataforma',
 
   // Reports
   reports_title: 'Informes',

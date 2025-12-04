@@ -4,6 +4,7 @@ export default {
   sidebar_daily_cash: 'Daily Cash',
   sidebar_daily_sales: 'Daily Sales',
   sidebar_accounts_payable: 'Accounts Payable',
+  sidebar_accounts_receivable: 'Accounts Receivable',
   sidebar_banks: 'Banks',
   sidebar_reports: 'Reports',
   sidebar_planning: 'Planning',
@@ -155,6 +156,7 @@ export default {
   accounts_payable_no_invoices: 'No invoices found with the current filter.',
   accounts_payable_filter_all: 'All',
   accounts_payable_filter_all_concepts: 'All Concepts',
+  accounts_payable_filter_all_suppliers: 'All Suppliers',
   accounts_payable_delete_confirm: 'Are you sure you want to delete this invoice?',
   accounts_payable_edit_modal_title: 'Edit Invoice',
   accounts_payable_pay_modal_title: 'Pay Invoice',
@@ -216,6 +218,10 @@ export default {
   daily_sales_add_transfer_button: 'Add Transfer',
   daily_sales_summary_title: 'Sales Summary for Period',
   daily_sales_no_summary: 'No data to display a summary.',
+
+  // Daily Sales - Platform Sales Section
+  daily_sales_platform_sales_title: 'Platform / Credit Sales',
+  daily_sales_add_platform_sale_button: 'Add Platform Sale',
 
   // Reports
   reports_title: 'Reports',

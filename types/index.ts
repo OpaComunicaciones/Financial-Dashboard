@@ -89,6 +89,7 @@ export type DailySale = {
   cash: number;
   card: number;
   transfer: number;
+  platform: number; // Sales made through platforms/credit
   customers: number;
 };
 

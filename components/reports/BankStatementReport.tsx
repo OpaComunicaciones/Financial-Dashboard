@@ -34,32 +34,25 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
       return acc;
     }, 0);
 
-    // 2. Get transactions within the date range
+    // 2. Get transactions within the date range, sorted chronologically
     const transactionsInRange = state.transactions
       .filter(tx => tx.bankAccountId === accountId && tx.date >= startDate && tx.date <= endDate)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    // 3. Group transactions by date and calculate daily summaries
-    const dailySummaries: Record<string, { income: number, expense: number }> = {};
-    transactionsInRange.forEach(tx => {
-      if (!dailySummaries[tx.date]) {
-        dailySummaries[tx.date] = { income: 0, expense: 0 };
-      }
-      if (tx.amount > 0) {
-        dailySummaries[tx.date].income += tx.amount;
-      } else {
-        dailySummaries[tx.date].expense += Math.abs(tx.amount);
-      }
-    });
-
-    // 4. Create chronological report with running balance
+    // 3. Create a detailed report row for each transaction with a running balance
     let runningBalance = initialBalance;
-    const reportRows = Object.entries(dailySummaries).map(([date, { income, expense }]) => {
-      runningBalance += income - expense;
-      return { date, income, expense, balance: runningBalance };
+    const reportRows = transactionsInRange.map(tx => {
+      runningBalance += tx.amount;
+      return {
+        date: tx.date,
+        description: tx.description,
+        income: tx.amount > 0 ? tx.amount : 0,
+        expense: tx.amount < 0 ? Math.abs(tx.amount) : 0,
+        balance: runningBalance,
+      };
     });
 
-    // 5. Calculate totals
+    // 4. Calculate totals
     const totalIncome = reportRows.reduce((sum, row) => sum + row.income, 0);
     const totalExpense = reportRows.reduce((sum, row) => sum + row.expense, 0);
 
@@ -80,7 +73,7 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
     const doc = new jsPDF();
     const { account, formatCurrency, initialBalance, reportRows, totalIncome, totalExpense, finalBalance } = reportData;
 
-    const reportTitle = `Estado de Cuenta - ${account.name}`;
+    const reportTitle = `Estado de Cuenta Detallado - ${account.name}`;
     const dateInfo = `${startDate} - ${endDate}`;
 
     doc.setFontSize(18);
@@ -88,10 +81,11 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
     doc.setFontSize(11);
     doc.text(dateInfo, 14, 30);
 
-    const head = [['Fecha', 'Ingresos', 'Egresos', 'Saldo']];
+    const head = [['Fecha', 'Descripción', 'Depósito', 'Retiro', 'Saldo']];
     
     const body = reportRows.map(row => [
       row.date,
+      row.description,
       row.income > 0 ? formatCurrency(row.income) : '-',
       row.expense > 0 ? formatCurrency(row.expense) : '-',
       formatCurrency(row.balance)
@@ -101,11 +95,11 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
       startY: 40,
       head: head,
       body: [
-        [{ content: 'Saldo Inicial', colSpan: 3, styles: { fontStyle: 'bold' } }, { content: formatCurrency(initialBalance), styles: { fontStyle: 'bold', halign: 'right' } }],
+        [{ content: 'Saldo Inicial', colSpan: 4, styles: { fontStyle: 'bold' } }, { content: formatCurrency(initialBalance), styles: { fontStyle: 'bold', halign: 'right' } }],
         ...body
       ],
       foot: [[ 
-        { content: 'Totales', styles: { fontStyle: 'bold' } },
+        { content: 'Totales', colSpan: 2, styles: { fontStyle: 'bold' } },
         { content: formatCurrency(totalIncome), styles: { fontStyle: 'bold', halign: 'right' } },
         { content: formatCurrency(totalExpense), styles: { fontStyle: 'bold', halign: 'right' } },
         { content: formatCurrency(finalBalance), styles: { fontStyle: 'bold', halign: 'right' } }
@@ -114,28 +108,30 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
       headStyles: { fillColor: [55, 65, 81] },
       footStyles: { fillColor: [55, 65, 81] },
       columnStyles: { 
-        1: { halign: 'right' }, 
+        1: { cellWidth: 'auto' },
         2: { halign: 'right' }, 
-        3: { halign: 'right' } 
+        3: { halign: 'right' }, 
+        4: { halign: 'right' } 
       },
     });
 
-    doc.save(`Bank_Statement_${account.name}.pdf`);
+    doc.save(`Bank_Statement_Detailed_${account.name}.pdf`);
   };
 
   const handleExportXLSX = () => {
     if (!reportData) return;
 
     const wb = XLSX.utils.book_new();
-    const reportTitle = `Estado de Cuenta - ${reportData.account.name}`;
+    const reportTitle = `Estado de Cuenta Detallado - ${reportData.account.name}`;
     const dateInfo = `${startDate} - ${endDate}`;
 
-    const headers = ['Fecha', 'Ingresos', 'Egresos', 'Saldo'];
+    const headers = ['Fecha', 'Descripción', 'Depósito', 'Retiro', 'Saldo'];
     
     const data = reportData.reportRows.map(row => [
       row.date,
-      row.income,
-      row.expense,
+      row.description,
+      row.income > 0 ? row.income : null,
+      row.expense > 0 ? row.expense : null,
       row.balance
     ]);
 
@@ -143,20 +139,20 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
       [reportTitle],
       [dateInfo],
       [null],
+      ['Saldo Inicial', null, null, null, reportData.initialBalance],
       headers,
-      ['Saldo Inicial', null, null, reportData.initialBalance],
       ...data,
-      ['Totales', reportData.totalIncome, reportData.totalExpense, reportData.finalBalance]
+      ['Totales', null, reportData.totalIncome, reportData.totalExpense, reportData.finalBalance]
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(finalData);
 
     // Styling
-    ws['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+    ws['!cols'] = [{ wch: 15 }, { wch: 40 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
     const currencyFormat = `${reportData.account.currencyCode} #,##0.00`;
 
-    for(let i = 4; i < finalData.length; i++) {
-      for (let j = 1; j < 4; j++) {
+    for(let i = 3; i < finalData.length; i++) {
+      for (let j = 2; j < 5; j++) {
         if (typeof finalData[i][j] === 'number') {
           const cellRef = XLSX.utils.encode_cell({r: i, c: j});
           if(ws[cellRef]) ws[cellRef].z = currencyFormat;
@@ -165,11 +161,10 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
     }
 
     XLSX.utils.book_append_sheet(wb, ws, 'Estado de Cuenta');
-    XLSX.writeFile(wb, `Bank_Statement_${reportData.account.name}.xlsx`);
+    XLSX.writeFile(wb, `Bank_Statement_Detailed_${reportData.account.name}.xlsx`);
   };
 
   if (!reportData) {
-
     return (
       <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 text-center">
         <p className="text-gray-400">Por favor, selecciona una cuenta para ver el estado de cuenta.</p>
@@ -183,7 +178,7 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
     <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-2xl font-bold text-white">Informe de Bancos</h3>
+          <h3 className="text-2xl font-bold text-white">Extracto Detallado de Cuenta</h3>
           <p className="text-lg text-indigo-400 font-semibold">{account.name}</p>
           <p className="text-sm text-gray-400">{`${startDate} - ${endDate}`}</p>
         </div>
@@ -202,19 +197,21 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
             <thead className="text-xs text-gray-400 uppercase bg-gray-700">
                 <tr>
                     <th scope="col" className="px-6 py-3">Fecha</th>
-                    <th scope="col" className="px-6 py-3 text-right">Ingresos</th>
-                    <th scope="col" className="px-6 py-3 text-right">Egresos</th>
+                    <th scope="col" className="px-6 py-3">Descripción</th>
+                    <th scope="col" className="px-6 py-3 text-right">Depósito</th>
+                    <th scope="col" className="px-6 py-3 text-right">Retiro</th>
                     <th scope="col" className="px-6 py-3 text-right">Saldo</th>
                 </tr>
             </thead>
             <tbody>
                 <tr className="bg-gray-800 border-b border-gray-700">
-                    <td colSpan={3} className="px-6 py-4 font-semibold text-white">Saldo Inicial</td>
+                    <td colSpan={4} className="px-6 py-4 font-semibold text-white">Saldo Inicial</td>
                     <td className="px-6 py-4 text-right font-mono font-semibold">{formatCurrency(initialBalance)}</td>
                 </tr>
-                {reportRows.map(row => (
-                    <tr key={row.date} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
+                {reportRows.map((row, index) => (
+                    <tr key={index} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
                         <td className="px-6 py-4 whitespace-nowrap">{row.date}</td>
+                        <td className="px-6 py-4">{row.description}</td>
                         <td className="px-6 py-4 text-right font-mono text-green-400">{row.income > 0 ? formatCurrency(row.income) : '-'}</td>
                         <td className="px-6 py-4 text-right font-mono text-red-400">{row.expense > 0 ? formatCurrency(row.expense) : '-'}</td>
                         <td className="px-6 py-4 text-right font-mono">{formatCurrency(row.balance)}</td>
@@ -223,7 +220,7 @@ const BankStatementReport: React.FC<ReportProps> = ({ startDate, endDate, accoun
             </tbody>
             <tfoot className="text-xs text-white uppercase bg-gray-700 font-bold">
                 <tr>
-                    <td className="px-6 py-3">Totales</td>
+                    <td colSpan={2} className="px-6 py-3">Totales</td>
                     <td className="px-6 py-3 text-right font-mono">{formatCurrency(totalIncome)}</td>
                     <td className="px-6 py-3 text-right font-mono">{formatCurrency(totalExpense)}</td>
                     <td className="px-6 py-3 text-right font-mono">{formatCurrency(finalBalance)}</td>

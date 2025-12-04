@@ -86,8 +86,8 @@ interface AppContextType {
   // Taxes
   addTax: (tax: Omit<Tax, 'id'>) => void;
   updateTax: (tax: Tax) => void;
-    deleteTax: (id: string) => void;
-    generateTaxInvoice: (details: { taxId: string; periodLabel: string; amount: number; originalTaxableAmount: number; }) => void;
+  deleteTax: (id: string) => void;
+  generateTaxInvoice: (details: { taxId: string; periodLabel: string; amount: number; originalTaxableAmount: number; }) => void;
   // Currency
   addCurrency: (currency: Omit<Currency, 'id'>) => void;
   updateCurrency: (currency: Currency) => void;
@@ -137,129 +137,10 @@ interface AppContextType {
   updateBankTransaction: (transaction: BankTransaction) => void;
   deleteBankTransaction: (id: string) => void;
   saveCashClosure: (closure: CashClosure) => void;
-  const receivePaymentForReceivables = (paymentDetails: {
-    debtorId: string;
-    amountReceived: number;
-    paymentDate: string;
-    paymentMethod: 'cash' | 'bank';
-    bankAccountId?: string;
-    commissionAmount?: number;
-    receivablesToApply: { id: string; amountApplied: number }[];
-  }) => {
-    const { debtorId, amountReceived, paymentDate, paymentMethod, bankAccountId, commissionAmount, receivablesToApply } = paymentDetails;
-
-    let newAccountsReceivable = [...state.accountsReceivable];
-    let newTransactions = [...state.transactions];
-    let newCashClosures = [...state.cashClosures]; // Assuming cash closures can be updated for cash payments
-    let newCashExpenses = [...state.cashExpenses];
-    let newExpenseTypes = [...state.expenseTypes];
-
-    let totalAppliedToReceivables = 0;
-
-    // 1. Update each Account Receivable
-    receivablesToApply.forEach(rToApply => {
-      const arIndex = newAccountsReceivable.findIndex(ar => ar.id === rToApply.id);
-      if (arIndex !== -1) {
-        const ar = { ...newAccountsReceivable[arIndex] };
-        const newPayment: ReceivablePayment = {
-          id: Date.now().toString() + '_' + rToApply.id,
-          paymentDate,
-          amount: rToApply.amountApplied,
-          method: paymentMethod,
-          bankAccountId,
-        };
-        ar.payments = [...ar.payments, newPayment];
-
-        const totalPaidForThisAR = ar.payments.reduce((sum, p) => sum + p.amount, 0);
-
-        if (totalPaidForThisAR >= ar.amount) {
-          ar.status = 'Paid';
-        } else if (totalPaidForThisAR > 0) {
-          ar.status = 'Partially Paid';
-        } else {
-          ar.status = 'Pending'; // Should not happen if amountApplied > 0
-        }
-        newAccountsReceivable[arIndex] = ar;
-        totalAppliedToReceivables += rToApply.amountApplied;
-      }
-    });
-
-    // 2. Register the incoming payment (deposit)
-    if (amountReceived > 0) {
-      if (paymentMethod === 'bank' && bankAccountId) {
-        let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar');
-        let newIncomeTypes = [...state.incomeTypes];
-        if (!arConcept) {
-          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
-          newIncomeTypes.push(arConcept);
-        }
-
-        const newBankTransaction: BankTransaction = {
-          id: Date.now().toString(),
-          bankAccountId,
-          date: paymentDate,
-          description: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name})`,
-          amount: amountReceived,
-          type: 'income',
-          conceptId: arConcept.id,
-        };
-        newTransactions.push(newBankTransaction);
-        state.incomeTypes = newIncomeTypes; // Update income types in state
-      } else if (paymentMethod === 'cash') {
-        // For cash, we'd typically update a cash closure. This is more complex.
-        // For now, we'll assume it affects the current day's cash, which will be reconciled in DailyCash.
-        // Alternatively, it could be recorded as a MiscIncome or added to a temporary cash balance.
-        // Given existing CashClosure, a simple way is to record as MiscIncome.
-        let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar');
-        let newIncomeTypes = [...state.incomeTypes];
-        if (!arConcept) {
-          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
-          newIncomeTypes.push(arConcept);
-        }
-        const newMiscIncome: MiscIncome = {
-            id: Date.now().toString(),
-            date: paymentDate,
-            currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD', // Assumes a default currency
-            conceptId: arConcept.id,
-            detail: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name}) en efectivo`,
-            amount: amountReceived,
-        };
-        state.miscIncomes = [...state.miscIncomes, newMiscIncome];
-        state.incomeTypes = newIncomeTypes;
-      }
-    }
-
-    // 3. Handle Commission Expense (if any)
-    if (commissionAmount && commissionAmount > 0) {
-      let commissionConcept = state.expenseTypes.find(et => et.name === 'Comisiones Plataformas');
-      if (!commissionConcept) {
-        commissionConcept = { id: `comm-exp-${Date.now()}`, name: 'Comisiones Plataformas', isExpense: true, isPlannable: false };
-        newExpenseTypes.push(commissionConcept);
-      }
-      const newCommissionExpense: CashExpense = { // Could be CashExpense or BankTransaction depending on method.
-                                                  // Assuming CashExpense for simplicity if not a bank transfer directly.
-                                                  // For platforms, it's often deducted, so it's an 'expense'.
-        id: Date.now().toString(),
-        date: paymentDetails.paymentDate,
-        currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD',
-        supplier: state.debtors.find(d => d.id === debtorId)?.name || 'Desconocido',
-        detail: `Comisión por pago de ${state.debtors.find(d => d.id === debtorId)?.name}`,
-        conceptId: commissionConcept.id,
-        amount: commissionAmount,
-      };
-      newCashExpenses.push(newCommissionExpense);
-      state.expenseTypes = newExpenseTypes;
-    }
-
-    const newState = {
-      ...state,
-      accountsReceivable: newAccountsReceivable,
-      transactions: newTransactions,
-      cashClosures: newCashClosures,
-      cashExpenses: newCashExpenses,
-    };
-    updateStateAndDB(newState);
-  };
+  // Planning
+  setIPCRecord: (record: IPCRecord) => void;
+  setBudgetRecord: (record: BudgetRecord) => void;
+  setYearlyBudgetForCategory: (details: { year: number, categoryId: string, categoryType: 'income' | 'expense', amount: number }) => void;
 }
 
 const DB_NAME = 'RestoFinDB';
@@ -602,6 +483,117 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const newState = {
       ...state,
       accountsReceivable: state.accountsReceivable.map(ar => ar.id === updatedAR.id ? updatedAR : ar),
+    };
+    updateStateAndDB(newState);
+  };
+  
+  const receivePaymentForReceivables = (paymentDetails: {
+    debtorId: string;
+    amountReceived: number;
+    paymentDate: string;
+    paymentMethod: 'cash' | 'bank';
+    bankAccountId?: string;
+    commissionAmount?: number;
+    receivablesToApply: { id: string; amountApplied: number }[];
+  }) => {
+    const { debtorId, amountReceived, paymentDate, paymentMethod, bankAccountId, commissionAmount, receivablesToApply } = paymentDetails;
+
+    let newAccountsReceivable = [...state.accountsReceivable];
+    let newTransactions = [...state.transactions];
+    let newCashExpenses = [...state.cashExpenses];
+    let newExpenseTypes = [...state.expenseTypes];
+    let newIncomeTypes = [...state.incomeTypes];
+    let newMiscIncomes = [...state.miscIncomes];
+
+    // 1. Update each Account Receivable
+    receivablesToApply.forEach(rToApply => {
+      const arIndex = newAccountsReceivable.findIndex(ar => ar.id === rToApply.id);
+      if (arIndex !== -1) {
+        const ar = { ...newAccountsReceivable[arIndex] };
+        const newPayment: ReceivablePayment = {
+          id: Date.now().toString() + '_' + rToApply.id,
+          paymentDate,
+          amount: rToApply.amountApplied,
+          method: paymentMethod,
+          bankAccountId,
+        };
+        ar.payments = [...ar.payments, newPayment];
+
+        const totalPaidForThisAR = ar.payments.reduce((sum, p) => sum + p.amount, 0);
+
+        if (totalPaidForThisAR >= ar.amount - 0.001) { // Tolerance for float issues
+          ar.status = 'Paid';
+        } else {
+          ar.status = 'Partially Paid';
+        }
+        newAccountsReceivable[arIndex] = ar;
+      }
+    });
+
+    // 2. Register the incoming payment (deposit)
+    if (amountReceived > 0) {
+      if (paymentMethod === 'bank' && bankAccountId) {
+        let arConcept = newIncomeTypes.find(it => it.name === 'Cuentas por Cobrar');
+        if (!arConcept) {
+          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
+          newIncomeTypes.push(arConcept);
+        }
+
+        const newBankTransaction: BankTransaction = {
+          id: Date.now().toString(),
+          bankAccountId,
+          date: paymentDate,
+          description: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name})`,
+          amount: amountReceived,
+          type: 'income',
+          conceptId: arConcept.id,
+        };
+        newTransactions.push(newBankTransaction);
+      } else if (paymentMethod === 'cash') {
+        let arConcept = newIncomeTypes.find(it => it.name === 'Cuentas por Cobrar');
+        if (!arConcept) {
+          arConcept = { id: `ar-income-${Date.now()}`, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
+          newIncomeTypes.push(arConcept);
+        }
+        const newMiscIncome: MiscIncome = {
+            id: Date.now().toString(),
+            date: paymentDate,
+            currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD',
+            conceptId: arConcept.id,
+            detail: `Pago de deudor (${state.debtors.find(d => d.id === debtorId)?.name}) en efectivo`,
+            amount: amountReceived,
+        };
+        newMiscIncomes.push(newMiscIncome);
+      }
+    }
+
+    // 3. Handle Commission Expense (if any)
+    if (commissionAmount && commissionAmount > 0) {
+      let commissionConcept = newExpenseTypes.find(et => et.name === 'Comisiones Plataformas');
+      if (!commissionConcept) {
+        commissionConcept = { id: `comm-exp-${Date.now()}`, name: 'Comisiones Plataformas', isExpense: true, isPlannable: false };
+        newExpenseTypes.push(commissionConcept);
+      }
+      const newCommissionExpense: CashExpense = {
+        id: `comm_${Date.now()}`,
+        date: paymentDate,
+        currencyCode: newAccountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || state.currencies[0]?.code || 'USD',
+        supplier: state.debtors.find(d => d.id === debtorId)?.name || 'Desconocido',
+        detail: `Comisión por pago de ${state.debtors.find(d => d.id === debtorId)?.name}`,
+        conceptId: commissionConcept.id,
+        amount: commissionAmount,
+      };
+      newCashExpenses.push(newCommissionExpense);
+    }
+
+    const newState = {
+      ...state,
+      accountsReceivable: newAccountsReceivable,
+      transactions: newTransactions,
+      cashExpenses: newCashExpenses,
+      expenseTypes: newExpenseTypes,
+      incomeTypes: newIncomeTypes,
+      miscIncomes: newMiscIncomes,
     };
     updateStateAndDB(newState);
   };
@@ -1117,6 +1109,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     addAccountReceivable,
     updateAccountReceivable,
     receivePaymentForReceivables,
+    // Financials
+    addInvoice,
+    updateInvoice,
+    deleteInvoice,
+    payInvoice,
+    logDailySales,
+    updateDailySale,
+    deleteDailySale,
+    addMiscIncome,
+    updateMiscIncome,
+    deleteMiscIncome,
+    addCashExpense,
+    updateCashExpense,
+    deleteCashExpense,
+    addBankTransaction,
+    updateBankTransaction,
+    deleteBankTransaction,
+    saveCashClosure,
+    // Planning
     setIPCRecord,
     setBudgetRecord,
     setYearlyBudgetForCategory,

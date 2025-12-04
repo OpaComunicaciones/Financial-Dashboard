@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.0 - [2025-12-04]
+
+- **Feature:** Enhanced the "Add Account Receivable" modal for employee loans.
+  - When creating a receivable for a debtor of type 'Employee', the user can now specify the source of the loan (Cash or a specific Bank Account).
+  - The system automatically creates the corresponding withdrawal transaction (either a `CashExpense` or a `BankTransaction`) to ensure accounting consistency.
+  - A new expense type "Préstamo a Empleado" is automatically created if it doesn't exist, to categorize these disbursements.
+- **Feature:** Improved the "Accounts Payable" page.
+  - Added a filter to view invoices by a specific supplier.
+  - Added a button to export the currently filtered list of invoices to an Excel file.
+- **Feature:** The downloadable "Bank Statement" report is now a detailed, transaction-by-transaction list instead of a daily summary, providing greater detail.
+- **i18n:** Corrected missing translations for the supplier filter in both Spanish and English.
+
 ## [2025-10-22 22:00:00]
 
 - **Feature:** Implementado el módulo completo de Cuentas por Cobrar (Accounts Receivable).

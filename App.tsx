@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Configuration from './pages/Configuration';
 import DailyCash from './pages/DailyCash';
 import AccountsPayable from './pages/AccountsPayable';
+import AccountsReceivable from './pages/AccountsReceivable';
 import Banks from './pages/Banks';
 import DailySales from './pages/DailySales';
 import Reports from './pages/Reports';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                 <Route path="/configuration" element={<Configuration />} />
                 <Route path="/daily-cash" element={<DailyCash />} />
                 <Route path="/accounts-payable" element={<AccountsPayable />} />
+                <Route path="/accounts-receivable" element={<AccountsReceivable />} />
                 <Route path="/banks" element={<Banks />} />
                 <Route path="/daily-sales" element={<DailySales />} />
                 <Route path="/reports" element={<Reports />} />
