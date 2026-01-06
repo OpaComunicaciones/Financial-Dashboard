@@ -69,7 +69,7 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
           return {
             ...item,
             amountToApply: value === '' ? 0 : Math.min(value, remainingBalance), // Cannot apply more than remaining
-            isSelected: value > 0, // Automatically select if amount is entered
+            isSelected: value !== '' && value > 0, // Automatically select if amount is entered
           };
         }
         return item;
@@ -94,12 +94,12 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
       return;
     }
     if (paymentMethod === 'bank' && !selectedBankAccountId) {
-        alert(t('ar_payment_validation_bank_account', 'Debe seleccionar una cuenta bancaria para pagos bancarios.'));
-        return;
+      alert(t('ar_payment_validation_bank_account', 'Debe seleccionar una cuenta bancaria para pagos bancarios.'));
+      return;
     }
     if (receivablesToApply.filter(item => item.isSelected).length === 0) {
-        alert(t('ar_payment_validation_select_ars', 'Debe seleccionar al menos una cuenta por cobrar para aplicar el pago.'));
-        return;
+      alert(t('ar_payment_validation_select_ars', 'Debe seleccionar al menos una cuenta por cobrar para aplicar el pago.'));
+      return;
     }
 
     const finalReceivablesToApply = receivablesToApply
@@ -107,8 +107,8 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
       .map((item) => ({ id: item.ar.id, amountApplied: item.amountToApply }));
 
     if (finalReceivablesToApply.length === 0) {
-        alert(t('ar_payment_validation_applied_amount', 'No se ha aplicado ningún monto a las cuentas por cobrar seleccionadas.'));
-        return;
+      alert(t('ar_payment_validation_applied_amount', 'No se ha aplicado ningún monto a las cuentas por cobrar seleccionadas.'));
+      return;
     }
 
     receivePaymentForReceivables({
@@ -187,7 +187,7 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'bank')}
                 >
-                  <option value="cash">{t('daily_cash_cash', 'Efectivo')}</option>
+                  <option value="cash">{t('daily_sales_cash', 'Efectivo')}</option>
                   <option value="bank">{t('ar_payment_method_bank', 'Depósito Bancario')}</option>
                 </select>
               </div>

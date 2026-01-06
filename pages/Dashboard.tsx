@@ -12,6 +12,7 @@ import DateRangeSelector from '../components/DateRangeSelector';
 const Dashboard: React.FC = () => {
   const { t, language } = useTranslation();
   const { state } = useAppContext();
+  const isDark = state.theme === 'dark';
   const [aiInsights, setAiInsights] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [dateRange, setDateRange] = useState({
@@ -26,26 +27,26 @@ const Dashboard: React.FC = () => {
     to.setHours(23, 59, 59, 999);
 
     const salesInRange = state.dailySales.filter(s => {
-        const saleDate = new Date(s.date + 'T00:00:00');
-        return saleDate >= from && saleDate <= to;
+      const saleDate = new Date(s.date + 'T00:00:00');
+      return saleDate >= from && saleDate <= to;
     });
     const revenueInRange = salesInRange.reduce((sum, s) => sum + s.cash + s.card + s.transfer, 0);
     const customersInRange = salesInRange.reduce((sum, s) => sum + s.customers, 0);
-    
+
     const expensesByCategory: Record<string, number> = {};
     state.cashExpenses.forEach(e => {
-        const expenseDate = new Date(e.date + 'T00:00:00');
-        if (expenseDate >= from && expenseDate <= to) {
-            const categoryName = state.expenseTypes.find(c => c.id === e.conceptId)?.name || 'Uncategorized';
-            expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + e.amount;
-        }
+      const expenseDate = new Date(e.date + 'T00:00:00');
+      if (expenseDate >= from && expenseDate <= to) {
+        const categoryName = state.expenseTypes.find(c => c.id === e.conceptId)?.name || 'Uncategorized';
+        expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + e.amount;
+      }
     });
     state.transactions.forEach(t => {
-        const txDate = new Date(t.date + 'T00:00:00');
-        if (t.type === 'expense' && txDate >= from && txDate <= to) {
-            const categoryName = state.expenseTypes.find(c => c.id === t.conceptId)?.name || 'Uncategorized';
-            expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + Math.abs(t.amount);
-        }
+      const txDate = new Date(t.date + 'T00:00:00');
+      if (t.type === 'expense' && txDate >= from && txDate <= to) {
+        const categoryName = state.expenseTypes.find(c => c.id === t.conceptId)?.name || 'Uncategorized';
+        expensesByCategory[categoryName] = (expensesByCategory[categoryName] || 0) + Math.abs(t.amount);
+      }
     });
 
     const topExpense = Object.entries(expensesByCategory).reduce((max, entry) => entry[1] > max.amount ? { category: entry[0], amount: entry[1] } : max, { category: 'N/A', amount: 0 });
@@ -59,19 +60,19 @@ const Dashboard: React.FC = () => {
     // --- Sales Chart Data from filtered sales ---
     const salesByDate: { [date: string]: number } = {};
     salesInRange.forEach(sale => {
-        const total = sale.cash + sale.card + sale.transfer;
-        salesByDate[sale.date] = (salesByDate[sale.date] || 0) + total;
+      const total = sale.cash + sale.card + sale.transfer;
+      salesByDate[sale.date] = (salesByDate[sale.date] || 0) + total;
     });
 
     const salesChartData = Object.entries(salesByDate)
-        .map(([date, total]) => ({
-            date: date,
-            name: new Date(date + 'T00:00:00').toLocaleDateString(language, { day: 'numeric', month: 'short' }),
-            sales: total,
-        }))
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .map(([date, total]) => ({
+        date: date,
+        name: new Date(date + 'T00:00:00').toLocaleDateString(language, { day: 'numeric', month: 'short' }),
+        sales: total,
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    const latestClosure = [...state.cashClosures].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+    const latestClosure = [...state.cashClosures].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
 
     return {
       revenueInRange,
@@ -100,12 +101,12 @@ const Dashboard: React.FC = () => {
 
   const formattedInsights = aiInsights.split('\n').map((line, index) => {
     if (line.startsWith('- **')) {
-      return <p key={index} className="mt-2" dangerouslySetInnerHTML={{ __html: line.replace(/- \*\*\*(.*?):\*\*\*/, '<strong>$1:</strong>')}} />;
+      return <p key={index} className="mt-2" dangerouslySetInnerHTML={{ __html: line.replace(/- \*\*\*(.*?):\*\*\*/, '<strong>$1:</strong>') }} />;
     }
     if (line.startsWith('**')) {
       return <h4 key={index} className="text-lg font-semibold text-indigo-400 mt-4">{line.replace(/\*\*/g, '')}</h4>;
     }
-    return <p key={index}>{line.replace(/- /,'')}</p>;
+    return <p key={index}>{line.replace(/- /, '')}</p>;
   });
 
   const currencySymbol = state.currencies[0]?.symbol || '$';
@@ -126,35 +127,42 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3 bg-gray-800 p-6 rounded-xl border border-gray-700">
-          <h3 className="text-xl font-semibold mb-4 text-white">Ventas del Período</h3>
+        <div className="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Ventas del Período</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={dashboardData.salesChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
-              <XAxis dataKey="name" stroke="#A0AEC0" />
-              <YAxis stroke="#A0AEC0" tickFormatter={(value) => formatNumber(value as number)} />
-              <Tooltip contentStyle={{ backgroundColor: '#2D3748', border: '1px solid #4A5568' }} formatter={(value: number) => formatCurrency(value)} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#4A5568" : "#E2E8F0"} />
+              <XAxis dataKey="name" stroke={isDark ? "#A0AEC0" : "#718096"} />
+              <YAxis stroke={isDark ? "#A0AEC0" : "#718096"} tickFormatter={(value) => formatNumber(value as number)} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDark ? '#2D3748' : '#FFFFFF',
+                  border: isDark ? '1px solid #4A5568' : '1px solid #E2E8F0',
+                  color: isDark ? '#F7FAFC' : '#1A202C'
+                }}
+                formatter={(value: number) => formatCurrency(value)}
+              />
               <Legend />
               <Bar dataKey="sales" fill="#6366F1" name="Ventas" />
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="lg:col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700">
-           <h3 className="text-xl font-semibold text-white">{t('dashboard_ai_title')}</h3>
-           <p className="text-gray-400 text-sm mb-4">Análisis y recomendaciones basadas en los datos del período seleccionado.</p>
-           <button 
-             onClick={handleGetInsights}
-             disabled={isLoading}
-             className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed"
-           >
-             {isLoading ? t('dashboard_ai_button_loading') : t('dashboard_ai_button')}
-           </button>
-           {isLoading && <div className="text-center mt-4 text-gray-400">{t('dashboard_ai_loading')}</div>}
-           {aiInsights && (
-              <div className={`mt-4 p-4 bg-gray-900 rounded-lg text-sm space-y-2 ${aiInsights.includes('Error') ? 'text-red-400' : 'text-gray-300'}`}>
-                 {aiInsights.includes('Error') ? aiInsights : formattedInsights}
-              </div>
-            )}
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('dashboard_ai_title')}</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Análisis y recomendaciones basadas en los datos del período seleccionado.</p>
+          <button
+            onClick={handleGetInsights}
+            disabled={isLoading}
+            className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 disabled:bg-gray-400 dark:disabled:bg-gray-500 disabled:cursor-not-allowed"
+          >
+            {isLoading ? t('dashboard_ai_button_loading') : t('dashboard_ai_button')}
+          </button>
+          {isLoading && <div className="text-center mt-4 text-gray-500 dark:text-gray-400">{t('dashboard_ai_loading')}</div>}
+          {aiInsights && (
+            <div className={`mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm border border-gray-100 dark:border-gray-800 space-y-2 ${aiInsights.includes('Error') ? 'text-red-500' : 'text-gray-700 dark:text-gray-300'}`}>
+              {aiInsights.includes('Error') ? aiInsights : formattedInsights}
+            </div>
+          )}
         </div>
       </div>
     </div>

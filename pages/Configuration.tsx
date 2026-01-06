@@ -29,73 +29,73 @@ const IncomeTypeManagement: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
+    if (window.confirm(t('configuration_delete_item_confirm'))) {
       deleteConfigItem('incomeTypes', id);
     }
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">{t('configuration_income_types')}</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('configuration_income_types')}</h3>
       <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4">
         <input
           type="text"
           value={newItem.name}
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
           placeholder={`${t('configuration_new')} ${t('configuration_income_types').slice(0, -1)}...`}
-          className="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-grow bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
         />
-        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
-            <label className="text-sm text-gray-300" htmlFor="isIncome">{t('configuration_expense_is_for_pl')}</label>
-            <input type="checkbox" id="isIncome" checked={newItem.isIncome} onChange={(e) => setNewItem({ ...newItem, isIncome: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        <div className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-100 dark:border-transparent">
+          <label className="text-sm text-gray-600 dark:text-gray-300" htmlFor="isIncome">{t('configuration_expense_is_for_pl')}</label>
+          <input type="checkbox" id="isIncome" checked={newItem.isIncome} onChange={(e) => setNewItem({ ...newItem, isIncome: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
         </div>
-        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
-            <label className="text-sm text-gray-300" htmlFor="isPlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
-            <input type="checkbox" id="isPlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        <div className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-100 dark:border-transparent">
+          <label className="text-sm text-gray-600 dark:text-gray-300" htmlFor="isPlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
+          <input type="checkbox" id="isPlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
         </div>
-        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center">
+        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center shadow-sm">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
       </div>
       <ul className="space-y-2">
         {state.incomeTypes.map(item => (
-          <li key={item.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+          <li key={item.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
             {editingItem?.id === item.id ? (
               <div className="flex-grow flex items-center gap-2">
                 <input
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="flex-grow bg-gray-600 border border-gray-500 rounded-md py-1 px-2"
+                  className="flex-grow bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
                   autoFocus
                 />
-                 <div className="flex items-center gap-1">
-                    <label htmlFor="isIncomeEdit" className="text-xs">{t('configuration_income_pl_badge')}</label>
-                    <input id="isIncomeEdit" type="checkbox" checked={editingItem.isIncome} onChange={(e) => setEditingItem({ ...editingItem, isIncome: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
-                 </div>
-                 <div className="flex items-center gap-1">
-                    <label htmlFor="isPlannableEdit" className="text-xs">{t('configuration_is_plannable', 'Plannable')}</label>
-                    <input id="isPlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
-                 </div>
-                <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
+                <div className="flex items-center gap-1">
+                  <label htmlFor="isIncomeEdit" className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_income_pl_badge')}</label>
+                  <input id="isIncomeEdit" type="checkbox" checked={editingItem.isIncome} onChange={(e) => setEditingItem({ ...editingItem, isIncome: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <label htmlFor="isPlannableEdit" className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_is_plannable', 'Plannable')}</label>
+                  <input id="isPlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
+                </div>
+                <button onClick={handleUpdate} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-2">
-                  <span>{item.name}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isIncome ? 'bg-green-500/30 text-green-300' : 'bg-gray-500/30 text-gray-300'}`}>
+                  <span className="text-gray-800 dark:text-white font-medium">{item.name}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isIncome ? 'bg-green-100 dark:bg-green-500/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-500/30 text-gray-700 dark:text-gray-300'}`}>
                     {item.isIncome ? t('configuration_income_pl_badge') : t('configuration_income_non_pl_badge')}
                   </span>
                   {item.isPlannable && (
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-300`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300`}>
                       {t('configuration_is_plannable_badge', 'Plannable')}
                     </span>
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                  <button onClick={() => handleDelete(item.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                  <button onClick={() => handleDelete(item.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                 </div>
               </>
             )}
@@ -106,10 +106,10 @@ const IncomeTypeManagement: React.FC = () => {
   );
 };
 
-const ConfigSection: React.FC<{ 
-  title: string; 
-  items: ConfigItem[]; 
-  onAdd: (name: string) => void; 
+const ConfigSection: React.FC<{
+  title: string;
+  items: ConfigItem[];
+  onAdd: (name: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, name: string) => void;
 }> = ({ title, items, onAdd, onDelete, onUpdate }) => {
@@ -124,7 +124,7 @@ const ConfigSection: React.FC<{
       setNewItem('');
     }
   };
-  
+
   const handleEditStart = (item: ConfigItem) => {
     setEditingId(item.id);
     setEditingName(item.name);
@@ -143,41 +143,41 @@ const ConfigSection: React.FC<{
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">{title}</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{title}</h3>
       <div className="flex gap-2 mb-4">
         <input
           type="text"
           value={newItem}
           onChange={(e) => setNewItem(e.target.value)}
           placeholder={`${t('configuration_new')} ${title.slice(0, -1)}...`}
-          className="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-grow bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
         />
-        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center">
+        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center shadow-sm">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
       </div>
       <ul className="space-y-2">
         {items.map(item => (
-          <li key={item.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+          <li key={item.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
             {editingId === item.id ? (
               <div className="flex-grow flex items-center gap-2">
                 <input
                   type="text"
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
-                  className="flex-grow bg-gray-600 border border-gray-500 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex-grow bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
                   autoFocus
                 />
-                <button onClick={handleEditSave} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                <button onClick={handleEditCancel} className="text-gray-400 hover:text-white"><X size={18} /></button>
+                <button onClick={handleEditSave} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                <button onClick={handleEditCancel} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
               </div>
             ) : (
               <>
-                <span>{item.name}</span>
+                <span className="text-gray-800 dark:text-white font-medium">{item.name}</span>
                 <div className="flex gap-2">
-                  <button onClick={() => handleEditStart(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                  <button onClick={() => onDelete(item.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => handleEditStart(item)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                  <button onClick={() => onDelete(item.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                 </div>
               </>
             )}
@@ -209,86 +209,86 @@ const ExpenseTypeManagement: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
+    if (window.confirm(t('configuration_delete_item_confirm'))) {
       deleteConfigItem('expenseTypes', id);
     }
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">{t('configuration_expense_types')}</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('configuration_expense_types')}</h3>
       <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4">
         <input
           type="text"
           value={newItem.name}
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
           placeholder={`${t('configuration_new')} ${t('configuration_expense_types').slice(0, -1)}...`}
-          className="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-grow bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
         />
-        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
-            <label className="text-sm text-gray-300" htmlFor="isExpense">{t('configuration_expense_is_for_pl')}</label>
-            <input type="checkbox" id="isExpense" checked={newItem.isExpense} onChange={(e) => setNewItem({ ...newItem, isExpense: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        <div className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-100 dark:border-transparent">
+          <label className="text-sm text-gray-600 dark:text-gray-300" htmlFor="isExpense">{t('configuration_expense_is_for_pl')}</label>
+          <input type="checkbox" id="isExpense" checked={newItem.isExpense} onChange={(e) => setNewItem({ ...newItem, isExpense: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
         </div>
-        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
-            <label className="text-sm text-gray-300" htmlFor="isExpensePlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
-            <input type="checkbox" id="isExpensePlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        <div className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-100 dark:border-transparent">
+          <label className="text-sm text-gray-600 dark:text-gray-300" htmlFor="isExpensePlannable">{t('configuration_is_plannable', 'Is Plannable?')}</label>
+          <input type="checkbox" id="isExpensePlannable" checked={newItem.isPlannable} onChange={(e) => setNewItem({ ...newItem, isPlannable: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
         </div>
-        <div className="flex items-center justify-center gap-2 bg-gray-700 px-3 rounded-md">
-            <label className="text-sm text-gray-300" htmlFor="isDeductible">{t('configuration_is_deductible_from_sales', 'Deduct from Sales?')}</label>
-            <input type="checkbox" id="isDeductible" checked={newItem.isDeductibleFromSales} onChange={(e) => setNewItem({ ...newItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
+        <div className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-100 dark:border-transparent">
+          <label className="text-sm text-gray-600 dark:text-gray-300" htmlFor="isDeductible">{t('configuration_is_deductible_from_sales', 'Deduct from Sales?')}</label>
+          <input type="checkbox" id="isDeductible" checked={newItem.isDeductibleFromSales} onChange={(e) => setNewItem({ ...newItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
         </div>
-        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center">
+        <button onClick={handleAdd} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center shadow-sm">
           <Plus size={18} className="mr-1" /> {t('configuration_add_button')}
         </button>
       </div>
       <ul className="space-y-2">
         {state.expenseTypes.map(item => (
-          <li key={item.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+          <li key={item.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
             {editingItem?.id === item.id ? (
               <div className="flex-grow flex items-center gap-2">
                 <input
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="flex-grow bg-gray-600 border border-gray-500 rounded-md py-1 px-2"
+                  className="flex-grow bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
                   autoFocus
                 />
-                 <div className="flex items-center gap-1">
-                    <label htmlFor="isExpenseEdit" className="text-xs">{t('configuration_expense_pl_badge')}</label>
-                    <input id="isExpenseEdit" type="checkbox" checked={editingItem.isExpense} onChange={(e) => setEditingItem({ ...editingItem, isExpense: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
-                 </div>
-                 <div className="flex items-center gap-1">
-                    <label htmlFor="isExpensePlannableEdit" className="text-xs">{t('configuration_is_plannable', 'Plannable')}</label>
-                    <input id="isExpensePlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
-                 </div>
-                 <div className="flex items-center gap-1">
-                    <label htmlFor="isDeductibleEdit" className="text-xs">{t('configuration_is_deductible_from_sales_short', 'Deduct?')}</label>
-                    <input id="isDeductibleEdit" type="checkbox" checked={!!editingItem.isDeductibleFromSales} onChange={(e) => setEditingItem({ ...editingItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500" />
-                 </div>
-                <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
+                <div className="flex items-center gap-1">
+                  <label htmlFor="isExpenseEdit" className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_expense_pl_badge')}</label>
+                  <input id="isExpenseEdit" type="checkbox" checked={editingItem.isExpense} onChange={(e) => setEditingItem({ ...editingItem, isExpense: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <label htmlFor="isExpensePlannableEdit" className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_is_plannable', 'Plannable')}</label>
+                  <input id="isExpensePlannableEdit" type="checkbox" checked={editingItem.isPlannable} onChange={(e) => setEditingItem({ ...editingItem, isPlannable: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <label htmlFor="isDeductibleEdit" className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_is_deductible_from_sales_short', 'Deduct?')}</label>
+                  <input id="isDeductibleEdit" type="checkbox" checked={!!editingItem.isDeductibleFromSales} onChange={(e) => setEditingItem({ ...editingItem, isDeductibleFromSales: e.target.checked })} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" />
+                </div>
+                <button onClick={handleUpdate} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-2">
-                  <span>{item.name}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isExpense ? 'bg-red-500/30 text-red-300' : 'bg-gray-500/30 text-gray-300'}`}>
+                  <span className="text-gray-800 dark:text-white font-medium">{item.name}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${item.isExpense ? 'bg-red-100 dark:bg-red-500/30 text-red-700 dark:text-red-300' : 'bg-gray-100 dark:bg-gray-500/30 text-gray-700 dark:text-gray-300'}`}>
                     {item.isExpense ? t('configuration_expense_pl_badge') : t('configuration_expense_non_pl_badge')}
                   </span>
                   {item.isPlannable && (
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-300`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300`}>
                       {t('configuration_is_plannable_badge', 'Plannable')}
                     </span>
                   )}
                   {item.isDeductibleFromSales && (
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-500/30 text-yellow-300`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 dark:bg-yellow-500/30 text-yellow-700 dark:text-yellow-300`}>
                       {t('configuration_is_deductible_from_sales_badge', 'Deductible from Sales')}
                     </span>
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                  <button onClick={() => handleDelete(item.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                  <button onClick={() => handleDelete(item.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                 </div>
               </>
             )}
@@ -314,14 +314,14 @@ const DataManagement: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       if (window.confirm(t('configuration_import_confirm'))) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const text = e.target?.result;
-            if (typeof text === 'string') {
-              importData(text);
-            }
-          };
-          reader.readAsText(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target?.result;
+          if (typeof text === 'string') {
+            importData(text);
+          }
+        };
+        reader.readAsText(file);
       }
       event.target.value = '';
     }
@@ -331,53 +331,53 @@ const DataManagement: React.FC = () => {
     await resetDatabase();
     setIsResetModalOpen(false);
   };
-  
+
   const buttonClasses = "font-semibold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed";
 
   return (
     <div className="space-y-6">
-      <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-        <h3 className="text-xl font-semibold text-white mb-4">{t('configuration_data_management', 'Gestión de Datos')}</h3>
-        {isLoading && <p className="text-sm text-gray-400 mb-4">{t('configuration_loading_data')}</p>}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('configuration_data_management', 'Gestión de Datos')}</h3>
+        {isLoading && <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('configuration_loading_data')}</p>}
         <div className="flex flex-col md:flex-row gap-4">
-            <button onClick={exportData} disabled={isLoading} className={`${buttonClasses} bg-green-600 text-white hover:bg-green-700`}>
-              <Download size={18} /> {t('configuration_export_button')}
-            </button>
-            <button onClick={handleImportClick} disabled={isLoading} className={`${buttonClasses} bg-blue-600 text-white hover:bg-blue-700`}>
-              <Upload size={18} /> {t('configuration_import_button')}
-            </button>
-            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
+          <button onClick={exportData} disabled={isLoading} className={`${buttonClasses} bg-green-600 text-white hover:bg-green-700`}>
+            <Download size={18} /> {t('configuration_export_button')}
+          </button>
+          <button onClick={handleImportClick} disabled={isLoading} className={`${buttonClasses} bg-blue-600 text-white hover:bg-blue-700`}>
+            <Upload size={18} /> {t('configuration_import_button')}
+          </button>
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
         </div>
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-gray-800 p-6 rounded-xl border border-red-500/50">
-        <h3 className="text-xl font-semibold text-red-400 mb-2">Zona Peligrosa</h3>
-        <p className="text-gray-400 mb-4">Estas acciones son destructivas y no se pueden deshacer.</p>
-        <button onClick={() => setIsResetModalOpen(true)} disabled={isLoading} className={`${buttonClasses} bg-red-600 text-white hover:bg-red-700`}>
-            <Trash2 size={18} /> Reiniciar la aplicación
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-red-200 dark:border-red-500/50 shadow-sm dark:shadow-none">
+        <h3 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">{t('configuration_danger_zone')}</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">{t('configuration_danger_zone_desc')}</p>
+        <button onClick={() => setIsResetModalOpen(true)} disabled={isLoading} className={`${buttonClasses} bg-red-600 text-white hover:bg-red-700 shadow-sm transition-all hover:scale-[1.02]`}>
+          <Trash2 size={18} /> {t('configuration_reset_app')}
         </button>
       </div>
 
       {isResetModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
-            <div className="bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-red-500/50">
-                <div className="text-center">
-                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900">
-                        <Trash2 className="h-6 w-6 text-red-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mt-4">Borrar todos los datos</h3>
-                    <p className="text-gray-400 mt-2">Estás a punto de borrar permanentemente TODOS los datos de la aplicación, incluyendo configuraciones, ventas, y transacciones. Esta acción no se puede deshacer. ¿Estás absolutamente seguro?</p>
-                </div>
-                <div className="flex justify-center gap-4 mt-8">
-                    <button onClick={() => setIsResetModalOpen(false)} className="bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-700">
-                        Cancelar
-                    </button>
-                    <button onClick={handleResetDatabase} className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700">
-                        Sí, borrar todo
-                    </button>
-                </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-red-200 dark:border-red-500/50">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30">
+                <Trash2 className="h-8 w-8 text-red-600 dark:text-red-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">{t('configuration_reset_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">{t('configuration_reset_desc')}</p>
             </div>
+            <div className="flex gap-4 mt-8">
+              <button onClick={() => setIsResetModalOpen(false)} className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                {t('ar_cancel')}
+              </button>
+              <button onClick={handleResetDatabase} className="flex-1 bg-red-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20">
+                {t('configuration_reset_confirm')}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -387,7 +387,7 @@ const DataManagement: React.FC = () => {
 const BankAccountManagement: React.FC = () => {
   const { t } = useTranslation();
   const { state, addBankAccount, updateBankAccount, deleteBankAccount } = useAppContext();
-  
+
   const [newAccount, setNewAccount] = useState({ name: '', currencyCode: state.currencies[0]?.code || '', hasTerminal: false });
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
 
@@ -397,14 +397,14 @@ const BankAccountManagement: React.FC = () => {
       setNewAccount({ name: '', currencyCode: state.currencies[0]?.code || '', hasTerminal: false });
     }
   };
-  
+
   const handleUpdate = () => {
     if (editingAccount) {
       updateBankAccount(editingAccount);
       setEditingAccount(null);
     }
   };
-  
+
   const handleDelete = (id: string) => {
     if (window.confirm(t('configuration_bank_account_delete_confirm'))) {
       deleteBankAccount(id);
@@ -412,52 +412,52 @@ const BankAccountManagement: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
       <div className="flex items-center gap-3 mb-6">
-        <Landmark className="text-indigo-400" size={24} />
-        <h3 className="text-xl font-bold text-white">{t('configuration_bank_accounts_title')}</h3>
+        <Landmark className="text-indigo-600 dark:text-indigo-400" size={24} />
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('configuration_bank_accounts_title')}</h3>
       </div>
       <div className="space-y-2 mb-4">
         {state.bankAccounts.map(account => (
-          <div key={account.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+          <div key={account.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
             {editingAccount?.id === account.id ? (
               <div className="flex-grow flex items-center gap-2">
-                <input type="text" value={editingAccount.name} onChange={e => setEditingAccount({ ...editingAccount, name: e.target.value })} className="w-1/2 bg-gray-600 p-1 rounded" />
-                <select value={editingAccount.currencyCode} onChange={e => setEditingAccount({ ...editingAccount, currencyCode: e.target.value })} className="w-1/3 bg-gray-600 p-1 rounded">
+                <input type="text" value={editingAccount.name} onChange={e => setEditingAccount({ ...editingAccount, name: e.target.value })} className="w-1/2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" />
+                <select value={editingAccount.currencyCode} onChange={e => setEditingAccount({ ...editingAccount, currencyCode: e.target.value })} className="w-1/3 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white">
                   {state.currencies.map(c => <option key={c.code} value={c.code}>{c.code}</option>)}
                 </select>
                 <div className="flex items-center gap-1">
-                  <input type="checkbox" checked={editingAccount.hasTerminal} onChange={e => setEditingAccount({ ...editingAccount, hasTerminal: e.target.checked })} id={`terminal-edit-${account.id}`} />
-                  <label htmlFor={`terminal-edit-${account.id}`} className="text-xs">{t('configuration_bank_account_has_terminal')}</label>
+                  <input type="checkbox" checked={editingAccount.hasTerminal} onChange={e => setEditingAccount({ ...editingAccount, hasTerminal: e.target.checked })} id={`terminal-edit-${account.id}`} className="form-checkbox h-4 w-4 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded" />
+                  <label htmlFor={`terminal-edit-${account.id}`} className="text-xs text-gray-600 dark:text-gray-400">{t('configuration_bank_account_has_terminal')}</label>
                 </div>
-                <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                <button onClick={() => setEditingAccount(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
+                <button onClick={handleUpdate} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                <button onClick={() => setEditingAccount(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold">{account.name} <span className="text-xs text-gray-400 bg-gray-600 px-2 py-1 rounded-full">{account.currencyCode}</span></span>
-                  {account.hasTerminal && <span className="text-xs bg-blue-500/30 text-blue-300 px-2 py-0.5 rounded-full">{t('configuration_bank_account_terminal_badge')}</span>}
+                  <span className="font-bold text-gray-900 dark:text-white">{account.name} <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full font-normal">{account.currencyCode}</span></span>
+                  {account.hasTerminal && <span className="text-xs bg-blue-100 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full font-semibold">{t('configuration_bank_account_terminal_badge')}</span>}
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => setEditingAccount(account)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                  <button onClick={() => handleDelete(account.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => setEditingAccount(account)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                  <button onClick={() => handleDelete(account.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                 </div>
               </>
             )}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 bg-gray-900/50 rounded-md">
-        <input type="text" value={newAccount.name} onChange={e => setNewAccount({ ...newAccount, name: e.target.value })} className="md:col-span-2 bg-gray-700 p-2 rounded" placeholder={t('configuration_bank_account_name')} />
-        <select value={newAccount.currencyCode} onChange={e => setNewAccount({ ...newAccount, currencyCode: e.target.value })} className="bg-gray-700 p-2 rounded">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
+        <input type="text" value={newAccount.name} onChange={e => setNewAccount({ ...newAccount, name: e.target.value })} className="md:col-span-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder={t('configuration_bank_account_name')} />
+        <select value={newAccount.currencyCode} onChange={e => setNewAccount({ ...newAccount, currencyCode: e.target.value })} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
           {state.currencies.map(c => <option key={c.code} value={c.code}>{c.name} ({c.code})</option>)}
         </select>
-        <div className="flex items-center gap-2">
-          <input type="checkbox" checked={newAccount.hasTerminal} onChange={e => setNewAccount({ ...newAccount, hasTerminal: e.target.checked })} id="terminal-new" />
-          <label htmlFor="terminal-new">{t('configuration_bank_account_has_terminal')}</label>
+        <div className="flex items-center gap-2 px-1">
+          <input type="checkbox" checked={newAccount.hasTerminal} onChange={e => setNewAccount({ ...newAccount, hasTerminal: e.target.checked })} id="terminal-new" className="form-checkbox h-5 w-5 text-indigo-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded" />
+          <label htmlFor="terminal-new" className="text-gray-700 dark:text-gray-300">{t('configuration_bank_account_has_terminal')}</label>
         </div>
-        <button onClick={handleAdd} className="md:col-span-3 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center"><Plus size={18} /></button>
+        <button onClick={handleAdd} className="md:col-span-3 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center shadow-sm"><Plus size={18} /></button>
       </div>
     </div>
   );
@@ -466,7 +466,7 @@ const BankAccountManagement: React.FC = () => {
 const CurrencyManagement: React.FC = () => {
   const { t } = useTranslation();
   const { state, addCurrency, updateCurrency, deleteCurrency, addDenomination, deleteDenomination } = useAppContext();
-  
+
   const [newCurrency, setNewCurrency] = useState({ name: '', code: '', symbol: '' });
   const [editingCurrency, setEditingCurrency] = useState<Currency | null>(null);
 
@@ -512,73 +512,73 @@ const CurrencyManagement: React.FC = () => {
   }, [selectedCurrencyId, state.denominations]);
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
       <div className="flex items-center gap-3 mb-6">
-        <Settings2 className="text-indigo-400" size={24} />
-        <h3 className="text-xl font-bold text-white">{t('configuration_currency_title')}</h3>
+        <Settings2 className="text-indigo-600 dark:text-indigo-400" size={24} />
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('configuration_currency_title')}</h3>
       </div>
 
       {/* --- CURRENCY MANAGEMENT --- */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-gray-300 mb-3">{t('configuration_currency_list')}</h4>
+        <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('configuration_currency_list')}</h4>
         <div className="space-y-2">
           {state.currencies.map(currency => (
-            <div key={currency.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+            <div key={currency.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
               {editingCurrency?.id === currency.id ? (
-                 <div className="flex-grow flex items-center gap-2">
-                    <input type="text" value={editingCurrency.name} onChange={e => setEditingCurrency({...editingCurrency, name: e.target.value})} className="w-1/3 bg-gray-600 p-1 rounded" placeholder={t('configuration_currency_name')} />
-                    <input type="text" value={editingCurrency.code} onChange={e => setEditingCurrency({...editingCurrency, code: e.target.value})} className="w-1/4 bg-gray-600 p-1 rounded" placeholder={t('configuration_currency_code')} />
-                    <input type="text" value={editingCurrency.symbol} onChange={e => setEditingCurrency({...editingCurrency, symbol: e.target.value})} className="w-1/6 bg-gray-600 p-1 rounded" placeholder={t('configuration_currency_symbol')} />
-                    <button onClick={handleUpdateCurrency} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                    <button onClick={() => setEditingCurrency(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
-                 </div>
+                <div className="flex-grow flex items-center gap-2">
+                  <input type="text" value={editingCurrency.name} onChange={e => setEditingCurrency({ ...editingCurrency, name: e.target.value })} className="w-1/3 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" placeholder={t('configuration_currency_name')} />
+                  <input type="text" value={editingCurrency.code} onChange={e => setEditingCurrency({ ...editingCurrency, code: e.target.value })} className="w-1/4 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" placeholder={t('configuration_currency_code')} />
+                  <input type="text" value={editingCurrency.symbol} onChange={e => setEditingCurrency({ ...editingCurrency, symbol: e.target.value })} className="w-1/6 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" placeholder={t('configuration_currency_symbol')} />
+                  <button onClick={handleUpdateCurrency} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                  <button onClick={() => setEditingCurrency(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
+                </div>
               ) : (
                 <>
-                  <span className="font-bold">{currency.name} ({currency.code}) - {currency.symbol}</span>
+                  <span className="font-bold text-gray-900 dark:text-white">{currency.name} ({currency.code}) - {currency.symbol}</span>
                   <div className="flex gap-2">
-                    <button onClick={() => setEditingCurrency(currency)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                    <button onClick={() => handleDeleteCurrency(currency.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                    <button onClick={() => setEditingCurrency(currency)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                    <button onClick={() => handleDeleteCurrency(currency.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                   </div>
                 </>
               )}
             </div>
           ))}
         </div>
-        <div className="flex gap-2 mt-4 p-3 bg-gray-900/50 rounded-md">
-            <input type="text" value={newCurrency.name} onChange={e => setNewCurrency({...newCurrency, name: e.target.value})} className="w-1/3 bg-gray-700 p-2 rounded" placeholder={t('configuration_currency_name')} />
-            <input type="text" value={newCurrency.code} onChange={e => setNewCurrency({...newCurrency, code: e.target.value})} className="w-1/4 bg-gray-700 p-2 rounded" placeholder={t('configuration_currency_code')} />
-            <input type="text" value={newCurrency.symbol} onChange={e => setNewCurrency({...newCurrency, symbol: e.target.value})} className="w-1/6 bg-gray-700 p-2 rounded" placeholder={t('configuration_currency_symbol')} />
-            <button onClick={handleAddCurrency} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center"><Plus size={18} /> </button>
+        <div className="flex gap-2 mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
+          <input type="text" value={newCurrency.name} onChange={e => setNewCurrency({ ...newCurrency, name: e.target.value })} className="w-1/3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm" placeholder={t('configuration_currency_name')} />
+          <input type="text" value={newCurrency.code} onChange={e => setNewCurrency({ ...newCurrency, code: e.target.value })} className="w-1/4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm" placeholder={t('configuration_currency_code')} />
+          <input type="text" value={newCurrency.symbol} onChange={e => setNewCurrency({ ...newCurrency, symbol: e.target.value })} className="w-1/6 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm" placeholder={t('configuration_currency_symbol')} />
+          <button onClick={handleAddCurrency} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center shadow-sm"><Plus size={18} /> </button>
         </div>
       </div>
-      
+
       {/* --- DENOMINATION MANAGEMENT --- */}
       <div>
-         <h4 className="text-lg font-semibold text-gray-300 mb-3">{t('configuration_denomination_title')}</h4>
-         <div className="flex items-center gap-4 mb-4">
-            <label htmlFor="currency-select" className="font-medium text-gray-300">{t('configuration_denomination_select')}</label>
-            <select id="currency-select" value={selectedCurrencyId} onChange={e => setSelectedCurrencyId(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                {state.currencies.map(c => <option key={c.id} value={c.id}>{c.name} ({c.code})</option>)}
-            </select>
-         </div>
-         <div className="flex gap-2 mb-4 p-3 bg-gray-900/50 rounded-md">
-            <input type="number" value={newDenomination.value} onChange={e => setNewDenomination({...newDenomination, value: e.target.value})} placeholder={t('configuration_denomination_value')} className="w-1/3 bg-gray-700 p-2 rounded" />
-            <select value={newDenomination.type} onChange={e => setNewDenomination({...newDenomination, type: e.target.value as any})} className="w-1/3 bg-gray-700 p-2 rounded">
-              <option value="bill">{t('daily_cash_bills')}</option>
-              <option value="coin">{t('daily_cash_coins')}</option>
-            </select>
-            <button onClick={handleAddDenomination} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center"><Plus size={18} /></button>
-         </div>
-         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-            {currentDenominations.map(d => (
-              <div key={d.id} className="relative bg-gray-700 p-2 rounded-md text-center group">
-                 <span>{d.type === 'bill' ? t('daily_cash_bills_short') : t('daily_cash_coins_short')}: {d.value}</span>
-                 <button onClick={() => deleteDenomination(d.id)} className="absolute top-0 right-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X size={14} />
-                 </button>
-              </div>
-            ))}
-         </div>
+        <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('configuration_denomination_title')}</h4>
+        <div className="flex items-center gap-4 mb-4">
+          <label htmlFor="currency-select" className="font-medium text-gray-600 dark:text-gray-300">{t('configuration_denomination_select')}</label>
+          <select id="currency-select" value={selectedCurrencyId} onChange={e => setSelectedCurrencyId(e.target.value)} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+            {state.currencies.map(c => <option key={c.id} value={c.id}>{c.name} ({c.code})</option>)}
+          </select>
+        </div>
+        <div className="flex gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
+          <input type="number" value={newDenomination.value} onChange={e => setNewDenomination({ ...newDenomination, value: e.target.value })} placeholder={t('configuration_denomination_value')} className="w-1/3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm" />
+          <select value={newDenomination.type} onChange={e => setNewDenomination({ ...newDenomination, type: e.target.value as any })} className="w-1/3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm">
+            <option value="bill">{t('daily_cash_bills')}</option>
+            <option value="coin">{t('daily_cash_coins')}</option>
+          </select>
+          <button onClick={handleAddDenomination} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center shadow-sm"><Plus size={18} /></button>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          {currentDenominations.map(d => (
+            <div key={d.id} className="relative bg-gray-50 dark:bg-gray-700 p-2 rounded-md text-center group border border-gray-100 dark:border-transparent">
+              <span className="text-gray-800 dark:text-white font-medium">{d.type === 'bill' ? t('daily_cash_bills_short') : t('daily_cash_coins_short')}: {d.value}</span>
+              <button onClick={() => deleteDenomination(d.id)} className="absolute top-0 right-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-700">
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -617,27 +617,27 @@ const TaxManagement: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">{t('tax_management_title', 'Gestión de Impuestos')}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4 p-2 bg-gray-900/50 rounded-md">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('tax_management_title', 'Gestión de Impuestos')}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4 p-2 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
         <input
           type="text"
           value={newItem.name}
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
           placeholder={t('tax_management_name_placeholder', 'Nombre del Impuesto (ej. IVA)')}
-          className="md:col-span-2 bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+          className="md:col-span-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
         />
         <input
           type="number"
           value={newItem.percentage}
           onChange={(e) => setNewItem({ ...newItem, percentage: parseFloat(e.target.value) || 0 })}
           placeholder={t('tax_management_percentage_placeholder', 'Porcentaje (%)')}
-          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+          className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
         />
         <select
           value={newItem.paymentFrequency}
           onChange={(e) => setNewItem({ ...newItem, paymentFrequency: e.target.value as TaxPaymentFrequency })}
-          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+          className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
         >
           {paymentFrequencyOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
         </select>
@@ -646,7 +646,7 @@ const TaxManagement: React.FC = () => {
           value={newItem.authority}
           onChange={(e) => setNewItem({ ...newItem, authority: e.target.value })}
           placeholder={t('tax_management_authority_placeholder', 'Autoridad (ej. DIAN)')}
-          className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3"
+          className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
         />
         <button onClick={handleAdd} className="md:col-span-4 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center">
           <Plus size={18} className="mr-1" /> {t('tax_management_add_button', 'Añadir Impuesto')}
@@ -654,33 +654,33 @@ const TaxManagement: React.FC = () => {
       </div>
       <ul className="space-y-2">
         {state.taxes.map(item => (
-          <li key={item.id} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+          <li key={item.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-100 dark:border-transparent">
             {editingItem?.id === item.id ? (
               <div className="flex-grow flex items-center gap-2">
-                <input type="text" value={editingItem.name} onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })} className="flex-grow bg-gray-600 p-1 rounded" />
-                <input type="number" value={editingItem.percentage} onChange={(e) => setEditingItem({ ...editingItem, percentage: parseFloat(e.target.value) || 0 })} className="w-20 bg-gray-600 p-1 rounded" />
-                <select 
-                  value={editingItem.paymentFrequency} 
-                  onChange={(e) => setEditingItem({ ...editingItem, paymentFrequency: e.target.value as TaxPaymentFrequency })} 
-                  className="w-28 bg-gray-600 p-1 rounded"
+                <input type="text" value={editingItem.name} onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })} className="flex-grow bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" />
+                <input type="number" value={editingItem.percentage} onChange={(e) => setEditingItem({ ...editingItem, percentage: parseFloat(e.target.value) || 0 })} className="w-20 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" />
+                <select
+                  value={editingItem.paymentFrequency}
+                  onChange={(e) => setEditingItem({ ...editingItem, paymentFrequency: e.target.value as TaxPaymentFrequency })}
+                  className="w-28 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white"
                 >
                   {paymentFrequencyOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                 </select>
-                <input type="text" value={editingItem.authority} onChange={(e) => setEditingItem({ ...editingItem, authority: e.target.value })} className="flex-grow bg-gray-600 p-1 rounded" />
-                <button onClick={handleUpdate} className="text-green-400 hover:text-green-300"><Save size={18} /></button>
-                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-white"><X size={18} /></button>
+                <input type="text" value={editingItem.authority} onChange={(e) => setEditingItem({ ...editingItem, authority: e.target.value })} className="flex-grow bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded p-1 text-gray-900 dark:text-white" />
+                <button onClick={handleUpdate} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"><Save size={18} /></button>
+                <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={18} /></button>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-3">
-                  <span className="font-semibold">{item.name}</span>
-                  <span className="text-sm text-gray-400">({item.percentage}%)</span>
-                  <span className="text-sm text-gray-400">({getFrequencyLabel(item.paymentFrequency)})</span>
-                  <span className="text-sm text-indigo-400">{item.authority}</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">{item.name}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">({item.percentage}%)</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">({getFrequencyLabel(item.paymentFrequency)})</span>
+                  <span className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">{item.authority}</span>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-white"><Edit size={16} /></button>
-                  <button onClick={() => deleteTax(item.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => setEditingItem(item)} className="text-gray-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><Edit size={16} /></button>
+                  <button onClick={() => deleteTax(item.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                 </div>
               </>
             )}
@@ -703,16 +703,16 @@ const ApiManagement: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">{t('api_management_title', 'API Key Management')}</h3>
-      <p className="text-gray-400 text-sm mb-4">{t('api_management_subtitle', 'Store your Gemini API Key to enable AI-powered features.')}</p>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('api_management_title', 'API Key Management')}</h3>
+      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{t('api_management_subtitle', 'Store your Gemini API Key to enable AI-powered features.')}</p>
       <div className="flex gap-2">
         <input
           type="password"
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
           placeholder={t('api_management_placeholder', 'Enter your API Key')}
-          className="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-grow bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
         />
         <button onClick={handleSave} className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center">
           <Save size={18} className="mr-1" /> {t('configuration_save_button', 'Save')}
@@ -728,7 +728,7 @@ const ApiManagement: React.FC = () => {
 const FinancialSettings: React.FC = () => {
   const { t } = useTranslation();
   const { state, setIPCRecord, addExchangeRate, deleteExchangeRate } = useAppContext();
-  const [newIPC, setNewIPC] = useState({ year: new Date().getFullYear(), percentage: ''});
+  const [newIPC, setNewIPC] = useState({ year: new Date().getFullYear(), percentage: '' });
 
   const [newRate, setNewRate] = useState<Omit<ExchangeRate, 'id'>>({
     date: new Date().toISOString().split('T')[0],
@@ -738,8 +738,8 @@ const FinancialSettings: React.FC = () => {
   });
 
   const handleRateAdd = () => {
-    if(newRate.fromCurrencyCode && newRate.toCurrencyCode && newRate.rate > 0) {
-      if(newRate.fromCurrencyCode === newRate.toCurrencyCode) {
+    if (newRate.fromCurrencyCode && newRate.toCurrencyCode && newRate.rate > 0) {
+      if (newRate.fromCurrencyCode === newRate.toCurrencyCode) {
         alert(t('configuration_exchange_rate_error_same'));
         return;
       }
@@ -757,44 +757,44 @@ const FinancialSettings: React.FC = () => {
     const percentage = parseFloat(newIPC.percentage);
     if (!isNaN(percentage)) {
       setIPCRecord({ year: newIPC.year, percentage });
-      setNewIPC({ year: new Date().getFullYear(), percentage: ''});
+      setNewIPC({ year: new Date().getFullYear(), percentage: '' });
     }
   };
 
-  const sortedExchangeRates = useMemo(() => 
-    [...state.exchangeRates].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  , [state.exchangeRates]);
+  const sortedExchangeRates = useMemo(() =>
+    [...state.exchangeRates].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    , [state.exchangeRates]);
 
   return (
-    <div className="lg:col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700">
-       <div className="flex items-center gap-3 mb-6">
-        <LineChart className="text-indigo-400" size={24} />
-        <h3 className="text-2xl font-bold text-white">{t('configuration_planning_title')}</h3>
+    <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+      <div className="flex items-center gap-3 mb-6">
+        <LineChart className="text-indigo-600 dark:text-indigo-400" size={24} />
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{t('configuration_planning_title')}</h3>
       </div>
-      
-       {/* Exchange Rate Management */}
+
+      {/* Exchange Rate Management */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-            <Repeat className="text-gray-400" size={20} />
-            <h4 className="text-lg font-semibold text-gray-300">{t('configuration_exchange_rate_title')}</h4>
+          <Repeat className="text-gray-500 dark:text-gray-400" size={20} />
+          <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300">{t('configuration_exchange_rate_title')}</h4>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 p-3 bg-gray-900/50 rounded-md">
-          <input type="date" value={newRate.date} onChange={e => setNewRate({...newRate, date: e.target.value})} className="bg-gray-700 p-2 rounded" />
-          <select value={newRate.fromCurrencyCode} onChange={e => setNewRate({...newRate, fromCurrencyCode: e.target.value})} className="bg-gray-700 p-2 rounded">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
+          <input type="date" value={newRate.date} onChange={e => setNewRate({ ...newRate, date: e.target.value })} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none" />
+          <select value={newRate.fromCurrencyCode} onChange={e => setNewRate({ ...newRate, fromCurrencyCode: e.target.value })} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
             {state.currencies.map(c => <option key={c.code} value={c.code}>{c.code}</option>)}
           </select>
-          <select value={newRate.toCurrencyCode} onChange={e => setNewRate({...newRate, toCurrencyCode: e.target.value})} className="bg-gray-700 p-2 rounded">
+          <select value={newRate.toCurrencyCode} onChange={e => setNewRate({ ...newRate, toCurrencyCode: e.target.value })} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
             {state.currencies.map(c => <option key={c.code} value={c.code}>{c.code}</option>)}
           </select>
-          <input type="number" value={newRate.rate} onChange={e => setNewRate({...newRate, rate: parseFloat(e.target.value)})} className="bg-gray-700 p-2 rounded" placeholder={t('configuration_exchange_rate_rate')} step="0.0001" />
-          <button onClick={handleRateAdd} className="lg:col-span-4 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-2"><Plus size={18} /> {t('configuration_exchange_rate_add')}</button>
+          <input type="number" value={newRate.rate} onChange={e => setNewRate({ ...newRate, rate: parseFloat(e.target.value) })} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder={t('configuration_exchange_rate_rate')} step="0.0001" />
+          <button onClick={handleRateAdd} className="lg:col-span-4 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-sm transition-colors border border-indigo-500"><Plus size={18} /> {t('configuration_exchange_rate_add')}</button>
         </div>
-        <div className="space-y-1 max-h-24 overflow-y-auto">
+        <div className="space-y-1 max-h-48 overflow-y-auto">
           {sortedExchangeRates.map(rate => (
-            <div key={rate.id} className="flex justify-between items-center bg-gray-700 p-2 rounded-md text-sm">
-              <span className="font-mono text-xs">{rate.date}</span>
-              <span className="font-bold">1 {rate.fromCurrencyCode} = {rate.rate} {rate.toCurrencyCode}</span>
-              <button onClick={() => deleteExchangeRate(rate.id)} className="text-gray-400 hover:text-red-400"><Trash2 size={14} /></button>
+            <div key={rate.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-md border border-gray-100 dark:border-transparent text-sm">
+              <span className="font-mono text-xs text-gray-500 dark:text-gray-400">{rate.date}</span>
+              <span className="font-bold text-gray-800 dark:text-white">1 {rate.fromCurrencyCode} = {rate.rate} {rate.toCurrencyCode}</span>
+              <button onClick={() => deleteExchangeRate(rate.id)} className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
             </div>
           ))}
         </div>
@@ -802,17 +802,17 @@ const FinancialSettings: React.FC = () => {
 
       {/* IPC Management */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-gray-300 mb-3">{t('configuration_ipc_title')}</h4>
-        <div className="flex gap-2 mb-4 p-3 bg-gray-900/50 rounded-md">
-          <input type="number" value={newIPC.year} onChange={e => setNewIPC({...newIPC, year: parseInt(e.target.value)})} className="w-1/3 bg-gray-700 p-2 rounded" placeholder={t('configuration_ipc_year')} />
-          <input type="number" value={newIPC.percentage} onChange={e => setNewIPC({...newIPC, percentage: e.target.value})} className="w-1/3 bg-gray-700 p-2 rounded" placeholder={t('configuration_ipc_percentage')} step="0.01" />
-          <button onClick={handleIPCAdd} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center"><Plus size={18} /></button>
+        <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('configuration_ipc_title')}</h4>
+        <div className="flex gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-transparent">
+          <input type="number" value={newIPC.year} onChange={e => setNewIPC({ ...newIPC, year: parseInt(e.target.value) })} className="w-1/3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder={t('configuration_ipc_year')} />
+          <input type="number" value={newIPC.percentage} onChange={e => setNewIPC({ ...newIPC, percentage: e.target.value })} className="w-1/3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder={t('configuration_ipc_percentage')} step="0.01" />
+          <button onClick={handleIPCAdd} className="flex-grow bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center shadow-sm"><Plus size={18} /></button>
         </div>
-        <div className="space-y-1 max-h-24 overflow-y-auto">
+        <div className="space-y-1 max-h-48 overflow-y-auto">
           {state.ipcRecords.map(record => (
-            <div key={record.year} className="flex justify-between bg-gray-700 p-2 rounded-md text-sm">
-              <span className="font-bold">{t('configuration_ipc_year')} {record.year}:</span>
-              <span>{record.percentage.toFixed(2)}%</span>
+            <div key={record.year} className="flex justify-between bg-gray-50 dark:bg-gray-700 p-2 rounded-md border border-gray-100 dark:border-transparent text-sm">
+              <span className="font-bold text-gray-700 dark:text-gray-300">{t('configuration_ipc_year')} {record.year}:</span>
+              <span className="text-gray-900 dark:text-white font-medium">{record.percentage.toFixed(2)}%</span>
             </div>
           ))}
         </div>
@@ -821,6 +821,8 @@ const FinancialSettings: React.FC = () => {
   );
 };
 
+
+import DataMigrator from '../components/DataMigrator';
 
 const Configuration: React.FC = () => {
   const { t } = useTranslation();
@@ -831,7 +833,7 @@ const Configuration: React.FC = () => {
   };
 
   const handleDeleteItem = (category: ConfigCategory | 'expenseTypes', id: string) => {
-    if(window.confirm('Are you sure you want to delete this item?')) {
+    if (window.confirm(t('configuration_delete_item_confirm'))) {
       deleteConfigItem(category, id);
     }
   };
@@ -844,6 +846,7 @@ const Configuration: React.FC = () => {
   return (
     <div className="space-y-8">
       <PageHeader title={t('configuration_title')} subtitle={t('configuration_subtitle')} />
+      <DataMigrator />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DataManagement />
         <BankAccountManagement />
@@ -861,8 +864,8 @@ const Configuration: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <IncomeTypeManagement />
         <ExpenseTypeManagement />
-        <ConfigSection 
-          title={t('configuration_payment_methods')} 
+        <ConfigSection
+          title={t('configuration_payment_methods')}
           items={state.paymentMethods}
           onAdd={(name) => handleAddItem('paymentMethods', name)}
           onDelete={(id) => handleDeleteItem('paymentMethods', id)}

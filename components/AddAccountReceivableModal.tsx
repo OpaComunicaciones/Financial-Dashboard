@@ -58,12 +58,23 @@ const AddAccountReceivableModal: React.FC<AddAccountReceivableModalProps> = ({ i
     }
   }, [currencyCode, isEmployeeLoan]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!debtorId || !concept.trim() || amount === '' || amount <= 0) return;
+    if (!debtorId) {
+      alert("Por favor, seleccione un deudor.");
+      return;
+    }
+    if (!concept.trim()) {
+      alert("Por favor, ingrese un concepto.");
+      return;
+    }
+    if (amount === '' || isNaN(Number(amount)) || Number(amount) <= 0) {
+      alert("Por favor, ingrese un monto válido.");
+      return;
+    }
 
     let loanDetails: { source: 'cash' | 'bank'; bankAccountId?: string; } | undefined = undefined;
-    if (isEmployeeLoan) {
+    if (isEmployeeLoan && !accountReceivable) {
       if (!loanSource) {
         alert("Por favor, seleccione el origen de los fondos para el préstamo.");
         return;
@@ -78,16 +89,24 @@ const AddAccountReceivableModal: React.FC<AddAccountReceivableModalProps> = ({ i
       };
     }
 
-    onSave({
-      debtorId,
-      date,
-      concept: concept.trim(),
-      amount: amount as number,
-      dueDate,
-      currencyCode,
-    }, loanDetails);
-    
-    onClose();
+    try {
+      const arData: any = {
+        debtorId,
+        date,
+        concept: concept.trim(),
+        amount: Number(amount),
+        currencyCode,
+      };
+
+      if (dueDate) arData.dueDate = dueDate;
+
+      await onSave(arData, loanDetails);
+
+      onClose();
+    } catch (error) {
+      console.error("Error saving account receivable:", error);
+      alert("Error al guardar la cuenta por cobrar. Por favor, intente de nuevo.");
+    }
   };
 
   if (!isOpen) return null;
@@ -100,7 +119,7 @@ const AddAccountReceivableModal: React.FC<AddAccountReceivableModalProps> = ({ i
           {/* Standard Fields */}
           <div className="mb-4">
             <label htmlFor="debtor" className="block text-sm font-medium text-gray-300 mb-1">{t('ar_col_debtor')}</label>
-            <select id="debtor" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={debtorId} onChange={(e) => setDebtorId(e.target.value)} required disabled={!!accountReceivable}>
+            <select id="debtor" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={debtorId} onChange={(e) => setDebtorId(e.target.value)} required>
               <option value="">{t('ar_select_debtor')}</option>
               {state.debtors.map(debtor => <option key={debtor.id} value={debtor.id}>{debtor.name}</option>)}
             </select>
@@ -115,7 +134,7 @@ const AddAccountReceivableModal: React.FC<AddAccountReceivableModalProps> = ({ i
           </div>
           <div className="mb-4">
             <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-1">{t('ar_col_amount')}</label>
-            <input type="number" id="amount" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={amount} onChange={(e) => setAmount(parseFloat(e.target.value))} min="0.01" step="0.01" required disabled={!!accountReceivable} />
+            <input type="number" id="amount" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={amount} onChange={(e) => setAmount(e.target.value === '' ? '' : parseFloat(e.target.value))} min="0.01" step="0.01" required />
           </div>
           <div className="mb-4">
             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-300 mb-1">{t('ar_col_due_date')} (Opcional)</label>
@@ -123,7 +142,7 @@ const AddAccountReceivableModal: React.FC<AddAccountReceivableModalProps> = ({ i
           </div>
           <div className="mb-4">
             <label htmlFor="currency" className="block text-sm font-medium text-gray-300 mb-1">{t('ar_col_currency')}</label>
-            <select id="currency" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={currencyCode} onChange={(e) => setCurrencyCode(e.target.value)} required disabled={!!accountReceivable}>
+            <select id="currency" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" value={currencyCode} onChange={(e) => setCurrencyCode(e.target.value)} required>
               {state.currencies.map(currency => <option key={currency.code} value={currency.code}>{currency.code}</option>)}
             </select>
           </div>

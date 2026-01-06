@@ -13,7 +13,7 @@ interface AddInvoiceModalProps {
 const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClose, onSave }) => {
   const { t } = useTranslation();
   const { state } = useAppContext();
-  
+
   const getInitialFormData = () => ({
     date: new Date().toISOString().split('T')[0],
     supplier: '',
@@ -47,6 +47,7 @@ const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClose, onSa
     onSave({
       ...formData,
       amount: parseFloat(formData.amount) || 0,
+      payments: [],
     });
     onClose();
   };
@@ -74,29 +75,29 @@ const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClose, onSa
           <div>
             <label htmlFor="conceptId" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_concept')}</label>
             <select name="conceptId" id="conceptId" value={formData.conceptId} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
-                {state.expenseTypes.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
+              {state.expenseTypes.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_amount')}</label>
-                <input type="number" name="amount" id="amount" value={formData.amount} onChange={handleChange} required step="0.01" className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+            <div>
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_amount')}</label>
+              <input type="number" name="amount" id="amount" value={formData.amount} onChange={handleChange} required step="0.01" className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
             </div>
             <div>
-                <label htmlFor="currencyCode" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_currency')}</label>
-                <select name="currencyCode" id="currencyCode" value={formData.currencyCode} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
-                    {state.currencies.map(c => (
-                        <option key={c.code} value={c.code}>{c.name} ({c.code})</option>
-                    ))}
-                </select>
+              <label htmlFor="currencyCode" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_currency')}</label>
+              <select name="currencyCode" id="currencyCode" value={formData.currencyCode} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                {state.currencies.map(c => (
+                  <option key={c.code} value={c.code}>{c.name} ({c.code})</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_date')}</label>
-                <input type="date" name="date" id="date" value={formData.date} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+              <label htmlFor="date" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_date')}</label>
+              <input type="date" name="date" id="date" value={formData.date} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
             </div>
             <div>
               <label htmlFor="dueDate" className="block text-sm font-medium text-gray-300">{t('accounts_payable_add_modal_due_date')}</label>

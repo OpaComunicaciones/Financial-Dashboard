@@ -10,6 +10,8 @@ export default {
   sidebar_planning: 'Planificación',
   sidebar_configuration: 'Configuración',
   sidebar_footer_subtitle: 'Tu Co-Piloto Financiero',
+  theme_toggle_light: 'Modo Claro',
+  theme_toggle_dark: 'Modo Oscuro',
 
   // Dashboard
   dashboard_title: 'Tablero',
@@ -77,7 +79,17 @@ export default {
   configuration_income_non_pl_badge: 'No Ingreso PyG',
   configuration_is_plannable: '¿Es Planificable?',
   configuration_is_plannable_badge: 'Planificable',
-  
+  configuration_is_deductible_from_sales: '¿Descontar de Ventas?',
+  configuration_is_deductible_from_sales_short: '¿Descontar?',
+  configuration_is_deductible_from_sales_badge: 'Deducible de Ventas',
+  configuration_danger_zone: 'Zona Peligrosa',
+  configuration_danger_zone_desc: 'Estas acciones son destructivas y no se pueden deshacer.',
+  configuration_reset_app: 'Reiniciar la aplicación',
+  configuration_reset_title: 'Borrar todos los datos',
+  configuration_reset_desc: 'Estás a punto de borrar permanentemente TODOS los datos de la aplicación, incluyendo configuraciones, ventas, y transacciones. Esta acción no se puede deshacer. ¿Estás absolutamente seguro?',
+  configuration_reset_confirm: 'Sí, borrar todo',
+  configuration_delete_item_confirm: '¿Está seguro de que desea eliminar este elemento?',
+
   // Daily Cash
   daily_cash_title: 'Cierre de Caja Diario',
   daily_cash_subtitle: 'Cierre sus operaciones de caja diarias y verifique discrepancias.',
@@ -123,7 +135,7 @@ export default {
   daily_cash_no_income: 'No hay otros ingresos registrados para esta fecha y moneda.',
   daily_cash_direct_sales_concept: 'Ventas Directas',
   daily_cash_edit_expense_modal_title: 'Editar Gasto en Efectivo',
-  
+
   // Accounts Payable
   accounts_payable_title: 'Cuentas por Pagar',
   accounts_payable_subtitle: 'Rastree y gestione todas las facturas de sus proveedores.',
@@ -263,6 +275,8 @@ export default {
   reports_budget_actual: 'Real',
   reports_budget_variance_val: 'Varianza',
   reports_budget_variance_pct: 'Varianza (%)',
+  reports_tab_cash: 'Informe de Efectivo',
+  reports_cash_report: 'Extracto Detallado de Efectivo',
 
   // Planning
   planning_title: 'Planificación y Presupuestos',
@@ -307,7 +321,6 @@ export default {
   api_management_key_saved: 'Una API Key está guardada actualmente.',
 
   // Accounts Receivable Module
-  sidebar_accounts_receivable: 'Cuentas por Cobrar',
   ar_title: 'Cuentas por Cobrar',
   ar_subtitle: 'Gestión del dinero pendiente de recibir.',
   ar_debtors_title: 'Gestión de Deudores',
@@ -357,14 +370,16 @@ export default {
   ar_payment_date: 'Fecha de Pago',
   ar_payment_method: 'Método de Pago',
   ar_payment_method_bank: 'Depósito Bancario',
+  ar_bank_account: 'Cuenta Bancaria',
   ar_select_bank_account: 'Seleccionar Cuenta',
-  ar_receivables_to_apply: 'Cuentas por Cobrar Pendientes',
-  ar_outstanding_balance: 'Saldo Pendiente',
+  ar_receivables_to_apply: 'Cuentas por Cobrar a Aplicar',
+  ar_outstanding_balance: 'Saldo Pendiente:',
   ar_amount_to_apply: 'Monto a aplicar',
-  ar_summary: 'Resumen',
+  ar_summary: 'Resumen de Pago',
   ar_total_applied_to_receivables: 'Total Aplicado a Cuentas por Cobrar:',
   ar_total_received: 'Monto Recibido Real:',
   ar_commission_difference: 'Diferencia / Comisión:',
   ar_commission_amount_manual: 'Monto de Comisión (opcional):',
   ar_register_payment_button: 'Registrar Pago',
+  ar_select_bank: 'Seleccionar Banco',
 };

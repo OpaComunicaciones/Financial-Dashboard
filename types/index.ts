@@ -80,6 +80,7 @@ export type BankTransaction = {
   type?: 'income' | 'expense';
   conceptId?: string;
   isNonDeductible?: boolean;
+  isPayment?: boolean;
 };
 
 export type DailySale = {
@@ -112,6 +113,7 @@ export type CashExpense = {
   invoiceNumber?: string;
   amount: number;
   isNonDeductible?: boolean;
+  isPayment?: boolean;
 };
 
 export type CashClosure = {
@@ -183,6 +185,7 @@ export type AccountReceivable = {
 export interface AppState {
   sharedDate: string;
   geminiApiKey?: string;
+  theme: 'dark' | 'light';
   incomeTypes: IncomeType[];
   expenseTypes: ExpenseType[];
   taxes: Tax[];

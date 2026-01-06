@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { formatNumber } from "../utils/formatting";
 
 const getPrompt = (data: Record<string, any>, lang: 'es' | 'en'): string => {
@@ -45,17 +45,17 @@ const getPrompt = (data: Record<string, any>, lang: 'es' | 'en'): string => {
 };
 
 export const getFinancialInsights = async (data: Record<string, any>, lang: 'es' | 'en', apiKey: string): Promise<string> => {
-    if (!apiKey) {
-        return Promise.resolve(
-          lang === 'es' 
-          ? "Las funciones de IA están deshabilitadas. Por favor, configure la clave de API de Gemini en la página de Configuración." 
-          : "AI features are disabled. Please configure the Gemini API Key in the Configuration page."
-        );
-    }
+  if (!apiKey) {
+    return Promise.resolve(
+      lang === 'es'
+        ? "Las funciones de IA están deshabilitadas. Por favor, configure la clave de API de Gemini en la página de Configuración."
+        : "AI features are disabled. Please configure the Gemini API Key in the Configuration page."
+    );
+  }
 
-  const ai = new GoogleGenerativeAI({ apiKey });
+  const ai = new GoogleGenerativeAI(apiKey);
   const modelName = 'gemini-pro';
-  
+
   const prompt = getPrompt(data, lang);
   console.log("Sending prompt to Gemini:", prompt); // Log the prompt
 

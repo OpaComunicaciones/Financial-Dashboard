@@ -8,7 +8,7 @@ type Language = 'es' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: keyof Translations) => string;
+  t: (key: keyof Translations, fallback?: string) => string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -29,8 +29,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     setLanguageState(lang);
   };
 
-  const t = (key: keyof Translations): string => {
-    return translations[language][key] || key;
+  const t = (key: keyof Translations, fallback?: string): string => {
+    return translations[language][key] || fallback || key;
   };
 
   return (

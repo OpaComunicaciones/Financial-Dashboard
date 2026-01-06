@@ -12,7 +12,7 @@ const DailySales: React.FC = () => {
     const { t } = useTranslation();
     const { state, setSharedDate, logDailySales, deleteDailySale, updateDailySale } = useAppContext();
     const { sharedDate } = state;
-    
+
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
     const todayStr = today.toISOString().split('T')[0];
@@ -54,7 +54,7 @@ const DailySales: React.FC = () => {
         const formData = new FormData(e.currentTarget);
         const salesData: Omit<DailySale, 'id'>[] = [];
         const cardSales: any[] = [];
-        
+
         const platformSalesToLog = platformSales
             .filter(ps => ps.debtorId && (parseFloat(ps.amount) || 0) > 0)
             .map(ps => ({
@@ -76,11 +76,11 @@ const DailySales: React.FC = () => {
             });
 
             const transferTotal = transfers.filter(t => t.currencyCode === currency.code).reduce((acc, t) => acc + (parseFloat(t.amount) || 0), 0);
-            
+
             const platformTotal = platformSalesToLog.filter(ps => ps.currencyCode === currency.code).reduce((acc, ps) => acc + ps.amount, 0);
 
             if (cash > 0 || cardTotal > 0 || transferTotal > 0 || platformTotal > 0) {
-                 salesData.push({
+                salesData.push({
                     date: sharedDate,
                     currencyCode: currency.code,
                     cash,
@@ -103,7 +103,7 @@ const DailySales: React.FC = () => {
                 customers: customers,
             });
         }
-        
+
         if (salesData.length > 0 || platformSalesToLog.length > 0) {
             logDailySales(salesData, transfers, cardSales, platformSalesToLog);
             alert(t('daily_sales_log_success'));
@@ -144,10 +144,10 @@ const DailySales: React.FC = () => {
         };
 
         const dailyGrossSalesByCurrency = new Map<string, { gross: number, currency: string }>();
-        
+
         filteredSales.forEach(sale => {
             if (!dailyGrossSalesByCurrency.has(sale.date)) {
-                dailyGrossSalesByCurrency.set(sale.date, { gross: 0, currency: sale.currencyCode});
+                dailyGrossSalesByCurrency.set(sale.date, { gross: 0, currency: sale.currencyCode });
             }
             const stat = dailyGrossSalesByCurrency.get(sale.date)!;
             stat.gross += sale.cash + sale.card + sale.transfer + (sale.platform || 0);
@@ -166,10 +166,10 @@ const DailySales: React.FC = () => {
             const { netRevenueAfterTax } = getOrCalculateNetSales(sale.date);
             const grossSalesForDayInCurrency = dailyGrossSalesByCurrency.get(sale.date)!.gross;
             const grossSalesForSale = sale.cash + sale.card + sale.transfer + (sale.platform || 0);
-            
+
             if (grossSalesForDayInCurrency > 0) {
-                 const proportion = grossSalesForSale / grossSalesForDayInCurrency;
-                 totals[sale.currencyCode].total += netRevenueAfterTax * proportion;
+                const proportion = grossSalesForSale / grossSalesForDayInCurrency;
+                totals[sale.currencyCode].total += netRevenueAfterTax * proportion;
             }
         });
 
@@ -182,7 +182,7 @@ const DailySales: React.FC = () => {
 
     return (
         <div className="space-y-8">
-            <EditDailySaleModal 
+            <EditDailySaleModal
                 isOpen={!!editingSale}
                 onClose={() => setEditingSale(null)}
                 onSave={handleUpdate}
@@ -191,53 +191,53 @@ const DailySales: React.FC = () => {
 
             <PageHeader title={t('daily_sales_title')} subtitle={t('daily_sales_subtitle')} />
 
-            <div className="max-w-4xl mx-auto bg-gray-800 p-8 rounded-xl border border-gray-700">
+            <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
                 <form onSubmit={handleLogSales} className="space-y-6">
-                    <div className="flex items-center gap-4 border-b border-gray-700 pb-6">
-                        <label htmlFor="sales-date" className="text-lg font-medium text-gray-300">{t('daily_sales_date')}</label>
+                    <div className="flex items-center gap-4 border-b border-gray-100 dark:border-gray-700 pb-6">
+                        <label htmlFor="sales-date" className="text-lg font-medium text-gray-700 dark:text-gray-300">{t('daily_sales_date')}</label>
                         <input
                             id="sales-date"
                             type="date"
                             value={sharedDate}
                             onChange={(e) => setSharedDate(e.target.value)}
                             required
-                            className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
                         />
                     </div>
-                    
+
                     <div className="space-y-6">
-                        <h3 className="text-xl font-semibold text-white">{t('daily_sales_by_payment_method')}</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('daily_sales_by_payment_method')}</h3>
                         {state.currencies.map(currency => (
-                            <div key={currency.id} className="p-4 bg-gray-900/50 rounded-lg">
-                                <h4 className="text-lg font-bold text-indigo-400 mb-3">{currency.name} ({currency.code})</h4>
+                            <div key={currency.id} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-100 dark:border-transparent">
+                                <h4 className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mb-3">{currency.name} ({currency.code})</h4>
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-3">
-                                        <DollarSign className="text-green-400" size={24}/>
-                                        <label htmlFor={`cash-${currency.code}`} className="w-32 text-gray-300">{t('daily_sales_cash')}</label>
-                                        <input type="number" id={`cash-${currency.code}`} name={`cash-${currency.code}`} step="0.01" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0,00" />
+                                        <DollarSign className="text-green-500 dark:text-green-400" size={24} />
+                                        <label htmlFor={`cash-${currency.code}`} className="w-32 text-gray-600 dark:text-gray-300">{t('daily_sales_cash')}</label>
+                                        <input type="number" id={`cash-${currency.code}`} name={`cash-${currency.code}`} step="0.01" className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm" placeholder="0,00" />
                                     </div>
                                     {state.bankAccounts.filter(ba => ba.currencyCode === currency.code && ba.hasTerminal).map(terminal => (
                                         <div key={terminal.id} className="flex items-center gap-3">
-                                            <CreditCard className="text-blue-400" size={24}/>
-                                            <label htmlFor={`card-${terminal.id}`} className="w-32 text-gray-300">{terminal.name}</label>
-                                            <input type="number" id={`card-${terminal.id}`} name={`card-${terminal.id}`} step="0.01" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0,00" />
+                                            <CreditCard className="text-blue-500 dark:text-blue-400" size={24} />
+                                            <label htmlFor={`card-${terminal.id}`} className="w-32 text-gray-600 dark:text-gray-300">{terminal.name}</label>
+                                            <input type="number" id={`card-${terminal.id}`} name={`card-${terminal.id}`} step="0.01" className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm" placeholder="0,00" />
                                         </div>
                                     ))}
                                     {/* Dynamic Bank Transfers */}
                                     {transfers.filter(t => t.currencyCode === currency.code).map((transfer, index) => (
                                         <div key={transfer.id} className="flex items-center gap-3">
-                                            <Landmark className="text-purple-400" size={24}/>
-                                            <select value={transfer.accountId} onChange={e => handleTransferChange(transfer.id, 'accountId', e.target.value)} className="w-32 bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                                            <Landmark className="text-purple-500 dark:text-purple-400" size={24} />
+                                            <select value={transfer.accountId} onChange={e => handleTransferChange(transfer.id, 'accountId', e.target.value)} className="w-32 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm">
                                                 <option value="">{t('daily_sales_select_bank')}</option>
                                                 {state.bankAccounts.filter(ba => ba.currencyCode === currency.code).map(ba => (
                                                     <option key={ba.id} value={ba.id}>{ba.name}</option>
                                                 ))}
                                             </select>
-                                            <input type="number" value={transfer.amount} onChange={e => handleTransferChange(transfer.id, 'amount', e.target.value)} step="0.01" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0,00" />
-                                            <button type="button" onClick={() => handleRemoveTransfer(transfer.id)} className="text-red-500 hover:text-red-400"><Trash2 size={18} /></button>
+                                            <input type="number" value={transfer.amount} onChange={e => handleTransferChange(transfer.id, 'amount', e.target.value)} step="0.01" className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm" placeholder="0,00" />
+                                            <button type="button" onClick={() => handleRemoveTransfer(transfer.id)} className="text-red-500 hover:text-red-400 p-2"><Trash2 size={18} /></button>
                                         </div>
                                     ))}
-                                    <button type="button" onClick={() => handleAddTransfer(currency.code)} className="text-indigo-400 hover:text-indigo-300 font-semibold py-2 rounded-lg flex items-center gap-2">
+                                    <button type="button" onClick={() => handleAddTransfer(currency.code)} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-semibold py-2 rounded-lg flex items-center gap-2 transition-colors">
                                         <Plus size={18} /> {t('daily_sales_add_transfer_button')}
                                     </button>
                                 </div>
@@ -247,25 +247,25 @@ const DailySales: React.FC = () => {
 
                     {/* Platform Sales / Credit Sales */}
                     <div className="space-y-6">
-                        <h3 className="text-xl font-semibold text-white">{t('daily_sales_platform_sales_title', 'Ventas a Plataformas / Crédito')}</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('daily_sales_platform_sales_title', 'Ventas a Plataformas / Crédito')}</h3>
                         {state.currencies.map(currency => (
-                            <div key={`platform-${currency.id}`} className="p-4 bg-gray-900/50 rounded-lg">
-                                <h4 className="text-lg font-bold text-teal-400 mb-3">{currency.name} ({currency.code})</h4>
+                            <div key={`platform-${currency.id}`} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-100 dark:border-transparent">
+                                <h4 className="text-lg font-bold text-teal-600 dark:text-teal-400 mb-3">{currency.name} ({currency.code})</h4>
                                 <div className="space-y-3">
                                     {platformSales.filter(ps => ps.currencyCode === currency.code).map((ps, index) => (
                                         <div key={ps.id} className="flex items-center gap-3">
-                                            <Landmark className="text-teal-400" size={24}/>
-                                            <select value={ps.debtorId} onChange={e => handlePlatformSaleChange(ps.id, 'debtorId', e.target.value)} className="w-32 bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                                            <Landmark className="text-teal-600 dark:text-teal-400" size={24} />
+                                            <select value={ps.debtorId} onChange={e => handlePlatformSaleChange(ps.id, 'debtorId', e.target.value)} className="w-32 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm">
                                                 <option value="">{t('ar_select_debtor', 'Seleccionar Deudor')}</option>
                                                 {state.debtors.filter(d => d.type === 'delivery_platform' || d.type === 'customer').map(debtor => (
                                                     <option key={debtor.id} value={debtor.id}>{debtor.name}</option>
                                                 ))}
                                             </select>
-                                            <input type="number" value={ps.amount} onChange={e => handlePlatformSaleChange(ps.id, 'amount', e.target.value)} step="0.01" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0,00" />
-                                            <button type="button" onClick={() => handleRemovePlatformSale(ps.id)} className="text-red-500 hover:text-red-400"><Trash2 size={18} /></button>
+                                            <input type="number" value={ps.amount} onChange={e => handlePlatformSaleChange(ps.id, 'amount', e.target.value)} step="0.01" className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm" placeholder="0,00" />
+                                            <button type="button" onClick={() => handleRemovePlatformSale(ps.id)} className="text-red-500 hover:text-red-400 p-2"><Trash2 size={18} /></button>
                                         </div>
                                     ))}
-                                    <button type="button" onClick={() => handleAddPlatformSale(currency.code)} className="text-teal-400 hover:text-teal-300 font-semibold py-2 rounded-lg flex items-center gap-2">
+                                    <button type="button" onClick={() => handleAddPlatformSale(currency.code)} className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-semibold py-2 rounded-lg flex items-center gap-2 transition-colors">
                                         <Plus size={18} /> {t('daily_sales_add_platform_sale_button', 'Añadir Venta a Plataforma')}
                                     </button>
                                 </div>
@@ -273,12 +273,12 @@ const DailySales: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="space-y-4 pt-4 border-t border-gray-600">
-                        <h3 className="text-xl font-semibold text-white">{t('daily_sales_customer_count')}</h3>
-                         <div className="flex items-center gap-3">
-                            <Users className="text-gray-400" size={24}/>
-                            <label htmlFor="customers" className="w-48 text-gray-300">{t('daily_sales_customers_served')}</label>
-                            <input type="number" id="customers" name="customers" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" placeholder="0" />
+                    <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('daily_sales_customer_count')}</h3>
+                        <div className="flex items-center gap-3">
+                            <Users className="text-gray-400" size={24} />
+                            <label htmlFor="customers" className="w-48 text-gray-600 dark:text-gray-300">{t('daily_sales_customers_served')}</label>
+                            <input type="number" id="customers" name="customers" className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm" placeholder="0" />
                         </div>
                     </div>
 
@@ -291,22 +291,22 @@ const DailySales: React.FC = () => {
             </div>
 
             {/* Sales History Table */}
-            <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
-                <h3 className="text-xl font-semibold text-white mb-4">{t('daily_sales_history_title')}</h3>
-                <div className="flex flex-wrap items-end gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('daily_sales_history_title')}</h3>
+                <div className="flex flex-wrap items-end gap-4 mb-6">
                     <div>
-                        <label htmlFor="start-date" className="block text-sm font-medium text-gray-400 mb-1">{t('reports_start_date')}</label>
-                        <input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+                        <label htmlFor="start-date" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{t('reports_start_date')}</label>
+                        <input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     </div>
                     <div>
-                        <label htmlFor="end-date" className="block text-sm font-medium text-gray-400 mb-1">{t('reports_end_date')}</label>
-                        <input type="date" id="end-date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+                        <label htmlFor="end-date" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{t('reports_end_date')}</label>
+                        <input type="date" id="end-date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left text-gray-300">
-                        <thead className="text-xs text-gray-400 uppercase bg-gray-700">
+                    <table className="w-full text-sm text-left text-gray-600 dark:text-gray-300">
+                        <thead className="text-xs text-gray-700 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th scope="col" className="px-6 py-3">{t('daily_sales_date')}</th>
                                 <th scope="col" className="px-6 py-3">{t('daily_sales_currency')}</th>
@@ -328,8 +328,8 @@ const DailySales: React.FC = () => {
 
                                 const symbol = getCurrencySymbol(sale.currencyCode);
                                 return (
-                                    <tr key={sale.id} className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700/50">
-                                        <td className="px-6 py-4 font-medium text-white">{sale.date}</td>
+                                    <tr key={sale.id} className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{sale.date}</td>
                                         <td className="px-6 py-4">{sale.currencyCode}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.cash, { style: 'currency', currencySymbol: symbol })}</td>
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.card, { style: 'currency', currencySymbol: symbol })}</td>
@@ -339,8 +339,8 @@ const DailySales: React.FC = () => {
                                         <td className="px-6 py-4 text-right font-mono">{formatNumber(sale.customers)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex justify-center gap-4">
-                                                <button onClick={() => setEditingSale(sale)} className="text-blue-400 hover:text-blue-300"><Edit size={16} /></button>
-                                                <button onClick={() => handleDelete(sale.id)} className="text-red-400 hover:text-red-300"><Trash2 size={16} /></button>
+                                                <button onClick={() => setEditingSale(sale)} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"><Edit size={16} /></button>
+                                                <button onClick={() => handleDelete(sale.id)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors"><Trash2 size={16} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -355,21 +355,21 @@ const DailySales: React.FC = () => {
                     </table>
                 </div>
 
-                <div className="mt-6 p-4 bg-gray-900/50 rounded-lg">
-                    <h4 className="text-lg font-semibold text-white mb-3">{t('daily_sales_summary_title')}</h4>
+                <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-100 dark:border-transparent">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('daily_sales_summary_title')}</h4>
                     {Object.keys(salesTotalsByCurrency).length > 0 ? (
                         <div className="space-y-4">
                             {Object.entries(salesTotalsByCurrency).map(([currencyCode, totals]) => {
                                 const symbol = getCurrencySymbol(currencyCode);
                                 return (
-                                    <div key={currencyCode} className="p-3 bg-gray-800 rounded-md">
-                                        <p className="font-bold text-indigo-400 mb-2">{t('daily_sales_currency')}: {currencyCode}</p>
-                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
-                                            <p>{t('daily_sales_cash')}: <span className="font-mono">{formatNumber(totals.cash, { style: 'currency', currencySymbol: symbol })}</span></p>
-                                            <p>{t('daily_sales_card')}: <span className="font-mono">{formatNumber(totals.card, { style: 'currency', currencySymbol: symbol })}</span></p>
-                                            <p>{t('daily_sales_transfer')}: <span className="font-mono">{formatNumber(totals.transfer, { style: 'currency', currencySymbol: symbol })}</span></p>
-                                            <p>{t('daily_sales_platform_sales_title')}: <span className="font-mono">{formatNumber(totals.platform, { style: 'currency', currencySymbol: symbol })}</span></p>
-                                            <p className="font-bold col-span-full md:col-span-1 md:text-right mt-2 md:mt-0">{t('daily_sales_total')}: <span className="font-mono">{formatNumber(totals.total, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                    <div key={currencyCode} className="p-4 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm">
+                                        <p className="font-bold text-indigo-600 dark:text-indigo-400 mb-3">{t('daily_sales_currency')}: {currencyCode}</p>
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-gray-700 dark:text-gray-300">
+                                            <p className="flex flex-col"><span className="text-xs text-gray-500 uppercase">{t('daily_sales_cash')}</span><span className="font-mono font-bold">{formatNumber(totals.cash, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="flex flex-col"><span className="text-xs text-gray-500 uppercase">{t('daily_sales_card')}</span><span className="font-mono font-bold">{formatNumber(totals.card, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="flex flex-col"><span className="text-xs text-gray-500 uppercase">{t('daily_sales_transfer')}</span><span className="font-mono font-bold">{formatNumber(totals.transfer, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="flex flex-col"><span className="text-xs text-gray-500 uppercase">{t('daily_sales_platform_sales_title')}</span><span className="font-mono font-bold">{formatNumber(totals.platform, { style: 'currency', currencySymbol: symbol })}</span></p>
+                                            <p className="flex flex-col bg-indigo-50 dark:bg-indigo-900/20 p-2 rounded"><span className="text-xs text-indigo-500 dark:text-indigo-400 uppercase font-bold">{t('daily_sales_total')}</span><span className="font-mono font-extrabold text-indigo-700 dark:text-indigo-300 text-base">{formatNumber(totals.total, { style: 'currency', currencySymbol: symbol })}</span></p>
                                         </div>
                                     </div>
                                 );

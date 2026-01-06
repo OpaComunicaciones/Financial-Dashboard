@@ -10,6 +10,8 @@ export default {
   sidebar_planning: 'Planning',
   sidebar_configuration: 'Configuration',
   sidebar_footer_subtitle: 'Your Financial Co-Pilot',
+  theme_toggle_light: 'Light Mode',
+  theme_toggle_dark: 'Dark Mode',
 
   // Dashboard
   dashboard_title: 'Dashboard',
@@ -29,7 +31,7 @@ export default {
   dashboard_ai_button: 'Generate Insights',
   dashboard_ai_button_loading: 'Analyzing...',
   dashboard_ai_loading: 'Loading insights...',
-  
+
   // Configuration
   configuration_title: 'Configuration',
   configuration_subtitle: "Manage your restaurant's financial categories and settings.",
@@ -77,6 +79,16 @@ export default {
   configuration_income_non_pl_badge: 'Non-P&L Income',
   configuration_is_plannable: 'Is Plannable?',
   configuration_is_plannable_badge: 'Plannable',
+  configuration_is_deductible_from_sales: 'Deduct from Sales?',
+  configuration_is_deductible_from_sales_short: 'Deduct?',
+  configuration_is_deductible_from_sales_badge: 'Deductible from Sales',
+  configuration_danger_zone: 'Danger Zone',
+  configuration_danger_zone_desc: 'These actions are destructive and cannot be undone.',
+  configuration_reset_app: 'Reset Application',
+  configuration_reset_title: 'Clear All Data',
+  configuration_reset_desc: 'You are about to permanently delete ALL application data, including settings, sales, and transactions. This action cannot be undone. Are you absolutely sure?',
+  configuration_reset_confirm: 'Yes, clear everything',
+  configuration_delete_item_confirm: 'Are you sure you want to delete this item?',
 
   // Daily Cash
   daily_cash_title: 'Daily Cash Reconciliation',
@@ -263,7 +275,9 @@ export default {
   reports_budget_actual: 'Actual',
   reports_budget_variance_val: 'Variance',
   reports_budget_variance_pct: 'Variance (%)',
-  
+  reports_tab_cash: 'Cash Report',
+  reports_cash_report: 'Detailed Cash Statement',
+
   // Planning
   planning_title: 'Planning & Budgets',
   planning_subtitle: 'Define your financial goals and budgets by category.',
@@ -307,7 +321,6 @@ export default {
   api_management_key_saved: 'An API Key is currently saved.',
 
   // Accounts Receivable Module
-  sidebar_accounts_receivable: 'Accounts Receivable',
   ar_title: 'Accounts Receivable',
   ar_subtitle: 'Manage money owed to your restaurant.',
   ar_debtors_title: 'Debtors Management',
@@ -357,14 +370,16 @@ export default {
   ar_payment_date: 'Payment Date',
   ar_payment_method: 'Payment Method',
   ar_payment_method_bank: 'Bank Deposit',
+  ar_bank_account: 'Bank Account',
   ar_select_bank_account: 'Select Account',
-  ar_receivables_to_apply: 'Outstanding Receivables',
-  ar_outstanding_balance: 'Outstanding Balance',
+  ar_receivables_to_apply: 'Receivables to Apply',
+  ar_outstanding_balance: 'Outstanding Balance:',
   ar_amount_to_apply: 'Amount to apply',
-  ar_summary: 'Summary',
+  ar_summary: 'Payment Summary',
   ar_total_applied_to_receivables: 'Total Applied to Receivables:',
   ar_total_received: 'Actual Amount Received:',
   ar_commission_difference: 'Difference / Commission:',
   ar_commission_amount_manual: 'Commission Amount (optional):',
   ar_register_payment_button: 'Register Payment',
+  ar_select_bank: 'Select Bank',
 };

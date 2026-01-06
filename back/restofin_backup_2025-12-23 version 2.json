@@ -1,0 +1,7336 @@
+{
+  "sharedDate": "2025-12-18",
+  "geminiApiKey": "",
+  "incomeTypes": [
+    {
+      "id": "ar-income-1765231141061",
+      "name": "Cuentas por Cobrar",
+      "isIncome": true,
+      "isPlannable": false
+    },
+    {
+      "id": "1764866367111",
+      "name": "CxP empleados por tips",
+      "isIncome": false,
+      "isPlannable": false
+    },
+    {
+      "id": "1",
+      "name": "Dine-in Sales",
+      "isIncome": true,
+      "isPlannable": true
+    },
+    {
+      "id": "3",
+      "name": "Employee Debt Payment",
+      "isIncome": false,
+      "isPlannable": false
+    },
+    {
+      "id": "1764864391039",
+      "name": "Ingreso 20% por Tips",
+      "isIncome": true,
+      "isPlannable": true
+    },
+    {
+      "id": "1764866820738",
+      "name": "Saldo Inicial",
+      "isIncome": false,
+      "isPlannable": false
+    },
+    {
+      "id": "special_surplus_1764865685492",
+      "name": "Surplus",
+      "isIncome": true
+    },
+    {
+      "id": "2",
+      "name": "Takeout Sales",
+      "isIncome": true,
+      "isPlannable": true
+    },
+    {
+      "id": "1765230006561",
+      "name": "Traslado entre bancos",
+      "isIncome": false,
+      "isPlannable": false
+    },
+    {
+      "id": "1765392658806",
+      "name": "Traslado entre cajas",
+      "isIncome": false,
+      "isPlannable": false
+    },
+    {
+      "id": "ventas-directas_1764864559405",
+      "name": "Ventas Directas",
+      "isIncome": true,
+      "isPlannable": false
+    },
+    {
+      "id": "1764864323723",
+      "name": "Ventas OUT",
+      "isIncome": true,
+      "isPlannable": true
+    }
+  ],
+  "expenseTypes": [
+    {
+      "id": "1765215278712",
+      "name": "Ambientación y musica",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765387416013",
+      "name": "Atencion a empleados",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765319050219",
+      "name": "Celular",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765317447564",
+      "name": "Comida de empleados",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765232196563",
+      "name": "Comision bancaria ventas con tarjetas",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764865334267",
+      "name": "Compra de materia prima",
+      "isExpense": false,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765388877986",
+      "name": "Cuenta por cobrar Pizza Mare Bonaire",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765227936039",
+      "name": "Declaracion de imptos por salarios y primas",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765225620717",
+      "name": "Dotacion",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972861623",
+      "name": "Elementos de aseo",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764971226569",
+      "name": "Envases y empaques",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765387309548",
+      "name": "Fletes por importacion",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972779563",
+      "name": "Gas",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765575169427",
+      "name": "Gasolina",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765817130334",
+      "name": "Gasto por compra de hielo",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765574130367",
+      "name": "Gastos bancarios",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764971125117",
+      "name": "Gastos personales dueños",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972163823",
+      "name": "Gastos por evento",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765232486844",
+      "name": "Honorarios Contador",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "tax-payment_1764864694081",
+      "name": "Impuesto 9% sobre venta",
+      "isExpense": false,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765227882423",
+      "name": "Impuesto por Prima de seguro",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972454381",
+      "name": "Mantenimiento",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764971814674",
+      "name": "Marketing",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765232223396",
+      "name": "NAOB TAX por ventas con tarjetas",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764864364606",
+      "name": "Nomina",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765216357867",
+      "name": "O.B 6% bancario",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972076243",
+      "name": "Papeleria",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "2",
+      "name": "Payroll",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1766435925072",
+      "name": "Personal contratado empresa temporal",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "loan-exp-1765304960190",
+      "name": "Préstamo a Empleado",
+      "isExpense": false,
+      "isPlannable": false
+    },
+    {
+      "id": "loan-exp-1764882224585",
+      "name": "Préstamo a Empleados",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765216201084",
+      "name": "Prestamo vehiculo",
+      "isExpense": false,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764864360206",
+      "name": "Renta de almacenamiento",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764864350490",
+      "name": "Renta de local",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765211726172",
+      "name": "Servicio de Energia y agua",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765211717307",
+      "name": "Servicio de internet",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "special_shortage_1764865685492",
+      "name": "Shortage",
+      "isExpense": true
+    },
+    {
+      "id": "1764864411055",
+      "name": "Tips empleados",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765216336185",
+      "name": "Transfer fee",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765392567238",
+      "name": "Traslado entre cajas",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1765230015910",
+      "name": "Traslado entres bancos",
+      "isExpense": false,
+      "isPlannable": false,
+      "isDeductibleFromSales": false
+    },
+    {
+      "id": "1764972285861",
+      "name": "Utensilios - Menaje",
+      "isExpense": true,
+      "isPlannable": true,
+      "isDeductibleFromSales": false
+    }
+  ],
+  "taxes": [
+    {
+      "name": "Impuesto a las ventas 9%",
+      "percentage": 9,
+      "authority": "Belastingdienst",
+      "paymentFrequency": "monthly",
+      "id": "1764864116761"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "1",
+      "name": "Cash"
+    },
+    {
+      "id": "2",
+      "name": "Credit Card"
+    },
+    {
+      "id": "1764864289724",
+      "name": "Transferencia Bancaria"
+    }
+  ],
+  "currencies": [
+    {
+      "name": "FLORINES",
+      "code": "XCG",
+      "symbol": "Cg",
+      "id": "1764863843617"
+    }
+  ],
+  "denominations": [
+    {
+      "currencyId": "ang",
+      "value": 100,
+      "type": "bill",
+      "id": "1764863870599"
+    },
+    {
+      "currencyId": "ang",
+      "value": 50,
+      "type": "bill",
+      "id": "1764863873966"
+    },
+    {
+      "currencyId": "ang",
+      "value": 20,
+      "type": "bill",
+      "id": "1764863880681"
+    },
+    {
+      "currencyId": "ang",
+      "value": 10,
+      "type": "bill",
+      "id": "1764863883283"
+    },
+    {
+      "currencyId": "ang",
+      "value": 1.75,
+      "type": "bill",
+      "id": "1764863893615"
+    },
+    {
+      "currencyId": "ang",
+      "value": 5,
+      "type": "coin",
+      "id": "1764863911032"
+    },
+    {
+      "currencyId": "ang",
+      "value": 1,
+      "type": "coin",
+      "id": "1764863922549"
+    },
+    {
+      "currencyId": "ang",
+      "value": 0.5,
+      "type": "coin",
+      "id": "1764863933899"
+    },
+    {
+      "currencyId": "ang",
+      "value": 0.25,
+      "type": "coin",
+      "id": "1764863944582"
+    },
+    {
+      "currencyId": "ang",
+      "value": 0.1,
+      "type": "coin",
+      "id": "1764863955115"
+    },
+    {
+      "currencyId": "ang",
+      "value": 0.01,
+      "type": "coin",
+      "id": "1764863964015"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 100,
+      "type": "bill",
+      "id": "1764865470712"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 50,
+      "type": "bill",
+      "id": "1764865473495"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 20,
+      "type": "bill",
+      "id": "1764865479344"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 10,
+      "type": "bill",
+      "id": "1764865483544"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 1.75,
+      "type": "bill",
+      "id": "1764865497460"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 5,
+      "type": "coin",
+      "id": "1764865514444"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 1,
+      "type": "coin",
+      "id": "1764865522177"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 0.5,
+      "type": "coin",
+      "id": "1764865530676"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 0.25,
+      "type": "coin",
+      "id": "1764865540326"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 0.1,
+      "type": "coin",
+      "id": "1764865546859"
+    },
+    {
+      "currencyId": "1764863843617",
+      "value": 0.01,
+      "type": "coin",
+      "id": "1764865555108"
+    }
+  ],
+  "bankAccounts": [
+    {
+      "name": "Banco MCB",
+      "currencyCode": "XCG",
+      "hasTerminal": true,
+      "id": "1764864222176"
+    },
+    {
+      "name": "Banco Di Caribe",
+      "currencyCode": "XCG",
+      "hasTerminal": false,
+      "id": "1764864246824"
+    },
+    {
+      "name": "Base moneda POS",
+      "currencyCode": "XCG",
+      "hasTerminal": false,
+      "id": "1764865592224"
+    },
+    {
+      "name": "Base moneda para cambio",
+      "currencyCode": "XCG",
+      "hasTerminal": false,
+      "id": "1764865602790"
+    }
+  ],
+  "invoices": [
+    {
+      "date": "2025-12-01",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 180.3,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764864758648",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 180.3,
+          "id": "1765219536593"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-02",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 322.98,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764882516897",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 53.45,
+          "id": "1765219559519"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 269.53000000000003,
+          "id": "1765220221376"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-03",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 221,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764882553679",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 9.07,
+          "id": "1765220232989"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 35,
+          "id": "1765220257489"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 95,
+          "id": "1765220288956"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 81.93,
+          "id": "1765220323305"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-04",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 177.48,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764968386957",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 127.82,
+          "id": "1765220337738"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 40.35,
+          "id": "1765234048418"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 9.310000000000002,
+          "id": "1765235681403"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-28",
+      "supplier": "Brandsimex",
+      "invoiceNumber": "132338",
+      "conceptId": "1764865334267",
+      "amount": 142.38,
+      "dueDate": "2025-12-28",
+      "currencyCode": "XCG",
+      "id": "1764973687863",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-02",
+      "supplier": "Delinova",
+      "invoiceNumber": "25083150",
+      "conceptId": "1764865334267",
+      "amount": 215.12,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764974158706",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 215.12,
+          "id": "1766436308770"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-04",
+      "supplier": "Brandsimex",
+      "invoiceNumber": "132497",
+      "conceptId": "1764865334267",
+      "amount": 284.76,
+      "dueDate": "2025-12-28",
+      "currencyCode": "XCG",
+      "id": "1764974234000",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-04",
+      "supplier": "Antilliaanse Brouwerij",
+      "invoiceNumber": "201616708",
+      "conceptId": "1764865334267",
+      "amount": 650.56,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764974516643",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-12",
+          "amount": 650.56,
+          "id": "1765574464902"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-05",
+      "supplier": "Pietersz",
+      "invoiceNumber": "648797",
+      "conceptId": "1764865334267",
+      "amount": 514,
+      "dueDate": "2026-01-05",
+      "currencyCode": "XCG",
+      "id": "1764974596943",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-05",
+      "supplier": "Delinova",
+      "invoiceNumber": "25073491",
+      "conceptId": "1764865334267",
+      "amount": 95.4,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1764974690513",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 95.4,
+          "id": "1766436317154"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-06",
+      "supplier": "Delinova",
+      "invoiceNumber": "25084516",
+      "conceptId": "1764865334267",
+      "amount": 131.68,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765142506988",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 131.68,
+          "id": "1766436324404"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-07",
+      "supplier": "empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 359.64,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765212153139",
+      "status": "Partially Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-09",
+          "amount": 24.16,
+          "id": "1765318449413"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-09",
+          "amount": 141.75,
+          "id": "1765327202207"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-09",
+          "amount": 167.2,
+          "id": "1765381213891"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Miguel",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 4982,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765214703338",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 4982,
+          "id": "1765214715169"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Sergio Alvares",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 4738.4,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765214838570",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 4738.4,
+          "id": "1765214851635"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Alfredo Josue Morales",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1596.33,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765214890653",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1596.33,
+          "id": "1765214900286"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Sjoudmar Derrel David",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 761.93,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765214935853",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 761.93,
+          "id": "1765214942385"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Maria Bibiana Quintero",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1793.2,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765214979919",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1793.2,
+          "id": "1765215020052"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Marijeli Caridad Emer",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1313.77,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215009852",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1313.77,
+          "id": "1765215026085"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Alexander Termil",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 366.9,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215063236",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 366.9,
+          "id": "1765215071102"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Natasha M. Mercelita",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 223.43,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215099561",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 223.43,
+          "id": "1765215147426"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Francisca Perez, Mojica",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1541.71,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215130193",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1541.71,
+          "id": "1765215153760"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Odalys Gomez",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 939.02,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215216113",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 939.02,
+          "id": "1765215222129"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Leynimar Chirino A",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1657.25,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215674815",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1657.25,
+          "id": "1765215693949"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Luz E Lopez V",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1793.2,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765215807164",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-01",
+          "amount": 1793.2,
+          "id": "1765215821099"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Loan Payment",
+      "invoiceNumber": "na",
+      "conceptId": "1765216201084",
+      "amount": 2564,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1765216256518",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 2564,
+          "id": "1765216275769"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Overheid Curacao",
+      "invoiceNumber": "552511",
+      "conceptId": "1765227882423",
+      "amount": 441.33,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765228206394",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 441.33,
+          "id": "1765228212774"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Overheid Curacao",
+      "invoiceNumber": "52511",
+      "conceptId": "1765227936039",
+      "amount": 6246,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765228285592",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 6246,
+          "id": "1765228292024"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Overheid Curacao",
+      "invoiceNumber": "52511",
+      "conceptId": "tax-payment_1764864694081",
+      "amount": 12004,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765228340625",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 12004,
+          "id": "1765228346041"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-05",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 362.78,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765302005520",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 88.02,
+          "id": "1765302247865"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 274.76,
+          "id": "1765305148052"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-06",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 579.23,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765302061702",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 19.08,
+          "id": "1765305207752"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-08",
+          "amount": 268.06,
+          "id": "1765305416018"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-09",
+          "amount": 146.25,
+          "id": "1765316205038"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-09",
+          "amount": 145.84000000000003,
+          "id": "1765318437297"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "Tip Top Leañez",
+      "invoiceNumber": "2525072",
+      "conceptId": "1765232196563",
+      "amount": 247.05,
+      "dueDate": "2025-12-09",
+      "currencyCode": "XCG",
+      "id": "1765315682536",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-10",
+          "amount": 247.05,
+          "id": "1765387588126"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "The Wine Factory B.V",
+      "invoiceNumber": "142478",
+      "conceptId": "1764865334267",
+      "amount": 295.94,
+      "dueDate": "2026-01-09",
+      "currencyCode": "XCG",
+      "id": "1765317011789",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "Delinova",
+      "invoiceNumber": "25085101",
+      "conceptId": "1764865334267",
+      "amount": 353.55,
+      "dueDate": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1765317226351",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 353.55,
+          "id": "1766436339553"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "EWT",
+      "invoiceNumber": "25763765",
+      "conceptId": "1764865334267",
+      "amount": 444.56,
+      "dueDate": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1765317361432",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-12",
+          "amount": 444.56,
+          "id": "1765574401003"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "Delinova",
+      "invoiceNumber": "25074483",
+      "conceptId": "1764865334267",
+      "amount": 102.15,
+      "dueDate": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1765317589249",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 102.15,
+          "id": "1766436332604"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 362.52,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765327299407",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 54.57,
+          "id": "1765838626300"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 151.25,
+          "id": "1765839105738"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 156.7,
+          "id": "1765839153854"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-08",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 182.68,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765380535845",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 182.68,
+          "id": "1765838608775"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-10",
+      "supplier": "Casa Rinaldi",
+      "invoiceNumber": "17000688",
+      "conceptId": "1764865334267",
+      "amount": 767822,
+      "dueDate": "2025-12-31",
+      "currencyCode": "XCG",
+      "id": "1765386951344",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-10",
+      "supplier": "Casa Rinaldi",
+      "invoiceNumber": "17000652",
+      "conceptId": "1764865334267",
+      "amount": 1039572,
+      "dueDate": "2025-12-31",
+      "currencyCode": "XCG",
+      "id": "1765386999908",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-10",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 351.99,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765474749276",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 65,
+          "id": "1765838646931"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 40.55,
+          "id": "1765839169804"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 165,
+          "id": "1765839191904"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 44.839999999999975,
+          "id": "1765839242105"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 36.60000000000002,
+          "id": "1765840100465"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-11",
+      "supplier": "Tip Top Leañez",
+      "invoiceNumber": "2525361",
+      "conceptId": "1765387416013",
+      "amount": 150.02,
+      "dueDate": "2025-12-12",
+      "currencyCode": "XCG",
+      "id": "1765491261009",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-12",
+          "amount": 150.02,
+          "id": "1765574369036"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-11",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 264.48,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765570417616",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 186,
+          "id": "1765838678169"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 78.48000000000002,
+          "id": "1765839251204"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-12",
+      "supplier": "Pietersz",
+      "invoiceNumber": "649329",
+      "conceptId": "1764865334267",
+      "amount": 115,
+      "dueDate": "2026-01-12",
+      "currencyCode": "XCG",
+      "id": "1765575463439",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-12",
+      "supplier": "Delinova",
+      "invoiceNumber": "25075276",
+      "conceptId": "1764865334267",
+      "amount": 14.53,
+      "dueDate": "2025-12-19",
+      "currencyCode": "XCG",
+      "id": "1765575549462",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 14.53,
+          "id": "1766436355254"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-12",
+      "supplier": "Delinova",
+      "invoiceNumber": "25086149",
+      "conceptId": "1764865334267",
+      "amount": 364.37,
+      "dueDate": "2025-12-19",
+      "currencyCode": "XCG",
+      "id": "1765577972006",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 364.37,
+          "id": "1766436348138"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-12",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 247.46,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765827755438",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 60,
+          "id": "1765838762932"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 43.43,
+          "id": "1765839260937"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 144.03,
+          "id": "1765839404972"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-13",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 252.2,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765827788469",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 212,
+          "id": "1765838792236"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 40.19999999999999,
+          "id": "1765839413971"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-14",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 509.34,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765827827005",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 137.75,
+          "id": "1765838998952"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 0.75,
+          "id": "1765839493955"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 252.7,
+          "id": "1765839504140"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-15",
+          "amount": 118.13999999999999,
+          "id": "1765839907530"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-15",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 369.2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1765900708305",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 134,
+          "id": "1766422474389"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 150.2,
+          "id": "1766422781458"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 85,
+          "id": "1766423059626"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "Delinova",
+      "invoiceNumber": "25087077",
+      "conceptId": "1764865334267",
+      "amount": 45,
+      "dueDate": "2025-12-23",
+      "currencyCode": "XCG",
+      "id": "1765932736609",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "Antilliaanse Brouwerij",
+      "invoiceNumber": "201617277",
+      "conceptId": "1764865334267",
+      "amount": 315.93,
+      "dueDate": "2025-12-23",
+      "currencyCode": "XCG",
+      "id": "1765932829656",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-18",
+          "amount": 315.93,
+          "id": "1766436086917"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "Brandsimex",
+      "invoiceNumber": "132832",
+      "conceptId": "1764865334267",
+      "amount": 237.3,
+      "dueDate": "2026-01-16",
+      "currencyCode": "XCG",
+      "id": "1765932892368",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "Na",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 296.58,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766006205442",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 180.06,
+          "id": "1766423069758"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 57,
+          "id": "1766423503145"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 59.51999999999998,
+          "id": "1766423607847"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "Delinova",
+      "invoiceNumber": "25076377",
+      "conceptId": "1764865334267",
+      "amount": 128.43,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766012279937",
+      "status": "Overdue",
+      "payments": []
+    },
+    {
+      "date": "2025-12-16",
+      "supplier": "The Wine Factory B.V",
+      "invoiceNumber": "142855",
+      "conceptId": "1764865334267",
+      "amount": 505.77,
+      "dueDate": "2026-01-16",
+      "currencyCode": "XCG",
+      "id": "1766012660308",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-18",
+      "supplier": "Empleados",
+      "invoiceNumber": "Na",
+      "conceptId": "1764864411055",
+      "amount": 335.98,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766174262155",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 126.87,
+          "id": "1766423922066"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 141.54,
+          "id": "1766424175384"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 67.57000000000005,
+          "id": "1766424603794"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 317.01,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766344254610",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 103.47,
+          "id": "1766424616061"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 169.48,
+          "id": "1766424796612"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 44.06,
+          "id": "1766425264270"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-20",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 163.8,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766344746705",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 152.7,
+          "id": "1766425279965"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 11.100000000000023,
+          "id": "1766425684106"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-17",
+      "supplier": "Empleados",
+      "invoiceNumber": "Na",
+      "conceptId": "1764864411055",
+      "amount": 314.6,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766356891238",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 17.73,
+          "id": "1766423620463"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 150.18,
+          "id": "1766423732248"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 57.02,
+          "id": "1766423831086"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 89.67000000000002,
+          "id": "1766423905964"
+        }
+      ]
+    },
+    {
+      "date": "2025-11-30",
+      "supplier": "Manuel",
+      "invoiceNumber": "na",
+      "conceptId": "1764864364606",
+      "amount": 1063.2,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1766363758409",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-21",
+          "amount": 1063.2,
+          "id": "1766363822521"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-21",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 528.06,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766419989274",
+      "status": "Partially Paid",
+      "payments": [
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 216,
+          "id": "1766425692886"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 78.01,
+          "id": "1766426739367"
+        },
+        {
+          "method": "cash",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 119.16,
+          "id": "1766426852466"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "Pietersz",
+      "invoiceNumber": "649931",
+      "conceptId": "1764865334267",
+      "amount": 566,
+      "dueDate": "2025-12-26",
+      "currencyCode": "XCG",
+      "id": "1766432719639",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "Delinova",
+      "invoiceNumber": "25088106",
+      "conceptId": "1764865334267",
+      "amount": 213.06,
+      "dueDate": "2025-12-26",
+      "currencyCode": "XCG",
+      "id": "1766433151272",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-22",
+      "supplier": "Delinova",
+      "invoiceNumber": "25088812",
+      "conceptId": "1764865334267",
+      "amount": 499.57,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1766433215638",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-22",
+      "supplier": "Delinova",
+      "invoiceNumber": "25078540",
+      "conceptId": "1764865334267",
+      "amount": 193.35,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1766433263431",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "Brandsimex",
+      "invoiceNumber": "132996",
+      "conceptId": "1764865334267",
+      "amount": 142.38,
+      "dueDate": "2026-01-19",
+      "currencyCode": "XCG",
+      "id": "1766433774598",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "Antilliaanse Brouwerij",
+      "invoiceNumber": "201617542",
+      "conceptId": "1764865334267",
+      "amount": 527.68,
+      "dueDate": "2025-12-26",
+      "currencyCode": "XCG",
+      "id": "1766434244270",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "EWT",
+      "invoiceNumber": "25766126",
+      "conceptId": "1764865334267",
+      "amount": 444.56,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1766434416685",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-22",
+      "supplier": "Starlight Seafood B.V",
+      "invoiceNumber": "202510801",
+      "conceptId": "1764865334267",
+      "amount": 312.7,
+      "dueDate": "2026-01-05",
+      "currencyCode": "XCG",
+      "id": "1766434577523",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-19",
+      "supplier": "CED Caribbean",
+      "invoiceNumber": "202502239",
+      "conceptId": "1764865334267",
+      "amount": 155,
+      "dueDate": "2025-12-26",
+      "currencyCode": "XCG",
+      "id": "1766434877587",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "date": "2025-12-01",
+      "supplier": "Delinova",
+      "invoiceNumber": "25137059",
+      "conceptId": "1764865334267",
+      "amount": 35.55,
+      "dueDate": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1766436284855",
+      "status": "Paid",
+      "payments": [
+        {
+          "method": "bank",
+          "accountId": "1764864222176",
+          "paymentDate": "2025-12-22",
+          "amount": 35.55,
+          "id": "1766436302138"
+        }
+      ]
+    },
+    {
+      "date": "2025-12-22",
+      "supplier": "Empleados",
+      "invoiceNumber": "na",
+      "conceptId": "1764864411055",
+      "amount": 360.4,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1766516772017",
+      "status": "Pending",
+      "payments": []
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1764864559405_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-01",
+      "amount": 4050.34,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-11-30",
+      "description": "Saldo inicial",
+      "amount": 530469.65,
+      "type": "income",
+      "conceptId": "1764866820738",
+      "isNonDeductible": false,
+      "id": "1764866880609"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-11-30",
+      "description": "saldo inicial",
+      "amount": 5333.29,
+      "type": "income",
+      "conceptId": "1764866820738",
+      "isNonDeductible": false,
+      "id": "1764866922878"
+    },
+    {
+      "bankAccountId": "1764865602790",
+      "date": "2025-11-30",
+      "description": "saldo inicial",
+      "amount": 1506.3,
+      "type": "income",
+      "conceptId": "1764866820738",
+      "isNonDeductible": false,
+      "id": "1764867150224"
+    },
+    {
+      "bankAccountId": "1764865592224",
+      "date": "2025-11-30",
+      "description": "Saldo inicial",
+      "amount": 606,
+      "type": "income",
+      "conceptId": "1764866820738",
+      "isNonDeductible": false,
+      "id": "1764867177659"
+    },
+    {
+      "id": "loan_1764882224585",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Préstamo a empleado: Alfredo Morales - Prestamo personal 4 cuotas c/u 520Cg",
+      "amount": -2000,
+      "type": "expense",
+      "conceptId": "loan-exp-1764882224585"
+    },
+    {
+      "id": "1764865894331_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-02",
+      "amount": 5050.82,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Pietersz",
+      "amount": -2577.84,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764970857558"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Renta de Local mes de dic",
+      "amount": -15124.26,
+      "type": "expense",
+      "conceptId": "1764864350490",
+      "isNonDeductible": false,
+      "id": "1764970932302"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Presidente Beer",
+      "amount": -158.05,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764970996113"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de cerveza Antilliaanse",
+      "amount": -145.17,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764971035564"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Varias Deli Nova B.V",
+      "amount": -552.74,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764971076499"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Mantenimiento de aire",
+      "amount": -2279,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1764971179570"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de bowls",
+      "amount": -1233.29,
+      "type": "expense",
+      "conceptId": "1764971226569",
+      "isNonDeductible": false,
+      "id": "1764971274240"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Renta almacenamiento de congelador JP MAAL & CO ",
+      "amount": -692.53,
+      "type": "expense",
+      "conceptId": "1764864360206",
+      "isNonDeductible": false,
+      "id": "1764971319974"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de atun",
+      "amount": -222.24,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764971346358"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Tips recibidos por tarjeta",
+      "amount": 178.88,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1764971781774"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Valla publicitaria",
+      "amount": -636,
+      "type": "expense",
+      "conceptId": "1764971814674",
+      "isNonDeductible": false,
+      "id": "1764971869030"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Compra de vinos",
+      "amount": -3517.17,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764971944030"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Copia de seguridad, hosting, pag web",
+      "amount": -89.04,
+      "type": "expense",
+      "conceptId": "1764971814674",
+      "isNonDeductible": false,
+      "id": "1764972003635"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Manejo de Instagram",
+      "amount": -555.94,
+      "type": "expense",
+      "conceptId": "1764971814674",
+      "isNonDeductible": false,
+      "id": "1764972026402"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "Compra de papeleria para oficina",
+      "amount": -60.23,
+      "type": "expense",
+      "conceptId": "1764972076243",
+      "isNonDeductible": false,
+      "id": "1764972101073"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de control tarj 6499",
+      "amount": -27.44,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1764972244110"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": " Gasolina tarj 6499",
+      "amount": -146.32,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1764972268195"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de utensilios tarjeta 6499",
+      "amount": -108.86,
+      "type": "expense",
+      "conceptId": "1764972285861",
+      "isNonDeductible": false,
+      "id": "1764972428001"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Copia de llaves tarjeta 6499",
+      "amount": -65.8,
+      "type": "expense",
+      "conceptId": "1764972454381",
+      "isNonDeductible": false,
+      "id": "1764972764613"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "2 cilindros de gas",
+      "amount": -380,
+      "type": "expense",
+      "conceptId": "1764972779563",
+      "isNonDeductible": false,
+      "id": "1764972804697"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "Compra con tarjeta 2257",
+      "amount": -170.74,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764972831749"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "Compra con tarjeta 2257 total 422,58",
+      "amount": -88.2,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1764972900385"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "Compra con tarjeta 2257 Total 422,58",
+      "amount": -334.38,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764972992421"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "Compra de huevos Tarjeta 2257",
+      "amount": -30,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764973020839"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-02",
+      "description": "Huevos tarjeta 2257",
+      "amount": -30,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1764973054789"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra de tequeños para aniversario Teke Dushi",
+      "amount": -203,
+      "type": "expense",
+      "conceptId": "1764972163823",
+      "isNonDeductible": false,
+      "id": "1764975574222"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Cheesecake Shots Prov Dushi Desserts",
+      "amount": -665,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764976097021"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-05",
+      "description": "Compra de refrescos Prov Coca Cola",
+      "amount": -427.28,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764976159773"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Compra de vasos Satex",
+      "amount": -390.08,
+      "type": "expense",
+      "conceptId": "1764972285861",
+      "isNonDeductible": false,
+      "id": "1764976272758"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-05",
+      "description": "Compra zumo de limon",
+      "amount": -121.73,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764976350492"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-05",
+      "description": "Pastilla para lavavajillas fact 56864",
+      "amount": -23.98,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1764976502664"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-05",
+      "description": "Compra MP fact fact 56864",
+      "amount": -213.09,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1764976684164"
+    },
+    {
+      "id": "1764878049663_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-03",
+      "amount": 3443.65,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1764969759754_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-04",
+      "amount": 2532.23,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1765137112096_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-05",
+      "amount": 6086.5,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1765141111984_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-06",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-06",
+      "amount": 5759.86,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-06",
+      "description": "Compra de salmon",
+      "amount": -88.3,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765142768756"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-06",
+      "description": "Compra en Mangusa",
+      "amount": -1439.8,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765143072824"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-07",
+      "description": "compra en firgos soda bretaña fact 113230",
+      "amount": -66.26,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765143250911"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-05",
+      "description": "Compra de dispensador de servilletas en firgos fact 113230",
+      "amount": -76.32,
+      "type": "expense",
+      "conceptId": "1764972285861",
+      "isNonDeductible": false,
+      "id": "1765143336311"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-07",
+      "description": "Compra de Burrata en centrum",
+      "amount": -63,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765158131634"
+    },
+    {
+      "id": "1765204945231_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-07",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-07",
+      "amount": 4261.77,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Servicio de internet TX 4.782,07",
+      "amount": -217.31,
+      "type": "expense",
+      "conceptId": "1765211717307",
+      "isNonDeductible": false,
+      "id": "1765211802277"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Servicio de energia y agua TX 4.782,07",
+      "amount": -4564.76,
+      "type": "expense",
+      "conceptId": "1765211726172",
+      "isNonDeductible": false,
+      "id": "1765211874625"
+    },
+    {
+      "id": "1765214715169",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Miguel",
+      "amount": -4982,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765214851635",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Sergio Alvares",
+      "amount": -4738.4,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765214900286",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Alfredo Josue Morales",
+      "amount": -1596.33,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765214942385",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Sjoudmar Derrel David",
+      "amount": -761.93,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215020052",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Maria Bibiana Quintero",
+      "amount": -1793.2,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215026085",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Marijeli Caridad Emer",
+      "amount": -1313.77,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215071102",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Alexander Termil",
+      "amount": -366.9,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215147426",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Natasha M. Mercelita",
+      "amount": -223.43,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215153760",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Francisca Perez, Mojica",
+      "amount": -1541.71,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215222129",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Odalys Gomez",
+      "amount": -939.02,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Pago Spotify",
+      "amount": -11.81,
+      "type": "expense",
+      "conceptId": "1765215278712",
+      "isNonDeductible": false,
+      "id": "1765215319229"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Compra en adidas",
+      "amount": -292,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765215344047"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Building Depot Hardwar",
+      "amount": -389,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765215433065"
+    },
+    {
+      "id": "1765215693949",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Leynimar Chirino A",
+      "amount": -1657.25,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "id": "1765215821099",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Payment for invoice #na from Luz E Lopez V",
+      "amount": -1793.2,
+      "type": "expense",
+      "conceptId": "1764864364606"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Fraal Import & Export",
+      "amount": -282.86,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765215888917"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Alquiler de mesas",
+      "amount": -204.05,
+      "type": "expense",
+      "conceptId": "1764972163823",
+      "isNonDeductible": false,
+      "id": "1765215938300"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Kooyman/Megastore",
+      "amount": -3.99,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765215999000"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Kooyman/Megastore",
+      "amount": -13.97,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765216060318"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Kooyman/Megastore",
+      "amount": -81.43,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765216107135"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Napa Autos parts",
+      "amount": -13.25,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765216135535"
+    },
+    {
+      "id": "1765216275769",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Payment for invoice #na from Loan Payment",
+      "amount": -2564,
+      "type": "expense",
+      "conceptId": "1765216201084"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "O.B 6% bancario del 1 de dic",
+      "amount": -1.26,
+      "type": "expense",
+      "conceptId": "1765216357867",
+      "isNonDeductible": false,
+      "id": "1765216515740"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Transfer fee del 1 de dic",
+      "amount": -21,
+      "type": "expense",
+      "conceptId": "1765216336185",
+      "isNonDeductible": false,
+      "id": "1765216646505"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Pago de fletes baterias",
+      "amount": -80.14,
+      "type": "expense",
+      "conceptId": "1765225620717",
+      "isNonDeductible": false,
+      "id": "1765225784510"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-06",
+      "description": "compra en Goisco total tact 300.70",
+      "amount": -239.07,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765225928247"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-06",
+      "description": "compra en Goisco total tact 300.70",
+      "amount": -61.63,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1765226040213"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-06",
+      "description": "Compra de broodkruim",
+      "amount": -35.85,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765226203682"
+    },
+    {
+      "id": "1765228212774",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Payment for invoice #552511 from Overheid Curacao",
+      "amount": -441.33,
+      "type": "expense",
+      "conceptId": "1765227882423"
+    },
+    {
+      "id": "1765228292024",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Payment for invoice #52511 from Overheid Curacao 2358,391,2969,528",
+      "amount": -6246,
+      "type": "expense",
+      "conceptId": "1765227936039"
+    },
+    {
+      "id": "1765228346041",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Payment for invoice #52511 from Overheid Curacao",
+      "amount": -12004,
+      "type": "expense",
+      "conceptId": "tax-payment_1764864694081"
+    },
+    {
+      "id": "1765231141061",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-01",
+      "description": "Pago de deudor (Banco BDC)",
+      "amount": 14302,
+      "type": "income",
+      "conceptId": "ar-income-1765231141061"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Ingreso Tips con tarjetas",
+      "amount": 257.23,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231327494"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "Ingreso tips con tarjetas",
+      "amount": 178.75,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231372393"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Ingreso tips con tarjetas",
+      "amount": 148.6,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231402894"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Ingreso tips pagados con tarjetas",
+      "amount": 362.78,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231439744"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-06",
+      "description": "Ingreso Tips pagados con tarjetas",
+      "amount": 299.54,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231474028"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-07",
+      "description": "Ingreso por tips pagados con tarjetas",
+      "amount": 318.3,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765231510243"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Ventas del 1 de dic",
+      "amount": -76.3,
+      "type": "expense",
+      "conceptId": "1765232196563",
+      "isNonDeductible": false,
+      "id": "1765232309498"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Ventas del 1 de dic",
+      "amount": -3.41,
+      "type": "expense",
+      "conceptId": "1765232223396",
+      "isNonDeductible": false,
+      "id": "1765232360481"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Mes de noviembre",
+      "amount": -475,
+      "type": "expense",
+      "conceptId": "1765232486844",
+      "isNonDeductible": false,
+      "id": "1765232545131"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Traslado recarga Di Caribe",
+      "amount": -5000,
+      "type": "expense",
+      "conceptId": "1765230015910",
+      "isNonDeductible": false,
+      "id": "1765236169637"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-08",
+      "description": "Traslado recarga Di Caribe",
+      "amount": 5000,
+      "type": "income",
+      "conceptId": "1765230006561",
+      "isNonDeductible": false,
+      "id": "1765236187698"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Transfer Charges",
+      "amount": -12.5,
+      "type": "expense",
+      "conceptId": "1765216336185",
+      "isNonDeductible": false,
+      "id": "1765236947413"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Compra de bateria",
+      "amount": -109.15,
+      "type": "expense",
+      "conceptId": "1765225620717",
+      "isNonDeductible": false,
+      "id": "1765237715638"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Ob 6% pagos 2 de dic",
+      "amount": -0.99,
+      "type": "expense",
+      "conceptId": "1765216357867",
+      "isNonDeductible": false,
+      "id": "1765237964551"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Transfer fee 2 dic",
+      "amount": -4,
+      "type": "expense",
+      "conceptId": "1765216336185",
+      "isNonDeductible": false,
+      "id": "1765238021267"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Ob por transf dic 4",
+      "amount": -0.06,
+      "type": "expense",
+      "conceptId": "1765216357867",
+      "isNonDeductible": false,
+      "id": "1765238076046"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Transfer fee 4 dic",
+      "amount": -1,
+      "type": "expense",
+      "conceptId": "1765216336185",
+      "isNonDeductible": false,
+      "id": "1765238104949"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "O.B por transfe dic 5",
+      "amount": -0.06,
+      "type": "expense",
+      "conceptId": "1765216357867",
+      "isNonDeductible": false,
+      "id": "1765238211716"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Transf fee por pagos dia 5",
+      "amount": -1,
+      "type": "expense",
+      "conceptId": "1765216336185",
+      "isNonDeductible": false,
+      "id": "1765238239831"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "Ventas del 2 dic",
+      "amount": -103.2,
+      "type": "expense",
+      "conceptId": "1765232196563",
+      "isNonDeductible": false,
+      "id": "1765238534333"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "ventas del 2 dic",
+      "amount": -5.43,
+      "type": "expense",
+      "conceptId": "1765232223396",
+      "isNonDeductible": false,
+      "id": "1765238575664"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "Ventas 3 dic",
+      "amount": -66.76,
+      "type": "expense",
+      "conceptId": "1765232196563",
+      "isNonDeductible": false,
+      "id": "1765238601165"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-04",
+      "description": "ventas 3 dic",
+      "amount": -3.47,
+      "type": "expense",
+      "conceptId": "1765232223396",
+      "isNonDeductible": false,
+      "id": "1765238628514"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Ventas del 4",
+      "amount": -58.79,
+      "type": "expense",
+      "conceptId": "1765232196563",
+      "isNonDeductible": false,
+      "id": "1765238698831"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Ventas del 4 dic",
+      "amount": -3.2,
+      "type": "expense",
+      "conceptId": "1765232223396",
+      "isNonDeductible": false,
+      "id": "1765238735848"
+    },
+    {
+      "id": "1765297037583_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-08",
+      "amount": 6261.5,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-08",
+      "description": "Tips empleados",
+      "amount": 308.9,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765306225506"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Ingreso por tips 20%",
+      "amount": 10.94,
+      "type": "income",
+      "conceptId": "1764864391039",
+      "isNonDeductible": false,
+      "id": "1765306703106"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-09",
+      "description": "Compra Mangusa",
+      "amount": -65.54,
+      "type": "expense",
+      "conceptId": "1765317447564",
+      "isNonDeductible": false,
+      "id": "1765317506733"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-09",
+      "description": "Compra de MP Mangusa 13.7 Cg Fact  63093",
+      "amount": -205.26,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765317648348"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-09",
+      "description": "Compra en Mangusa 13.7 Cg Fact  63093",
+      "amount": -13.7,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1765317759831"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-09",
+      "description": "Compra en centrum tarjeta 2257",
+      "amount": -299.56,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765318575380"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-03",
+      "description": "Pago de plan grupal celular",
+      "amount": -590,
+      "type": "expense",
+      "conceptId": "1765319050219",
+      "isNonDeductible": false,
+      "id": "1765319083824"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-09",
+      "description": "Ingreso por tips",
+      "amount": 14.67,
+      "type": "income",
+      "conceptId": "1764864391039",
+      "isNonDeductible": false,
+      "id": "1765380594961"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-09",
+      "description": "Tips empleados",
+      "amount": 182.68,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765380648612"
+    },
+    {
+      "id": "1765380810895_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-09",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-09",
+      "amount": 2914.1,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Fletes por import de quesos",
+      "amount": -4109.77,
+      "type": "expense",
+      "conceptId": "1765387309548",
+      "isNonDeductible": false,
+      "id": "1765387354982"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-10",
+      "description": "16 paq de Galletas para detalle fin de año",
+      "amount": -112.8,
+      "type": "expense",
+      "conceptId": "1765387416013",
+      "isNonDeductible": false,
+      "id": "1765387467746"
+    },
+    {
+      "id": "1765387588126",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Payment for invoice #2525072 from Tip Top Leañez",
+      "amount": -247.05,
+      "type": "expense",
+      "conceptId": "1765232196563"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Compra de bowls",
+      "amount": -673.52,
+      "type": "expense",
+      "conceptId": "1764971226569",
+      "isNonDeductible": false,
+      "id": "1765387898584"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-09",
+      "description": "Impuesto para envio de mozzarela ",
+      "amount": -20,
+      "type": "expense",
+      "conceptId": "1765388877986",
+      "isNonDeductible": false,
+      "id": "1765388933621"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-01",
+      "description": "Compra Mp 29 de nov Centrum",
+      "amount": -378.53,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765391234997"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-01",
+      "description": "Compra de MP 29 nov en Mangusa",
+      "amount": -587.98,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765391270230"
+    },
+    {
+      "bankAccountId": "1764865592224",
+      "date": "2025-12-10",
+      "description": "Traslado a caja cambio",
+      "amount": -6,
+      "type": "expense",
+      "conceptId": "1765392567238",
+      "isNonDeductible": false,
+      "id": "1765392626741"
+    },
+    {
+      "bankAccountId": "1764865602790",
+      "date": "2025-12-10",
+      "description": "Traslado desde caja POS",
+      "amount": 6,
+      "type": "income",
+      "conceptId": "1765392658806",
+      "isNonDeductible": false,
+      "id": "1765392718441"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-05",
+      "description": "Compra MP centrum con tarjeta 6499",
+      "amount": -44.45,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765402319211"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Compra en Kooyman/Megastor",
+      "amount": -74.97,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765402424457"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Compra Mp 28 de nov en Centrum",
+      "amount": -93.16,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765402622919"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Compra en Flacos Grill",
+      "amount": -31,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765406264297"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-02",
+      "description": "Globos aniversario",
+      "amount": -165.9,
+      "type": "expense",
+      "conceptId": "1764972163823",
+      "isNonDeductible": false,
+      "id": "1765406313197"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Pago a cantante",
+      "amount": -300,
+      "type": "expense",
+      "conceptId": "1764972163823",
+      "isNonDeductible": false,
+      "id": "1765409313858"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-10",
+      "description": "Duplicado de llaves pagado tarjeta 2257",
+      "amount": -9,
+      "type": "expense",
+      "conceptId": "1764972454381",
+      "isNonDeductible": false,
+      "id": "1765409400505"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-10",
+      "description": "Compra de licores pagado tarjeta 9198",
+      "amount": -196.77,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765409474490"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-09",
+      "description": "Compra de mercado tarjeta 6499",
+      "amount": -212.89,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765410027776"
+    },
+    {
+      "id": "1765472791677_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-10",
+      "amount": 5149.4,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-10",
+      "description": "Tips empleados pagados con tarjeta",
+      "amount": 315.39,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1765474779075"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-10",
+      "description": "Compra de huevos",
+      "amount": -30,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765475086810"
+    },
+    {
+      "id": "1765571939261_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-11",
+      "amount": 2246.42,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Retiro para cambio de sencilla caja",
+      "amount": -1800,
+      "type": "expense",
+      "conceptId": "1765230015910",
+      "isNonDeductible": false,
+      "id": "1765574093457"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Por cambio a sencilla",
+      "amount": -8.6,
+      "type": "expense",
+      "conceptId": "1765574130367",
+      "isNonDeductible": false,
+      "id": "1765574193909"
+    },
+    {
+      "bankAccountId": "1764865602790",
+      "date": "2025-12-12",
+      "description": "Ingreso de sencilla por temporada",
+      "amount": 1800,
+      "type": "income",
+      "conceptId": "1765392658806",
+      "isNonDeductible": false,
+      "id": "1765574251921"
+    },
+    {
+      "id": "1765574369036",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Payment for invoice #2525361 from Tip Top Leañez",
+      "amount": -150.02,
+      "type": "expense",
+      "conceptId": "1765387416013"
+    },
+    {
+      "id": "1765574401003",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Payment for invoice #25763765 from EWT",
+      "amount": -444.56,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1765574464902",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Payment for invoice #201616708 from Antilliaanse Brouwerij",
+      "amount": -650.56,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Compra de bolsas de regalo para regalos empleados",
+      "amount": -27.98,
+      "type": "expense",
+      "conceptId": "1765387416013",
+      "isNonDeductible": false,
+      "id": "1765574911561"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Combustible carro de Darlis",
+      "amount": -156,
+      "type": "expense",
+      "conceptId": "1765575169427",
+      "isNonDeductible": false,
+      "id": "1765575193025"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Compra pechugas de pollo FRAAL IMPORT ",
+      "amount": -282.86,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765575970258"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Compra de pan Baguette",
+      "amount": -48,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765576106971"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Compra de champiñones y hojas de menta fact 47601 total 104.39",
+      "amount": -98,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765576356887"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "compra de esponja fact 47601 total 104.39",
+      "amount": -6.39,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1765576501285"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-12",
+      "description": "Compra de materia prima Mangusa",
+      "amount": -341.58,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1765576894439"
+    },
+    {
+      "id": "1765746210010_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-12",
+      "amount": 3913,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1765748761085_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-13",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-13",
+      "amount": 3784.75,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1765817502504_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-14",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-14",
+      "amount": 5125.35,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-13",
+      "description": "Desayuno de navidad para empleados",
+      "amount": -554.84,
+      "type": "expense",
+      "conceptId": "1765387416013",
+      "isNonDeductible": false,
+      "id": "1765842776143"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "Compra en teke dushi",
+      "amount": -23.5,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765842966307"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "Compra en luna park",
+      "amount": -25.62,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765843027210"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Compra en centrum",
+      "amount": -159.9,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1765843098993"
+    },
+    {
+      "id": "1765900310796_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-15",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-15",
+      "amount": 4002.4,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1766006665412_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-16",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-16",
+      "amount": 4580.4,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-17",
+      "description": "Compra en 5999",
+      "amount": -121,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766008202567"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-15",
+      "description": "Compra en Goisco",
+      "amount": -457.84,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766008261220"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-16",
+      "description": "Vanddis Gasora",
+      "amount": -137.95,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766008340088"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "Compra en Centrum",
+      "amount": -149.47,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766011091491"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "compra en centrum",
+      "amount": -9.9,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766011118054"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-13",
+      "description": "compra en van den tweel",
+      "amount": -227.05,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766011221436"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-17",
+      "description": "Compra de 3 panales de huevos",
+      "amount": -45,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766012097043"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-16",
+      "description": "Compra en centrum",
+      "amount": -27.6,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766012132055"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-16",
+      "description": "Compra de insumos para comida de personal",
+      "amount": -54.76,
+      "type": "expense",
+      "conceptId": "1765317447564",
+      "isNonDeductible": false,
+      "id": "1766012225872"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-16",
+      "description": "Compra de MP en Mangusa",
+      "amount": -1068.32,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766012447022"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-16",
+      "description": "Trasferencia de banco  MCB",
+      "amount": 5000,
+      "type": "income",
+      "conceptId": "1765230006561",
+      "isNonDeductible": false,
+      "id": "1766020298490"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-16",
+      "description": "Transferencia al banco Di Caribe",
+      "amount": -5000,
+      "type": "expense",
+      "conceptId": "1765230015910",
+      "isNonDeductible": false,
+      "id": "1766020325004"
+    },
+    {
+      "id": "1766084530193_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-17",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-17",
+      "amount": 4192.6,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1766174317652_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-18",
+      "amount": 4042.5,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "id": "1766344041173_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-19",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-19",
+      "amount": 4340,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-19",
+      "description": "Ingreso por propinas",
+      "amount": 32.5,
+      "type": "income",
+      "conceptId": "1764864391039",
+      "isNonDeductible": false,
+      "id": "1766344210489"
+    },
+    {
+      "id": "1766344800577_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-20",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-20",
+      "amount": 2465.93,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-14",
+      "description": "Ingreso por Tips",
+      "amount": 67.49,
+      "type": "income",
+      "conceptId": "1764864391039",
+      "isNonDeductible": false,
+      "id": "1766348428259"
+    },
+    {
+      "id": "1766420041277_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-21",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-21",
+      "amount": 6457.5,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-22",
+      "description": "Compra en Mangusa 1386,84",
+      "amount": -1365.99,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766434948172"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-22",
+      "description": "Compra en Mangusa 1386,84",
+      "amount": -20.85,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1766435009388"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-22",
+      "description": "Compra en Centrum",
+      "amount": -131.52,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435048334"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-22",
+      "description": "Compra de pechuga de pollo",
+      "amount": -282.86,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435259436"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "compra de trapero, detergente en polvo y jabon liquido fact 1.311,34",
+      "amount": -70.93,
+      "type": "expense",
+      "conceptId": "1764972861623",
+      "isNonDeductible": false,
+      "id": "1766435495551"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "compra  en mangusa fact 1.311,34",
+      "amount": -1240.41,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435534535"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "Compra a Coca Cola",
+      "amount": -332.45,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435589954"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "Compra en Centrum",
+      "amount": -173.22,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435630619"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "Compra de cerveza Corona",
+      "amount": -233.81,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435701819"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "Compra de gas",
+      "amount": -570,
+      "type": "expense",
+      "conceptId": "1764972779563",
+      "isNonDeductible": false,
+      "id": "1766435786818"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-19",
+      "description": "Compra de perejil",
+      "amount": -9,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766435896433"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-19",
+      "description": "Pago de fact 288 meseros contratados noviembre",
+      "amount": -156.88,
+      "type": "expense",
+      "conceptId": "1766435925072",
+      "isNonDeductible": false,
+      "id": "1766436001368"
+    },
+    {
+      "id": "1766436086917",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #201617277 from Antilliaanse Brouwerij",
+      "amount": -315.93,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-19",
+      "description": "Compra en Tip Top Leañez",
+      "amount": -340.08,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766436195105"
+    },
+    {
+      "id": "1766436302138",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25137059 from Delinova",
+      "amount": -35.55,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436308770",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25083150 from Delinova",
+      "amount": -215.12,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436317154",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25073491 from Delinova",
+      "amount": -95.4,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436324404",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25084516 from Delinova",
+      "amount": -131.68,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436332604",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25074483 from Delinova",
+      "amount": -102.15,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436339553",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25085101 from Delinova",
+      "amount": -353.55,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436348138",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25086149 from Delinova",
+      "amount": -364.37,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "id": "1766436355254",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Payment for invoice #25075276 from Delinova",
+      "amount": -14.53,
+      "type": "expense",
+      "conceptId": "1764865334267"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-22",
+      "description": "Compra de bretaña y trashbag",
+      "amount": -230.83,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766443550530"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-11",
+      "description": "tips por pagr empleados",
+      "amount": 156.44,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449023908"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-12",
+      "description": "Tips para pagar a empleados",
+      "amount": 230.67,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449066827"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-13",
+      "description": "Tips para pagar a los empleados",
+      "amount": 252,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449101007"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-14",
+      "description": "Tips para pagar a los empleados",
+      "amount": 509.34,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449159505"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-15",
+      "description": "Tips por pagar a los empleados",
+      "amount": 268.75,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449308536"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-16",
+      "description": "Tips para pagar a los empleados",
+      "amount": 243.72,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449340270"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-17",
+      "description": "tips para pagar a los empleados",
+      "amount": 179,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449370888"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-18",
+      "description": "Tips por pagar a los empleados",
+      "amount": 252.52,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449418115"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-19",
+      "description": "Tips de emplados",
+      "amount": 317.01,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449463581"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-20",
+      "description": "tips para pagar a los empleados",
+      "amount": 80,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449494234"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-21",
+      "description": "Tips por pagar a empleados",
+      "amount": 520.57,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766449544582"
+    },
+    {
+      "id": "1766516574656_card_1764864222176",
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-22",
+      "description": "Credit Card Sales (Banco MCB) for 2025-12-22",
+      "amount": 5905.3,
+      "type": "income",
+      "conceptId": "ventas-directas_1764864559405"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-22",
+      "description": "Tips empleados recibidos con tarjeta",
+      "amount": 294.5,
+      "type": "income",
+      "conceptId": "1764866367111",
+      "isNonDeductible": false,
+      "id": "1766516730016"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-17",
+      "description": "Traslado a Di Caribe",
+      "amount": -5000,
+      "type": "expense",
+      "conceptId": "1765230015910",
+      "isNonDeductible": false,
+      "id": "1766520946842"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-17",
+      "description": "Traslado de MBC",
+      "amount": 5000,
+      "type": "income",
+      "conceptId": "1765230006561",
+      "isNonDeductible": false,
+      "id": "1766520988943"
+    },
+    {
+      "bankAccountId": "1764864222176",
+      "date": "2025-12-13",
+      "description": "Compra en Burger king",
+      "amount": -12,
+      "type": "expense",
+      "conceptId": "1764971125117",
+      "isNonDeductible": false,
+      "id": "1766521424182"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-23",
+      "description": "Comida empleados",
+      "amount": -58.3,
+      "type": "expense",
+      "conceptId": "1765317447564",
+      "isNonDeductible": false,
+      "id": "1766526475573"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-23",
+      "description": "Compra Cocacola",
+      "amount": -332.45,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766526682392"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-23",
+      "description": "Compra de orange juice Mangusa",
+      "amount": -71.46,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766526752353"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-23",
+      "description": "Compra de salmon",
+      "amount": -453.23,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766526817144"
+    },
+    {
+      "bankAccountId": "1764864246824",
+      "date": "2025-12-23",
+      "description": "compra de dos panales de huevos",
+      "amount": -60,
+      "type": "expense",
+      "conceptId": "1764865334267",
+      "isNonDeductible": false,
+      "id": "1766526876464"
+    }
+  ],
+  "dailySales": [
+    {
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 4050.34,
+      "transfer": 0,
+      "platform": 130.2,
+      "customers": 100,
+      "id": "2025-12-01-XCG-1764864559405"
+    },
+    {
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "cash": 80,
+      "card": 5050.82,
+      "transfer": 0,
+      "platform": 103.6,
+      "customers": 100,
+      "id": "2025-12-02-XCG-1764865894331"
+    },
+    {
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "cash": 178.28,
+      "card": 3443.65,
+      "transfer": 0,
+      "platform": 131.6,
+      "customers": 100,
+      "id": "2025-12-03-XCG-1764965259410"
+    },
+    {
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 2532.23,
+      "transfer": 0,
+      "platform": 201.6,
+      "customers": 100,
+      "id": "2025-12-04-XCG-1764969759754"
+    },
+    {
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "cash": 376.25,
+      "card": 5759.86,
+      "transfer": 0,
+      "platform": 135.8,
+      "customers": 100,
+      "id": "2025-12-06-XCG-1765141111984"
+    },
+    {
+      "date": "2025-12-05",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 6086.5,
+      "transfer": 0,
+      "platform": 137.2,
+      "customers": 100,
+      "id": "2025-12-05-XCG-1765141259736"
+    },
+    {
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "cash": 85.75,
+      "card": 4261.77,
+      "transfer": 0,
+      "platform": 210,
+      "customers": 100,
+      "id": "2025-12-07-XCG-1765204945231"
+    },
+    {
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "cash": 28,
+      "card": 6261.5,
+      "transfer": 0,
+      "platform": 366.8,
+      "customers": 100,
+      "id": "2025-12-08-XCG-1765297037583"
+    },
+    {
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 2914.1,
+      "transfer": 0,
+      "platform": 124.6,
+      "customers": 100,
+      "id": "2025-12-09-XCG-1765380810895"
+    },
+    {
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "cash": 56,
+      "card": 5149.4,
+      "transfer": 0,
+      "platform": 0,
+      "customers": 96,
+      "id": "2025-12-10-XCG-1765472791677"
+    },
+    {
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "cash": 163.33,
+      "card": 2246.42,
+      "transfer": 0,
+      "platform": 0,
+      "customers": 100,
+      "id": "2025-12-11-XCG-1765571939261"
+    },
+    {
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 3913,
+      "transfer": 0,
+      "platform": 67.2,
+      "customers": 100,
+      "id": "2025-12-12-XCG-1765746210010"
+    },
+    {
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "cash": 100.25,
+      "card": 3784.75,
+      "transfer": 0,
+      "platform": 323.4,
+      "customers": 100,
+      "id": "2025-12-13-XCG-1765748761085"
+    },
+    {
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 5125.35,
+      "transfer": 0,
+      "platform": 0,
+      "customers": 100,
+      "id": "2025-12-14-XCG-1765817502504"
+    },
+    {
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "cash": 50.75,
+      "card": 4002.4,
+      "transfer": 0,
+      "platform": 0,
+      "customers": 100,
+      "id": "2025-12-15-XCG-1765900310796"
+    },
+    {
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 4580.4,
+      "transfer": 0,
+      "platform": 105,
+      "customers": 100,
+      "id": "2025-12-16-XCG-1766006665412"
+    },
+    {
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 4192.6,
+      "transfer": 0,
+      "platform": 86.8,
+      "customers": 100,
+      "id": "2025-12-17-XCG-1766084530193"
+    },
+    {
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 4042.5,
+      "transfer": 0,
+      "platform": 0,
+      "customers": 100,
+      "id": "2025-12-18-XCG-1766174317652"
+    },
+    {
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 4340,
+      "transfer": 0,
+      "platform": 1274,
+      "customers": 100,
+      "id": "2025-12-19-XCG-1766344041173"
+    },
+    {
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "cash": 0,
+      "card": 2465.93,
+      "transfer": 0,
+      "platform": 92.4,
+      "customers": 100,
+      "id": "2025-12-20-XCG-1766344800577"
+    },
+    {
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "cash": 35,
+      "card": 6457.5,
+      "transfer": 0,
+      "platform": 379.4,
+      "customers": 100,
+      "id": "2025-12-21-XCG-1766420041277"
+    },
+    {
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "cash": 124.25,
+      "card": 5905.3,
+      "transfer": 0,
+      "platform": 57.4,
+      "customers": 100,
+      "id": "2025-12-22-XCG-1766516574656"
+    }
+  ],
+  "miscIncomes": [
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% tips",
+      "amount": 45.08,
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1764864844945"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 785.75,
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1764864953393"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% propinas",
+      "amount": 80.75,
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "id": "1764866251454"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "ventas en efectivo",
+      "amount": 410.37,
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "id": "1764866320861"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Propinas empleados",
+      "amount": 65.76,
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "id": "1764866497171"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20%",
+      "amount": 55.25,
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "id": "1764877785238"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp empleados por tips",
+      "amount": 42.25,
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "id": "1764877836395"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 684.25,
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "id": "1764877899411"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp empleaados por tips",
+      "amount": 28.88,
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "id": "1764968245136"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "ingreso 20% tips",
+      "amount": 44.37,
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "id": "1764968326574"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 558.9,
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "id": "1764968444490"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp empleados por tips ",
+      "amount": 1.42,
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1764981526926"
+    },
+    {
+      "conceptId": "1764866820738",
+      "detail": "Saldo final 30 nov",
+      "amount": 7453.78,
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "id": "1764983055548"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% por tips",
+      "amount": 79.75,
+      "date": "2025-12-05",
+      "currencyCode": "XCG",
+      "id": "1765137231410"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "ventas en efectivo",
+      "amount": 890.75,
+      "date": "2025-12-05",
+      "currencyCode": "XCG",
+      "id": "1765137267625"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% por tips",
+      "amount": 144.81,
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "id": "1765137475394"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 941.5,
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "id": "1765137498009"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Propina empleados",
+      "amount": 279.69,
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "id": "1765138024886"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 89.91,
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "id": "1765204818254"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp Tips empleados",
+      "amount": 41.34,
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "id": "1765204838661"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1064,
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "id": "1765204865295"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips ",
+      "amount": 90.63,
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765296834622"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp Empleados por tips",
+      "amount": 53.62,
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765296924732"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efctivo",
+      "amount": 517.39,
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "id": "1765296988998"
+    },
+    {
+      "id": "surplus_2025-12-03_XCG",
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 29.220000000000255
+    },
+    {
+      "id": "surplus_2025-12-06_XCG",
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 4.25
+    },
+    {
+      "id": "surplus_2025-12-08_XCG",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 3.389999999999418
+    },
+    {
+      "id": "1765305093537",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Alfredo Morales) en efectivo",
+      "amount": 293.84
+    },
+    {
+      "id": "1765305391519",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Rafael Romero) en efectivo",
+      "amount": 268.06
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% por tips",
+      "amount": 31,
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "id": "1765380421338"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 648.11,
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "id": "1765380734211"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1243,
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "id": "1765472812806"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso tips 20%",
+      "amount": 87.98,
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "id": "1765472844938"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips empleados",
+      "amount": 36.52,
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "id": "1765472871538"
+    },
+    {
+      "id": "surplus_2025-12-10_XCG",
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 19.25
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1202.25,
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "id": "1765566680931"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tip 20%",
+      "amount": 66.12,
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "id": "1765566711811"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp tips empleados",
+      "amount": 108.04,
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "id": "1765566738947"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1450.48,
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "id": "1765746284406"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "20% tips de ingreso",
+      "amount": 61.87,
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "id": "1765746335438"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Cxp tips empleados",
+      "amount": 16.79,
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "id": "1765746376189"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 512.75,
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "id": "1765748796008"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 63.05,
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "id": "1765748819334"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips por pagar a empleados",
+      "amount": 0.2,
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "id": "1765748849216"
+    },
+    {
+      "id": "surplus_2025-12-13_XCG",
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 3.5499999999992724
+    },
+    {
+      "id": "surplus_2025-12-04_XCG",
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 0.09999999999990905
+    },
+    {
+      "id": "surplus_2025-12-11_XCG",
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 0.010000000000218279
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tisp 20%",
+      "amount": 59.85,
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "id": "1765817539787"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 778.75,
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "id": "1765817875235"
+    },
+    {
+      "id": "surplus_2025-12-14_XCG",
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 0.1499999999996362
+    },
+    {
+      "id": "1765838945407",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Alejandra) en efectivo",
+      "amount": 38.67
+    },
+    {
+      "id": "1765839343191",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Rafael Romero) en efectivo",
+      "amount": 238
+    },
+    {
+      "id": "1765839381755",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Alfredo Morales) en efectivo",
+      "amount": 252.7
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1426.75,
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765900350243"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips para pagar a empleados",
+      "amount": 100.45,
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765900633204"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por 20% tips",
+      "amount": 92.3,
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765901770780"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efctivo",
+      "amount": 1737.71,
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1766003579990"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso 20% tips empleados",
+      "amount": 74.14,
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1766003616310"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips por pagar a empleados",
+      "amount": 52.86,
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1766003648496"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 2511.75,
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "id": "1766084566156"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tip",
+      "amount": 78.65,
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "id": "1766094099613"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Timps empleados",
+      "amount": 135.6,
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "id": "1766094135250"
+    },
+    {
+      "id": "surplus_2025-12-17_XCG",
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 5
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1203.5,
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766174118235"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 84,
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766174175443"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips por pagar a empleados",
+      "amount": 83.46,
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766174205580"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 716.75,
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "id": "1766344116825"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 46.75,
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "id": "1766344139942"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1264,
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "id": "1766344642478"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 40.95,
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "id": "1766344669294"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips empleados",
+      "amount": 83.8,
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "id": "1766344714743"
+    },
+    {
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Manuel ",
+      "amount": 1063.2,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766419254269"
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1410.75,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766419887075"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips",
+      "amount": 132.02,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766419914274"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips empleados",
+      "amount": 7.49,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766419937572"
+    },
+    {
+      "id": "1766422818311",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Miguel) en efectivo",
+      "amount": 28.26
+    },
+    {
+      "id": "1766423166859",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Camilo Moreno) en efectivo",
+      "amount": 47.81
+    },
+    {
+      "id": "1766423969097",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Alejandra) en efectivo",
+      "amount": 8
+    },
+    {
+      "id": "1766428115841",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "conceptId": "ar-income-1765231141061",
+      "detail": "Pago de deudor (Alfredo Morales) en efectivo",
+      "amount": 119.14
+    },
+    {
+      "conceptId": "1764864323723",
+      "detail": "Ventas en efectivo",
+      "amount": 1986.12,
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766516616654"
+    },
+    {
+      "conceptId": "1764864391039",
+      "detail": "Ingreso por tips 20%",
+      "amount": 90.1,
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766516643655"
+    },
+    {
+      "conceptId": "1764866367111",
+      "detail": "Tips empleados",
+      "amount": 65.9,
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766516675672"
+    },
+    {
+      "id": "surplus_2025-12-22_XCG",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "conceptId": "special_surplus_1764865685492",
+      "detail": "Cash surplus from daily closure",
+      "amount": 0.7599999999983993
+    }
+  ],
+  "cashClosures": [
+    {
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "initialBalance": 894,
+      "totalIncome": 636.88,
+      "totalExpenses": 0,
+      "expectedBalance": 1530.88,
+      "finalBalance": 1530.75,
+      "difference": -0.13000000000010914,
+      "counts": {
+        "20": 12,
+        "100": 4,
+        "1.75": 509
+      }
+    },
+    {
+      "date": "2025-12-03",
+      "currencyCode": "XCG",
+      "initialBalance": 1530.75,
+      "totalIncome": 960.03,
+      "totalExpenses": 0,
+      "expectedBalance": 2490.7799999999997,
+      "finalBalance": 2520,
+      "difference": 29.220000000000255,
+      "counts": {
+        "20": 4,
+        "50": 2,
+        "100": 8,
+        "1.75": 880
+      }
+    },
+    {
+      "date": "2025-12-05",
+      "currencyCode": "XCG",
+      "initialBalance": 3137.25,
+      "totalIncome": 970.5,
+      "totalExpenses": 0,
+      "expectedBalance": 4107.75,
+      "finalBalance": 4107.75,
+      "difference": 0,
+      "counts": {
+        "1": 7,
+        "10": 0,
+        "20": 0,
+        "50": 2,
+        "100": 40,
+        "0.5": 1,
+        "0.25": 1
+      }
+    },
+    {
+      "date": "2025-12-06",
+      "currencyCode": "XCG",
+      "initialBalance": 4107.75,
+      "totalIncome": 1742.25,
+      "totalExpenses": 0,
+      "expectedBalance": 5850,
+      "finalBalance": 5854.25,
+      "difference": 4.25,
+      "counts": {
+        "1": 4,
+        "5": 5,
+        "20": 10,
+        "50": 8,
+        "100": 13,
+        "1.75": 2242,
+        "0.5": 0,
+        "0.25": 7
+      }
+    },
+    {
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "initialBalance": 7115.75,
+      "totalIncome": 689.64,
+      "totalExpenses": 989.78,
+      "expectedBalance": 6815.610000000001,
+      "finalBalance": 6819,
+      "difference": 3.389999999999418,
+      "counts": {
+        "10": 0,
+        "20": 10,
+        "50": 10,
+        "100": 11,
+        "1.75": 2868
+      }
+    },
+    {
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "initialBalance": 6857.25,
+      "totalIncome": 1423.5,
+      "totalExpenses": 78,
+      "expectedBalance": 8202.75,
+      "finalBalance": 8222,
+      "difference": 19.25,
+      "counts": {
+        "10": 250,
+        "20": 10,
+        "50": 13,
+        "100": 14,
+        "1.75": 1984
+      }
+    },
+    {
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "initialBalance": 7246.75,
+      "totalIncome": 1529.1399999999999,
+      "totalExpenses": 563.67,
+      "expectedBalance": 8212.22,
+      "finalBalance": 8211.7,
+      "difference": -0.5199999999986176,
+      "counts": {
+        "1": 2,
+        "5": 1,
+        "10": 1,
+        "20": 10,
+        "50": 14,
+        "100": 22,
+        "1.75": 2911,
+        "0.25": 1,
+        "0.1": 2
+      }
+    },
+    {
+      "date": "2025-12-13",
+      "currencyCode": "XCG",
+      "initialBalance": 8211.7,
+      "totalIncome": 676.25,
+      "totalExpenses": 0,
+      "expectedBalance": 8887.95,
+      "finalBalance": 8891.5,
+      "difference": 3.5499999999992724,
+      "counts": {
+        "1": 0,
+        "5": 0,
+        "10": 2,
+        "20": 10,
+        "50": 15,
+        "100": 25,
+        "1.75": 3098,
+        "0.25": 0,
+        "0.1": 0
+      }
+    },
+    {
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "initialBalance": 6819,
+      "totalIncome": 679.11,
+      "totalExpenses": 640.2,
+      "expectedBalance": 6857.91,
+      "finalBalance": 6857.25,
+      "difference": -0.6599999999998545,
+      "counts": {
+        "10": 3,
+        "20": 14,
+        "50": 10,
+        "100": 11,
+        "1.75": 2827
+      }
+    },
+    {
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "initialBalance": 5854.25,
+      "totalIncome": 1281,
+      "totalExpenses": 15,
+      "expectedBalance": 7120.25,
+      "finalBalance": 7115.75,
+      "difference": -4.5,
+      "counts": {
+        "10": 1,
+        "20": 13,
+        "50": 11,
+        "100": 16,
+        "1.75": 2683,
+        "0.25": 2
+      }
+    },
+    {
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "initialBalance": 2520,
+      "totalIncome": 632.15,
+      "totalExpenses": 15,
+      "expectedBalance": 3137.15,
+      "finalBalance": 3137.25,
+      "difference": 0.09999999999990905,
+      "counts": {
+        "1": 4,
+        "5": 2,
+        "20": 6,
+        "50": 7,
+        "100": 9,
+        "0.25": 4,
+        "0.5": 1,
+        "1.75": 1001
+      }
+    },
+    {
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "initialBalance": 78.25,
+      "totalIncome": 832.25,
+      "totalExpenses": 15,
+      "expectedBalance": 895.5,
+      "finalBalance": 894,
+      "difference": -1.5,
+      "counts": {
+        "1": 3,
+        "5": 2,
+        "10": 1,
+        "20": 11,
+        "50": 3,
+        "100": 5,
+        "0.25": 4
+      }
+    },
+    {
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "initialBalance": 8222,
+      "totalIncome": 1539.7399999999998,
+      "totalExpenses": 2515,
+      "expectedBalance": 7246.74,
+      "finalBalance": 7246.75,
+      "difference": 0.010000000000218279,
+      "counts": {
+        "20": 0,
+        "50": 13,
+        "100": 18,
+        "1.75": 2741
+      }
+    },
+    {
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "initialBalance": 8891.5,
+      "totalIncome": 838.6,
+      "totalExpenses": 15,
+      "expectedBalance": 9715.1,
+      "finalBalance": 9715.25,
+      "difference": 0.1499999999996362,
+      "counts": {
+        "5": 1,
+        "10": 2,
+        "20": 8,
+        "50": 19,
+        "100": 28,
+        "1.75": 3303,
+        "0.5": 0
+      }
+    },
+    {
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "initialBalance": 9715.25,
+      "totalIncome": 2199.62,
+      "totalExpenses": 2230.17,
+      "expectedBalance": 9684.699999999999,
+      "finalBalance": 9683.25,
+      "difference": -1.4499999999989086,
+      "counts": {
+        "1": 1,
+        "10": 1,
+        "20": 8,
+        "50": 14,
+        "100": 25,
+        "1.75": 3607
+      }
+    },
+    {
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "initialBalance": 9683.25,
+      "totalIncome": 1864.71,
+      "totalExpenses": 52.96,
+      "expectedBalance": 11495,
+      "finalBalance": 11495,
+      "difference": 0,
+      "counts": {
+        "10": 1,
+        "20": 38,
+        "50": 18,
+        "100": 30,
+        "1.75": 3900
+      }
+    },
+    {
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "initialBalance": 11495,
+      "totalIncome": 2726,
+      "totalExpenses": 4,
+      "expectedBalance": 14217,
+      "finalBalance": 14222,
+      "difference": 5,
+      "counts": {
+        "1": 2,
+        "5": 1,
+        "10": 1,
+        "20": 4,
+        "50": 6,
+        "100": 70,
+        "1.75": 3900
+      }
+    },
+    {
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "initialBalance": 14222,
+      "totalIncome": 1370.96,
+      "totalExpenses": 1023.6,
+      "expectedBalance": 14569.359999999999,
+      "finalBalance": 14569.07,
+      "difference": -0.2899999999990541,
+      "counts": {
+        "5": 1,
+        "10": 2,
+        "20": 39,
+        "50": 22,
+        "100": 39,
+        "1.75": 5001,
+        "0.5": 10,
+        "0.25": 25,
+        "0.1": 10,
+        "0.01": 7
+      }
+    },
+    {
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "initialBalance": 14569.07,
+      "totalIncome": 763.5,
+      "totalExpenses": 6,
+      "expectedBalance": 15326.57,
+      "finalBalance": 15326.32,
+      "difference": -0.25,
+      "counts": {
+        "1": 1,
+        "5": 1,
+        "20": 1,
+        "50": 6,
+        "100": 150,
+        "0.25": 1,
+        "0.01": 7
+      }
+    },
+    {
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "initialBalance": 15326.32,
+      "totalIncome": 1388.75,
+      "totalExpenses": 4,
+      "expectedBalance": 16711.07,
+      "finalBalance": 16710.5,
+      "difference": -0.569999999999709,
+      "counts": {
+        "1": 0,
+        "10": 4,
+        "20": 38,
+        "50": 25,
+        "100": 45,
+        "1.75": 5806
+      }
+    },
+    {
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "initialBalance": 0,
+      "totalIncome": 7453.78,
+      "totalExpenses": 7375.53,
+      "expectedBalance": 78.25,
+      "finalBalance": 78.25,
+      "difference": 0,
+      "counts": {
+        "1": 3,
+        "5": 1,
+        "20": 1,
+        "50": 1,
+        "0.25": 1
+      }
+    },
+    {
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "initialBalance": 16710.5,
+      "totalIncome": 2648.4599999999996,
+      "totalExpenses": 1084.79,
+      "expectedBalance": 18274.17,
+      "finalBalance": 18270.5,
+      "difference": -3.6699999999982538,
+      "counts": {
+        "1": 1,
+        "5": 1,
+        "10": 6,
+        "20": 42,
+        "50": 28,
+        "100": 51,
+        "1.75": 6208,
+        "0.25": 2
+      }
+    },
+    {
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "initialBalance": 18270.5,
+      "totalIncome": 2469.58,
+      "totalExpenses": 2214.34,
+      "expectedBalance": 18525.74,
+      "finalBalance": 18526.5,
+      "difference": 0.7599999999983993,
+      "counts": {
+        "1": 1,
+        "10": 2,
+        "20": 35,
+        "50": 17,
+        "100": 56,
+        "1.75": 6488,
+        "0.25": 6
+      }
+    }
+  ],
+  "cashExpenses": [
+    {
+      "supplier": "Compra de hielo",
+      "detail": "NA Compra de MP",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": false,
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1764865406266"
+    },
+    {
+      "id": "shortage_2025-12-02_XCG",
+      "date": "2025-12-02",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.13000000000010914
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de Hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-04",
+      "currencyCode": "XCG",
+      "id": "1764967042313"
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "id": "1765204973246"
+    },
+    {
+      "id": "1765219536593",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 180.3
+    },
+    {
+      "id": "1765219559519",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 53.45
+    },
+    {
+      "id": "1765220221376",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 269.53000000000003
+    },
+    {
+      "id": "1765220232989",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 9.07
+    },
+    {
+      "id": "1765220257489",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 35
+    },
+    {
+      "id": "1765220288956",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 95
+    },
+    {
+      "id": "1765220323304",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 81.93
+    },
+    {
+      "id": "1765220337738",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 127.82
+    },
+    {
+      "id": "1765234048418",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 40.35
+    },
+    {
+      "id": "1765235681403",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 9.310000000000002
+    },
+    {
+      "id": "1765302247865",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 88.02
+    },
+    {
+      "id": "loan_1765304960190",
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: Prestamo para ser descontado de propinas",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 628.44
+    },
+    {
+      "id": "1765305148052",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 274.76
+    },
+    {
+      "id": "1765305207752",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 19.08
+    },
+    {
+      "id": "loan_1765305297919",
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "supplier": "Rafael Romero",
+      "detail": "Préstamo a empleado: Prestamo para descontar de tips",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 1044.1
+    },
+    {
+      "id": "1765305416018",
+      "date": "2025-12-08",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 268.06
+    },
+    {
+      "id": "1765316205038",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 146.25
+    },
+    {
+      "id": "1765318437297",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 145.84000000000003
+    },
+    {
+      "id": "1765318449413",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "supplier": "empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 24.16
+    },
+    {
+      "id": "1765327202207",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "supplier": "empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 141.75
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "10 sacos",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "id": "1765379186488"
+    },
+    {
+      "id": "1765381213891",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "supplier": "empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 167.2
+    },
+    {
+      "supplier": "Leynimar",
+      "detail": "Saldo de salario de noviembre",
+      "conceptId": "1764864364606",
+      "invoiceNumber": "na",
+      "amount": 78,
+      "isNonDeductible": false,
+      "date": "2025-12-10",
+      "currencyCode": "XCG",
+      "id": "1765416156433"
+    },
+    {
+      "supplier": "Manuel Matos",
+      "detail": "Prestamo",
+      "conceptId": "loan-exp-1764882224585",
+      "invoiceNumber": "na",
+      "amount": 2500,
+      "isNonDeductible": false,
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "id": "1765473465486"
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": false,
+      "date": "2025-12-11",
+      "currencyCode": "XCG",
+      "id": "1765490201841"
+    },
+    {
+      "id": "loan_1765747014705",
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Prestamo para pagar el 1 enero",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 525
+    },
+    {
+      "id": "loan_1765748658386",
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "supplier": "Alejandra",
+      "detail": "Préstamo a empleado: Cobro de pizza mal tomado pedido",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 38.67
+    },
+    {
+      "id": "shortage_2025-12-12_XCG",
+      "date": "2025-12-12",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.5199999999986176
+    },
+    {
+      "id": "loan_1765810528382",
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Prestamo gastos de viajes e instalacion",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 4202.99
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-14",
+      "currencyCode": "XCG",
+      "id": "1765817156054"
+    },
+    {
+      "id": "shortage_2025-12-09_XCG",
+      "date": "2025-12-09",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.6599999999998545
+    },
+    {
+      "id": "shortage_2025-12-07_XCG",
+      "date": "2025-12-07",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 4.5
+    },
+    {
+      "id": "shortage_2025-12-01_XCG",
+      "date": "2025-12-01",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 1.5
+    },
+    {
+      "id": "1765838608775",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 182.68
+    },
+    {
+      "id": "1765838626300",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 54.57
+    },
+    {
+      "id": "1765838646931",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 65
+    },
+    {
+      "id": "1765838678169",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 186
+    },
+    {
+      "id": "1765838762932",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 60
+    },
+    {
+      "id": "1765838792236",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 212
+    },
+    {
+      "id": "1765838998952",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 137.75
+    },
+    {
+      "id": "1765839105738",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 151.25
+    },
+    {
+      "id": "1765839153854",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 156.7
+    },
+    {
+      "id": "1765839169804",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 40.55
+    },
+    {
+      "id": "1765839191904",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 165
+    },
+    {
+      "id": "1765839242105",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 44.839999999999975
+    },
+    {
+      "id": "1765839251204",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 78.48000000000002
+    },
+    {
+      "id": "1765839260937",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 43.43
+    },
+    {
+      "id": "1765839404972",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 144.03
+    },
+    {
+      "id": "1765839413971",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 40.19999999999999
+    },
+    {
+      "id": "1765839493955",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 0.75
+    },
+    {
+      "id": "1765839504140",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 252.7
+    },
+    {
+      "id": "1765839907530",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 118.13999999999999
+    },
+    {
+      "id": "1765840100465",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 36.60000000000002
+    },
+    {
+      "id": "loan_1765900759922",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Miguel",
+      "detail": "Préstamo a empleado: Compra de pizza",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 28.26
+    },
+    {
+      "id": "loan_1765900825069",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: Error al elaborar una pizza no pedida",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 31.24
+    },
+    {
+      "id": "shortage_2025-12-15_XCG",
+      "date": "2025-12-15",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 1.4499999999989086
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de 10 bolsas de hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1765901873962"
+    },
+    {
+      "id": "loan_1766004525254",
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Error en toma de pedido y despacho de coca y margarita mal de maritza",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 37.21
+    },
+    {
+      "supplier": "na",
+      "detail": "traslado a caja de cambio",
+      "conceptId": "1765392567238",
+      "invoiceNumber": "na",
+      "amount": 0.75,
+      "isNonDeductible": false,
+      "date": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1766004598454"
+    },
+    {
+      "id": "loan_1766074796363",
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: Compra de cafe para descontar con propina",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "loan_1766074823160",
+      "date": "2025-12-17",
+      "currencyCode": "XCG",
+      "supplier": "Alejandra",
+      "detail": "Préstamo a empleado: Compra de cafe para pagar con propina",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Compra de hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766094369859"
+    },
+    {
+      "id": "loan_1766094433430",
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Pago de bebida pedida por error",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 5.95
+    },
+    {
+      "id": "loan_1766174491474",
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Coca cola empleados",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2.65
+    },
+    {
+      "supplier": "Sergio Alvares",
+      "detail": "Gastos personales",
+      "conceptId": "1764971125117",
+      "invoiceNumber": "na",
+      "amount": 1000,
+      "isNonDeductible": true,
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766176616642"
+    },
+    {
+      "id": "shortage_2025-12-18_XCG",
+      "date": "2025-12-18",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.2899999999990541
+    },
+    {
+      "id": "loan_1766343804244",
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: Compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "loan_1766343835358",
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "supplier": "Alejandra",
+      "detail": "Préstamo a empleado: compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 4
+    },
+    {
+      "id": "loan_1766343899958",
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "loan_1766343930178",
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "supplier": "Alejandra",
+      "detail": "Préstamo a empleado: Compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "shortage_2025-12-19_XCG",
+      "date": "2025-12-19",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.25
+    },
+    {
+      "id": "shortage_2025-12-20_XCG",
+      "date": "2025-12-20",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 0.569999999999709
+    },
+    {
+      "supplier": "OP=OP",
+      "detail": "Compra de ambientador para prueba afuera",
+      "conceptId": "1764972861623",
+      "invoiceNumber": "923",
+      "amount": 4.59,
+      "isNonDeductible": false,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766354830451"
+    },
+    {
+      "supplier": "Hielo",
+      "detail": "Hielo",
+      "conceptId": "1765817130334",
+      "invoiceNumber": "na",
+      "amount": 15,
+      "isNonDeductible": true,
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "id": "1766355512111"
+    },
+    {
+      "id": "loan_1766357921180",
+      "date": "2025-11-30",
+      "currencyCode": "XCG",
+      "supplier": "Luisana",
+      "detail": "Préstamo a empleado: Prestamo otorgado por Sergio",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 1500
+    },
+    {
+      "id": "1766363822521",
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "supplier": "Manuel",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864364606",
+      "invoiceNumber": "na",
+      "amount": 1063.2
+    },
+    {
+      "id": "loan_1766420095443",
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "shortage_2025-12-21_XCG",
+      "date": "2025-12-21",
+      "currencyCode": "XCG",
+      "conceptId": "special_shortage_1764865685492",
+      "supplier": "Internal",
+      "detail": "Cash shortage from daily closure",
+      "invoiceNumber": "",
+      "amount": 3.6699999999982538
+    },
+    {
+      "id": "1766422474389",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 134
+    },
+    {
+      "id": "1766422781458",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 150.2
+    },
+    {
+      "id": "1766423059626",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 85
+    },
+    {
+      "id": "1766423069758",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Na",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 180.06
+    },
+    {
+      "id": "1766423503145",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Na",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 57
+    },
+    {
+      "id": "1766423607846",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Na",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 59.51999999999998
+    },
+    {
+      "id": "1766423620463",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 17.73
+    },
+    {
+      "id": "1766423732248",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 150.18
+    },
+    {
+      "id": "1766423831086",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 57.02
+    },
+    {
+      "id": "1766423905964",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 89.67000000000002
+    },
+    {
+      "id": "1766423922066",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 126.87
+    },
+    {
+      "id": "1766424175384",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 141.54
+    },
+    {
+      "id": "1766424603794",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #Na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "Na",
+      "amount": 67.57000000000005
+    },
+    {
+      "id": "1766424616060",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 103.47
+    },
+    {
+      "id": "1766424796612",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 169.48
+    },
+    {
+      "id": "1766425264270",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 44.06
+    },
+    {
+      "id": "1766425279965",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 152.7
+    },
+    {
+      "id": "1766425684106",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 11.100000000000023
+    },
+    {
+      "id": "1766425692886",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 216
+    },
+    {
+      "id": "1766426739367",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 78.01
+    },
+    {
+      "id": "1766426852466",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Empleados",
+      "detail": "Payment for invoice #na",
+      "conceptId": "1764864411055",
+      "invoiceNumber": "na",
+      "amount": 119.16
+    },
+    {
+      "id": "loan_1766517878688",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Camilo Moreno",
+      "detail": "Préstamo a empleado: Compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    },
+    {
+      "id": "loan_1766520151430",
+      "date": "2025-12-22",
+      "currencyCode": "XCG",
+      "supplier": "Alfredo Morales",
+      "detail": "Préstamo a empleado: Compra de cafe",
+      "conceptId": "loan-exp-1765304960190",
+      "amount": 2
+    }
+  ],
+  "ipcRecords": [],
+  "exchangeRates": [
+    {
+      "id": "1",
+      "date": "2023-01-01",
+      "fromCurrencyCode": "ANG",
+      "toCurrencyCode": "USD",
+      "rate": 0.55
+    }
+  ],
+  "budgetRecords": [],
+  "debtors": [
+    {
+      "id": "1764864519985",
+      "name": "DUSHIFOOD",
+      "type": "delivery_platform"
+    },
+    {
+      "id": "1764882076352",
+      "name": "Alfredo Morales",
+      "type": "employee"
+    },
+    {
+      "id": "1764982879063",
+      "name": "Banco BDC",
+      "type": "customer"
+    },
+    {
+      "id": "1765305251218",
+      "name": "Rafael Romero",
+      "type": "employee"
+    },
+    {
+      "id": "1765388660187",
+      "name": "Pizza Mare Bonaire",
+      "type": "customer"
+    },
+    {
+      "id": "1765473388635",
+      "name": "Manuel Matos",
+      "type": "employee"
+    },
+    {
+      "id": "1765746933238",
+      "name": "Camilo Moreno",
+      "type": "employee"
+    },
+    {
+      "id": "1765748595085",
+      "name": "Alejandra",
+      "type": "employee"
+    },
+    {
+      "id": "1765900724020",
+      "name": "Miguel",
+      "type": "employee"
+    },
+    {
+      "id": "1766357858691",
+      "name": "Luisana",
+      "type": "employee"
+    }
+  ],
+  "accountsReceivable": [
+    {
+      "id": "1766516574656",
+      "debtorId": "1764864519985",
+      "date": "2025-12-22",
+      "concept": "Venta a DUSHIFOOD (2025-12-22)",
+      "amount": 57.4,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-22",
+      "concept": "Compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1766517878688",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-22",
+      "concept": "Compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766520151430",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1766420041277",
+      "debtorId": "1764864519985",
+      "date": "2025-12-21",
+      "concept": "Venta a DUSHIFOOD (2025-12-21)",
+      "amount": 379.4,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-21",
+      "concept": "Compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766420095443",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423166859_1766420095443",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-20",
+      "concept": "compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766343899958",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766428115841_1766343899958",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765748595085",
+      "date": "2025-12-20",
+      "concept": "Compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766343930178",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423969097_1766343930178",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1766344800577",
+      "debtorId": "1764864519985",
+      "date": "2025-12-20",
+      "concept": "Venta a DUSHIFOOD (2025-12-20)",
+      "amount": 92.4,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-19",
+      "concept": "Compra de cafe",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766343804244",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766428115841_1766343804244",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765748595085",
+      "date": "2025-12-19",
+      "concept": "compra de cafe",
+      "amount": 4,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766343835358",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423969097_1766343835358",
+          "paymentDate": "2025-12-22",
+          "amount": 4,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1766344041173",
+      "debtorId": "1764864519985",
+      "date": "2025-12-19",
+      "concept": "Venta a DUSHIFOOD (2025-12-19)",
+      "amount": 1274,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-18",
+      "concept": "Pago de bebida pedida por error",
+      "amount": 5.95,
+      "dueDate": "2025-12-18",
+      "currencyCode": "XCG",
+      "id": "1766094433430",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423166859_1766094433430",
+          "paymentDate": "2025-12-22",
+          "amount": 5.95,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1764864519985",
+      "date": "2025-12-18",
+      "concept": "Coca cola empleados",
+      "amount": 2.65,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766174419224",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-18",
+      "concept": "Coca cola empleados",
+      "amount": 2.65,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766174491474",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423166859_1766174491474",
+          "paymentDate": "2025-12-22",
+          "amount": 2.65,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-17",
+      "concept": "Compra de cafe para descontar con propina",
+      "amount": 2,
+      "dueDate": "2025-12-17",
+      "currencyCode": "XCG",
+      "id": "1766074796363",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766428115841_1766074796363",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765748595085",
+      "date": "2025-12-17",
+      "concept": "Compra de cafe para pagar con propina",
+      "amount": 2,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1766074823160",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423969097_1766074823160",
+          "paymentDate": "2025-12-22",
+          "amount": 2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1766084530193",
+      "debtorId": "1764864519985",
+      "date": "2025-12-17",
+      "concept": "Venta a DUSHIFOOD (2025-12-17)",
+      "amount": 86.8,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-16",
+      "concept": "Error en toma de pedido y despacho de coca y margarita mal de maritza",
+      "amount": 37.21,
+      "dueDate": "2025-12-16",
+      "currencyCode": "XCG",
+      "id": "1766004525254",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766423166859_1766004525254",
+          "paymentDate": "2025-12-22",
+          "amount": 37.21,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1766006665412",
+      "debtorId": "1764864519985",
+      "date": "2025-12-16",
+      "concept": "Venta a DUSHIFOOD (2025-12-16)",
+      "amount": 105,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765900724020",
+      "date": "2025-12-15",
+      "concept": "Compra de pizza",
+      "amount": 28.26,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1765900759922",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766422818311_1765900759922",
+          "paymentDate": "2025-12-22",
+          "amount": 28.26,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-15",
+      "concept": "Error al elaborar una pizza no pedida",
+      "amount": 31.24,
+      "dueDate": "2025-12-22",
+      "currencyCode": "XCG",
+      "id": "1765900825069",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1766428115841_1765900825069",
+          "paymentDate": "2025-12-22",
+          "amount": 31.24,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1765748761085",
+      "debtorId": "1764864519985",
+      "date": "2025-12-13",
+      "concept": "Venta a DUSHIFOOD (2025-12-13)",
+      "amount": 323.4,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1765746210010",
+      "debtorId": "1764864519985",
+      "date": "2025-12-12",
+      "concept": "Venta a DUSHIFOOD (2025-12-12)",
+      "amount": 67.2,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-12-12",
+      "concept": "Prestamo para pagar el 1 enero",
+      "amount": 525,
+      "dueDate": "2026-01-01",
+      "currencyCode": "XCG",
+      "id": "1765747014705",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765748595085",
+      "date": "2025-12-12",
+      "concept": "Cobro de pizza mal tomado pedido",
+      "amount": 38.67,
+      "dueDate": "2025-12-15",
+      "currencyCode": "XCG",
+      "id": "1765748658386",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1765838945407_1765748658386",
+          "paymentDate": "2025-12-15",
+          "amount": 38.67,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765473388635",
+      "date": "2025-12-10",
+      "concept": "Prestamo autorizado por Sergio",
+      "amount": 2500,
+      "dueDate": "2026-01-31",
+      "currencyCode": "XCG",
+      "id": "1765473420048",
+      "status": "Partially Paid",
+      "payments": [
+        {
+          "id": "1766363900643_1765473420048",
+          "paymentDate": "2025-12-22",
+          "amount": 1063.2,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "id": "1765380810896",
+      "debtorId": "1764864519985",
+      "date": "2025-12-09",
+      "concept": "Venta a DUSHIFOOD (2025-12-09)",
+      "amount": 124.6,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1765388660187",
+      "date": "2025-12-09",
+      "concept": "Impuesto por envio se Queso Mozzarela",
+      "amount": 20,
+      "dueDate": "2025-12-31",
+      "currencyCode": "XCG",
+      "id": "1765388714788",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1765297037583",
+      "debtorId": "1764864519985",
+      "date": "2025-12-08",
+      "concept": "Venta a DUSHIFOOD (2025-12-08)",
+      "amount": 366.8,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1765204945231",
+      "debtorId": "1764864519985",
+      "date": "2025-12-07",
+      "concept": "Venta a DUSHIFOOD (2025-12-07)",
+      "amount": 210,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1765141111985",
+      "debtorId": "1764864519985",
+      "date": "2025-12-06",
+      "concept": "Venta a DUSHIFOOD (2025-12-06)",
+      "amount": 135.8,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1765141259736",
+      "debtorId": "1764864519985",
+      "date": "2025-12-05",
+      "concept": "Venta a DUSHIFOOD (2025-12-05)",
+      "amount": 137.2,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1764969759754",
+      "debtorId": "1764864519985",
+      "date": "2025-12-04",
+      "concept": "Venta a DUSHIFOOD (2025-12-04)",
+      "amount": 201.6,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1764965259410",
+      "debtorId": "1764864519985",
+      "date": "2025-12-03",
+      "concept": "Venta a DUSHIFOOD (2025-12-03)",
+      "amount": 131.6,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1764865894331",
+      "debtorId": "1764864519985",
+      "date": "2025-12-02",
+      "concept": "Venta a DUSHIFOOD (2025-12-02)",
+      "amount": 103.6,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-12-02",
+      "concept": "Prestamo personal 4 cuotas c/u 520Cg",
+      "amount": 2000,
+      "dueDate": "2026-03-02",
+      "currencyCode": "XCG",
+      "id": "1764882224585",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "id": "1764864559405",
+      "debtorId": "1764864519985",
+      "date": "2025-12-01",
+      "concept": "Venta a DUSHIFOOD (2025-12-01)",
+      "amount": 130.2,
+      "currencyCode": "XCG",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1764864519985",
+      "date": "2025-11-30",
+      "concept": "Ventas de noviembre",
+      "amount": 4865,
+      "dueDate": "2025-12-20",
+      "currencyCode": "XCG",
+      "id": "1764982855731",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1764982879063",
+      "date": "2025-11-30",
+      "concept": "Ventas con tarjeta 28,29 y 30 nov",
+      "amount": 14302,
+      "dueDate": "2025-12-01",
+      "currencyCode": "XCG",
+      "id": "1764982944728",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1765231141061_1764982944728",
+          "paymentDate": "2025-12-01",
+          "amount": 14302,
+          "method": "bank",
+          "bankAccountId": "1764864222176"
+        }
+      ]
+    },
+    {
+      "debtorId": "1764882076352",
+      "date": "2025-11-30",
+      "concept": "Prestamo para ser descontado de propinas",
+      "amount": 628.44,
+      "dueDate": "2025-12-29",
+      "currencyCode": "XCG",
+      "id": "1765304960190",
+      "status": "Paid",
+      "payments": [
+        {
+          "id": "1765305093537_1765304960190",
+          "paymentDate": "2025-12-08",
+          "amount": 293.84,
+          "method": "cash"
+        },
+        {
+          "id": "1765839381755_1765304960190",
+          "paymentDate": "2025-12-15",
+          "amount": 252.7,
+          "method": "cash"
+        },
+        {
+          "id": "1766428115841_1765304960190",
+          "paymentDate": "2025-12-22",
+          "amount": 81.9,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765305251218",
+      "date": "2025-11-30",
+      "concept": "Prestamo para descontar de tips",
+      "amount": 1044.1,
+      "dueDate": "2026-01-26",
+      "currencyCode": "XCG",
+      "id": "1765305297919",
+      "status": "Partially Paid",
+      "payments": [
+        {
+          "id": "1765305391519_1765305297919",
+          "paymentDate": "2025-12-08",
+          "amount": 268.06,
+          "method": "cash"
+        },
+        {
+          "id": "1765839343191_1765305297919",
+          "paymentDate": "2025-12-15",
+          "amount": 238,
+          "method": "cash"
+        }
+      ]
+    },
+    {
+      "debtorId": "1765746933238",
+      "date": "2025-11-30",
+      "concept": "Prestamo gastos de viajes e instalacion",
+      "amount": 4202.99,
+      "dueDate": "2026-03-31",
+      "currencyCode": "XCG",
+      "id": "1765810528382",
+      "status": "Pending",
+      "payments": []
+    },
+    {
+      "debtorId": "1766357858691",
+      "date": "2025-11-30",
+      "concept": "Prestamo otorgado por Sergio",
+      "amount": 1500,
+      "dueDate": "2026-01-01",
+      "currencyCode": "XCG",
+      "id": "1766357921180",
+      "status": "Pending",
+      "payments": []
+    }
+  ]
+}

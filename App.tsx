@@ -19,7 +19,7 @@ const App: React.FC = () => {
     <LanguageProvider>
       <AppProvider>
         <HashRouter>
-          <div className="flex h-screen bg-gray-900 text-gray-100 font-sans">
+          <div className="flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
             <Sidebar />
             <main className="flex-1 overflow-y-auto p-8">
               <Routes>

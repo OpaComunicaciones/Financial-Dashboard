@@ -26,22 +26,24 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
   if (!isOpen || !formData) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
+    // @ts-ignore - checked exists on HTMLInputElement
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData(prev => {
-        if (!prev) return null;
-        if (type === 'checkbox') {
-            return { ...prev, [name]: checked };
-        }
-        return { ...prev, [name]: value };
+      if (!prev) return null;
+      if (type === 'checkbox') {
+        return { ...prev, [name]: checked };
+      }
+      return { ...prev, [name]: value };
     });
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newAmount = parseFloat(e.target.value) || 0;
     setFormData(prev => {
-        if (!prev) return null;
-        const isExpense = prev.type === 'expense';
-        return { ...prev, amount: isExpense ? -Math.abs(newAmount) : Math.abs(newAmount) };
+      if (!prev) return null;
+      const isExpense = prev.type === 'expense';
+      return { ...prev, amount: isExpense ? -Math.abs(newAmount) : Math.abs(newAmount) };
     });
   }
 
@@ -63,54 +65,54 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label htmlFor="bankAccountId" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_account')}</label>
-                    <select name="bankAccountId" id="bankAccountId" value={formData.bankAccountId} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
-                        {state.bankAccounts.map(acc => (
-                        <option key={acc.id} value={acc.id}>{acc.name} ({acc.currencyCode})</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="conceptId" className="block text-sm font-medium text-gray-300">{t('daily_cash_col_concept')}</label>
-                    <select name="conceptId" id="conceptId" value={formData.conceptId} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
-                        {conceptList.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_desc')}</label>
-                <input type="text" name="description" id="description" value={formData.description} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+              <label htmlFor="bankAccountId" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_account')}</label>
+              <select name="bankAccountId" id="bankAccountId" value={formData.bankAccountId} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                {state.bankAccounts.map(acc => (
+                  <option key={acc.id} value={acc.id}>{acc.name} ({acc.currencyCode})</option>
+                ))}
+              </select>
             </div>
+            <div>
+              <label htmlFor="conceptId" className="block text-sm font-medium text-gray-300">{t('daily_cash_col_concept')}</label>
+              <select name="conceptId" id="conceptId" value={formData.conceptId} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3">
+                {conceptList.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_amount')}</label>
-                    <input type="number" name="amount" id="amount" value={Math.abs(formData.amount)} onChange={handleAmountChange} required step="0.01" className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
-                </div>
-                <div>
-                    <label htmlFor="date" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_date')}</label>
-                    <input type="date" name="date" id="date" value={formData.date} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
-                </div>
-            </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_desc')}</label>
+            <input type="text" name="description" id="description" value={formData.description} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+          </div>
 
-            <div className="flex items-center gap-3 bg-gray-700/50 p-3 rounded-md">
-                <input id="isNonDeductibleEdit" name="isNonDeductible" type="checkbox" checked={formData.isNonDeductible} onChange={handleChange} className="h-5 w-5 rounded bg-gray-800 border-gray-600 text-indigo-600 focus:ring-indigo-500" />
-                <label htmlFor="isNonDeductibleEdit" className="text-sm font-medium text-gray-300">{t('banks_add_modal_non_deductible')}</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_amount')}</label>
+              <input type="number" name="amount" id="amount" value={Math.abs(formData.amount)} onChange={handleAmountChange} required step="0.01" className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
             </div>
+            <div>
+              <label htmlFor="date" className="block text-sm font-medium text-gray-300">{t('banks_add_modal_date')}</label>
+              <input type="date" name="date" id="date" value={formData.date} onChange={handleChange} required className="mt-1 w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3" />
+            </div>
+          </div>
 
-            <div className="flex justify-end gap-4 pt-4">
-                <button type="button" onClick={onClose} className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
-                {t('configuration_cancel_button')}
-                </button>
-                <button type="submit" className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700">
-                {t('configuration_save_button')}
-                </button>
-            </div>
+          <div className="flex items-center gap-3 bg-gray-700/50 p-3 rounded-md">
+            <input id="isNonDeductibleEdit" name="isNonDeductible" type="checkbox" checked={formData.isNonDeductible} onChange={handleChange} className="h-5 w-5 rounded bg-gray-800 border-gray-600 text-indigo-600 focus:ring-indigo-500" />
+            <label htmlFor="isNonDeductibleEdit" className="text-sm font-medium text-gray-300">{t('banks_add_modal_non_deductible')}</label>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4">
+            <button type="button" onClick={onClose} className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
+              {t('configuration_cancel_button')}
+            </button>
+            <button type="submit" className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700">
+              {t('configuration_save_button')}
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -1,11 +1,13 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Settings, Coins, Receipt, Landmark, DollarSign, FileText, ClipboardList, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Settings, Coins, Receipt, Landmark, DollarSign, FileText, ClipboardList, TrendingUp, Sun, Moon } from 'lucide-react';
 import { useTranslation } from '../i18n/i18n';
+import { useAppContext } from '../context/AppContext';
 
 const Sidebar: React.FC = () => {
   const { t, language, setLanguage } = useTranslation();
+  const { state, toggleTheme } = useAppContext();
 
   const navItems = [
     { path: '/dashboard', label: t('sidebar_dashboard'), icon: LayoutDashboard },
@@ -18,24 +20,24 @@ const Sidebar: React.FC = () => {
     { path: '/planning', label: t('sidebar_planning'), icon: ClipboardList },
     { path: '/configuration', label: t('sidebar_configuration'), icon: Settings },
   ];
-  
-  const linkClasses = "flex items-center px-4 py-3 text-gray-300 rounded-lg transition-colors duration-200";
-  const activeLinkClasses = "bg-gray-700 text-white shadow-md";
-  
+
+  const linkClasses = "flex items-center px-4 py-3 text-gray-500 dark:text-gray-300 rounded-lg transition-colors duration-200";
+  const activeLinkClasses = "bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-white shadow-sm dark:shadow-md";
+
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex flex-col border-r border-gray-700 print:hidden">
+    <aside className="w-64 bg-gray-50 dark:bg-gray-800 p-4 flex flex-col border-r border-gray-200 dark:border-gray-700 print:hidden transition-colors duration-300">
       <div className="flex items-center mb-8">
-         <div className="bg-indigo-500 p-2 rounded-lg mr-3">
+        <div className="bg-indigo-500 p-2 rounded-lg mr-3">
           <DollarSign className="text-white" size={24} />
-         </div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">RestoFin</h1>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">RestoFin</h1>
       </div>
       <nav className="flex-1 space-y-2">
         {navItems.map(item => (
           <NavLink
             key={item.path}
             to={item.path}
-            className={({ isActive }) => `${linkClasses} ${isActive ? activeLinkClasses : 'hover:bg-gray-700 hover:text-white'}`}
+            className={({ isActive }) => `${linkClasses} ${isActive ? activeLinkClasses : 'hover:bg-indigo-50 dark:hover:bg-gray-700 hover:text-indigo-600 dark:hover:text-white'}`}
           >
             <item.icon className="mr-3" size={20} />
             <span>{item.label}</span>
@@ -43,18 +45,30 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
       <div className="mt-auto">
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300"
+          >
+            {state.theme === 'dark' ? (
+              <><Sun size={18} className="text-yellow-400" /> <span className="text-sm font-medium">{t('theme_toggle_light')}</span></>
+            ) : (
+              <><Moon size={18} className="text-indigo-600" /> <span className="text-sm font-medium">{t('theme_toggle_dark')}</span></>
+            )}
+          </button>
+        </div>
         <div className="flex justify-center gap-2 mb-4">
           <button
             onClick={() => setLanguage('es')}
             aria-pressed={language === 'es'}
-            className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors ${language === 'es' ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors ${language === 'es' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
           >
             ES
           </button>
           <button
             onClick={() => setLanguage('en')}
             aria-pressed={language === 'en'}
-            className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors ${language === 'en' ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors ${language === 'en' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
           >
             EN
           </button>
