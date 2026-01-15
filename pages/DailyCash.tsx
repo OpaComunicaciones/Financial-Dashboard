@@ -127,42 +127,42 @@ const DailyCash: React.FC = () => {
     setCounts(prev => ({ ...prev, [denom.toString()]: isNaN(count) ? 0 : count }));
   };
 
-  const handleAddExpense = (expense: Omit<CashExpense, 'id' | 'date' | 'currencyCode'>) => {
+  const handleAddExpense = async (expense: Omit<CashExpense, 'id' | 'date' | 'currencyCode'>) => {
     addCashExpense({ ...expense, date: sharedDate, currencyCode: selectedCurrencyCode });
     setIsExpenseModalOpen(false);
   };
 
-  const handleUpdateExpense = (expense: CashExpense) => {
-    updateCashExpense(expense);
+  const handleUpdateExpense = async (expense: CashExpense) => {
+    await updateCashExpense(expense);
     setIsEditExpenseModalOpen(false);
     setSelectedExpense(null);
   };
 
-  const handleDeleteExpense = (id: string) => {
+  const handleDeleteExpense = async (id: string) => {
     if (window.confirm(t('daily_cash_delete_expense_confirm'))) {
-      deleteCashExpense(id);
+      await deleteCashExpense(id);
     }
   };
 
-  const handleAddIncome = (income: Omit<MiscIncome, 'id' | 'date' | 'currencyCode'>) => {
+  const handleAddIncome = async (income: Omit<MiscIncome, 'id' | 'date' | 'currencyCode'>) => {
     addMiscIncome({ ...income, date: sharedDate, currencyCode: selectedCurrencyCode });
     setIsIncomeModalOpen(false);
   };
 
-  const handleUpdateIncome = (income: MiscIncome) => {
-    updateMiscIncome(income);
+  const handleUpdateIncome = async (income: MiscIncome) => {
+    await updateMiscIncome(income);
     setIsEditIncomeModalOpen(false);
     setSelectedIncome(null);
   };
 
-  const handleDeleteIncome = (id: string) => {
+  const handleDeleteIncome = async (id: string) => {
     if (window.confirm(t('daily_cash_delete_income_confirm'))) {
-      deleteMiscIncome(id);
+      await deleteMiscIncome(id);
     }
   };
 
-  const handleSaveClosure = () => {
-    saveCashClosure({
+  const handleSaveClosure = async () => {
+    await saveCashClosure({
       date: sharedDate,
       currencyCode: selectedCurrencyCode,
       initialBalance,

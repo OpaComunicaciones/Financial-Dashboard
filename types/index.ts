@@ -46,6 +46,7 @@ export type InvoicePayment = {
   accountId?: string; // Only if method is 'bank'
   paymentDate: string;
   amount: number; // The amount of this specific payment
+  linkedMovementId?: string; // ID of the BankTransaction or CashExpense
 };
 
 export type Invoice = {
@@ -81,6 +82,8 @@ export type BankTransaction = {
   conceptId?: string;
   isNonDeductible?: boolean;
   isPayment?: boolean;
+  linkedDebtId?: string; // ID of Invoice or AccountReceivable
+  linkedDebtType?: 'invoice' | 'receivable';
 };
 
 export type DailySale = {
@@ -101,6 +104,8 @@ export type MiscIncome = {
   conceptId: string;
   detail: string;
   amount: number;
+  linkedDebtId?: string;
+  linkedDebtType?: 'receivable'; // MiscIncome only linked to ARs usually
 };
 
 export type CashExpense = {
@@ -114,6 +119,8 @@ export type CashExpense = {
   amount: number;
   isNonDeductible?: boolean;
   isPayment?: boolean;
+  linkedDebtId?: string;
+  linkedDebtType?: 'invoice' | 'receivable';
 };
 
 export type CashClosure = {
@@ -165,6 +172,7 @@ export type ReceivablePayment = {
   method: 'cash' | 'bank';
   bankAccountId?: string; // Only if method is 'bank'
   commissionAmount?: number; // Amount of commission deducted by platform
+  linkedMovementId?: string; // ID of the BankTransaction or MiscIncome
 };
 
 export type AccountReceivableStatus = 'Pending' | 'Paid' | 'Partially Paid';

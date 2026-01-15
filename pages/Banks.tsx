@@ -79,13 +79,13 @@ const Banks: React.FC = () => {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [state.transactions, selectedAccountId, startDate, endDate, selectedConceptId]);
 
-  const handleAdd = (transaction: Omit<BankTransaction, 'id'>) => {
+  const handleAdd = async (transaction: Omit<BankTransaction, 'id'>) => {
     addBankTransaction(transaction);
     setIsAddModalOpen(false);
   };
 
-  const handleEdit = (transaction: BankTransaction) => {
-    updateBankTransaction(transaction);
+  const handleEdit = async (transaction: BankTransaction) => {
+    await updateBankTransaction(transaction);
     setIsEditModalOpen(false);
   };
 
@@ -94,9 +94,9 @@ const Banks: React.FC = () => {
     setIsEditModalOpen(true);
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(t('banks_delete_confirm'))) {
-      deleteBankTransaction(id);
+      await deleteBankTransaction(id);
     }
   }
 

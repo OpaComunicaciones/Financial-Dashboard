@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from '../i18n/i18n';
 import { useAppContext } from '../context/AppContext';
-import { Debtor, AccountReceivable, BankAccount } from '../types';
+import { Debtor, AccountReceivable, BankAccount, ReceivablePayment } from '../types';
 import { formatNumber } from '../utils/formatting';
+import { CheckCircle } from 'lucide-react';
 
 interface RegisterIncomingPaymentModalProps {
   isOpen: boolean;
@@ -87,13 +88,25 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
     return actualReceived - (totalAmountApplied - commissions); // Not entirely correct. Need to rethink this logic.
   }, [amountReceived, commissionAmount, totalAmountApplied]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedDebtorId || amountReceived === '' || amountReceived <= 0) {
-      alert(t('ar_payment_validation_amount', 'Debe seleccionar un deudor y un monto recibido válido.'));
+    const cleanAmountReceived = amountReceived === '' || isNaN(amountReceived) ? 0 : amountReceived;
+    const cleanCommission = commissionAmount === '' || isNaN(commissionAmount) ? 0 : commissionAmount;
+
+    if (!selectedDebtorId) {
+      alert(t('ar_payment_validation_amount', 'Debe seleccionar un deudor.'));
       return;
     }
-    if (paymentMethod === 'bank' && !selectedBankAccountId) {
+
+    // We allow 0 amount received if it's fully covered by commission/offset, but usually it should be positive
+    if (cleanAmountReceived < 0) {
+      alert(t('ar_payment_validation_amount', 'El monto recibido no puede ser negativo.'));
+      return;
+    }
+
+    if (paymentMethod === 'bank' && !selectedBankAccountId && cleanAmountReceived > 0) {
       alert(t('ar_payment_validation_bank_account', 'Debe seleccionar una cuenta bancaria para pagos bancarios.'));
       return;
     }
@@ -111,25 +124,34 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
       return;
     }
 
-    receivePaymentForReceivables({
-      debtorId: selectedDebtorId,
-      amountReceived: amountReceived as number,
-      paymentDate,
-      paymentMethod,
-      bankAccountId: paymentMethod === 'bank' ? selectedBankAccountId : undefined,
-      commissionAmount: commissionAmount === '' ? 0 : commissionAmount,
-      receivablesToApply: finalReceivablesToApply,
-    });
+    setIsSaving(true);
+    try {
+      await receivePaymentForReceivables({
+        debtorId: selectedDebtorId,
+        amountReceived: cleanAmountReceived,
+        paymentDate,
+        paymentMethod,
+        bankAccountId: (paymentMethod === 'bank' && cleanAmountReceived > 0) ? selectedBankAccountId : undefined,
+        commissionAmount: cleanCommission,
+        receivablesToApply: finalReceivablesToApply,
+      });
 
-    onClose();
+      onClose();
+    } catch (error) {
+      console.error("Error saving payment:", error);
+      alert(t('ar_payment_error_saving', 'Ocurrió un error al registrar el pago. Por favor, intente nuevamente.'));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getCurrencySymbol = (code: string) => {
     return state.currencies.find(c => c.code === code)?.symbol || '$';
   };
 
-
   if (!isOpen) return null;
+
+  const currentDiff = totalAmountApplied - (Number(amountReceived) || 0) - (Number(commissionAmount) || 0);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
@@ -144,7 +166,7 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
                 <label htmlFor="debtor" className="block text-sm font-medium text-gray-300 mb-1">{t('ar_col_debtor', 'Deudor')}</label>
                 <select
                   id="debtor"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                   value={selectedDebtorId}
                   onChange={(e) => setSelectedDebtorId(e.target.value)}
                   required
@@ -160,10 +182,13 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
                 <input
                   type="number"
                   id="amountReceived"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-mono"
                   value={amountReceived}
-                  onChange={(e) => setAmountReceived(parseFloat(e.target.value))}
-                  min="0.01"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAmountReceived(val === '' ? '' : parseFloat(val));
+                  }}
+                  min="0"
                   step="0.01"
                   required
                 />
@@ -199,7 +224,7 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     value={selectedBankAccountId}
                     onChange={(e) => setSelectedBankAccountId(e.target.value)}
-                    required={paymentMethod === 'bank'}
+                    required={paymentMethod === 'bank' && (Number(amountReceived) || 0) > 0}
                   >
                     <option value="">{t('ar_select_bank_account', 'Seleccionar Cuenta')}</option>
                     {state.bankAccounts.map(account => (
@@ -215,11 +240,11 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
           {selectedDebtorId && outstandingReceivablesForDebtor.length > 0 && (
             <div className="mb-6 p-4 bg-gray-900 rounded-md border border-gray-700">
               <h4 className="text-lg font-semibold text-white mb-3">{t('ar_receivables_to_apply', 'Cuentas por Cobrar Pendientes')}</h4>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
+              <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                 {receivablesToApply.map((item) => {
                   const balance = item.ar.amount - item.ar.payments.reduce((sum, p) => sum + p.amount, 0);
                   return (
-                    <div key={item.ar.id} className="flex items-center gap-3 bg-gray-700 p-3 rounded-md">
+                    <div key={item.ar.id} className="flex items-center gap-3 bg-gray-700/50 p-3 rounded-md border border-gray-600 hover:border-gray-500 transition-colors">
                       <input
                         type="checkbox"
                         checked={item.isSelected}
@@ -227,19 +252,22 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
                         className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-800 border-gray-600 rounded focus:ring-indigo-500"
                       />
                       <div className="flex-grow">
-                        <p className="font-medium text-white">{item.ar.concept} ({item.ar.date})</p>
-                        <p className="text-sm text-gray-400">
-                          {t('ar_outstanding_balance', 'Saldo Pendiente:')} {formatNumber(balance, { style: 'currency', currencySymbol: getCurrencySymbol(item.ar.currencyCode) })}
+                        <p className="font-medium text-white text-sm">{item.ar.concept}</p>
+                        <p className="text-xs text-gray-400">
+                          {item.ar.date} • {t('ar_outstanding_balance', 'Saldo Pendiente:')} {formatNumber(balance, { style: 'currency', currencySymbol: getCurrencySymbol(item.ar.currencyCode) })}
                         </p>
                       </div>
                       <input
                         type="number"
                         value={item.amountToApply === 0 && !item.isSelected ? '' : item.amountToApply}
-                        onChange={(e) => handleAmountToApplyChange(item.ar.id, parseFloat(e.target.value) || '')}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          handleAmountToApplyChange(item.ar.id, val === '' ? '' : parseFloat(val));
+                        }}
                         min="0"
                         step="0.01"
-                        placeholder={t('ar_amount_to_apply', 'Monto a aplicar')}
-                        className="w-32 px-2 py-1 bg-gray-600 border border-gray-500 rounded-md text-white"
+                        placeholder={t('ar_amount_to_apply', 'Monto')}
+                        className="w-24 px-2 py-1 bg-gray-800 border border-gray-600 rounded-md text-white text-sm focus:ring-1 focus:ring-indigo-500 outline-none transition-all font-mono"
                         disabled={!item.isSelected}
                       />
                     </div>
@@ -253,46 +281,68 @@ const RegisterIncomingPaymentModal: React.FC<RegisterIncomingPaymentModalProps> 
           <div className="mb-6 p-4 bg-gray-900 rounded-md border border-gray-700">
             <h4 className="text-lg font-semibold text-white mb-3">{t('ar_summary', 'Resumen')}</h4>
             <div className="space-y-2">
-              <div className="flex justify-between text-gray-300">
-                <span>{t('ar_total_applied_to_receivables', 'Total Aplicado a Cuentas por Cobrar:')}</span>
-                <span className="font-semibold">{formatNumber(totalAmountApplied, { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
+              <div className="flex justify-between text-gray-300 text-sm">
+                <span>{t('ar_total_applied_to_receivables', 'Total Aplicado (Gross):')}</span>
+                <span className="font-semibold text-white">{formatNumber(totalAmountApplied, { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
               </div>
-              <div className="flex justify-between text-gray-300">
-                <span>{t('ar_total_received', 'Monto Recibido Real:')}</span>
-                <span className="font-semibold">{formatNumber(amountReceived === '' ? 0 : amountReceived, { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
+              <div className="flex justify-between text-gray-300 text-sm">
+                <span>{t('ar_amount_received', 'Monto Recibido Real (Net):')}</span>
+                <span className="font-semibold text-green-400">{formatNumber(Number(amountReceived) || 0, { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
               </div>
-              <div className="flex justify-between text-red-400 font-bold border-t border-gray-700 pt-2">
-                <span>{t('ar_commission_difference', 'Diferencia / Comisión:')}</span>
-                <span className="font-bold">{formatNumber(totalAmountApplied - (amountReceived === '' ? 0 : amountReceived), { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
-              </div>
+
               {/* Manual Commission Adjustment */}
-              <div className="flex items-center gap-3">
-                <label htmlFor="commissionAmount" className="flex-grow block text-sm font-medium text-gray-300 mb-1">{t('ar_commission_amount_manual', 'Monto de Comisión (opcional):')}</label>
+              <div className="flex items-center gap-3 py-2 border-t border-gray-800">
+                <label htmlFor="commissionAmount" className="flex-grow block text-sm font-medium text-gray-300 italic">{t('ar_commission_amount_manual', 'Comisión / Gastos deducidos:')}</label>
                 <input
                   type="number"
                   id="commissionAmount"
-                  className="w-32 px-2 py-1 bg-gray-700 border border-gray-600 rounded-md text-white"
+                  className="w-32 px-2 py-1 bg-gray-700 border border-gray-600 rounded-md text-white text-sm font-mono focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
                   value={commissionAmount}
-                  onChange={(e) => setCommissionAmount(parseFloat(e.target.value) || '')}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setCommissionAmount(val === '' ? '' : parseFloat(val));
+                  }}
                   min="0"
                   step="0.01"
                 />
               </div>
+
+              <div className={`flex justify-between font-bold border-t border-gray-700 pt-2 ${currentDiff === 0 ? 'text-gray-400' : 'text-yellow-500'}`}>
+                <span>{t('ar_commission_difference', 'Diferencia Final:') || 'Diferencia Final:'}</span>
+                <span className="font-bold">{formatNumber(currentDiff, { style: 'currency', currencySymbol: getCurrencySymbol(state.currencies[0]?.code || 'USD') })}</span>
+              </div>
+              {currentDiff !== 0 && (
+                <p className="text-[10px] text-yellow-500/70 italic text-right">
+                  {currentDiff > 0 ? '* Aviso: El monto aplicado es mayor a lo recibido + comisión.' : '* Aviso: Hay excedente recibido sin asignar.'}
+                </p>
+              )}
             </div>
           </div>
+
           <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors duration-300"
+              className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors duration-300"
             >
               {t('ar_cancel', 'Cancelar')}
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors duration-300"
+              disabled={isSaving}
+              className={`px-8 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20 flex items-center gap-2 ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              {t('ar_register_payment_button', 'Registrar Pago')}
+              {isSaving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  {t('ar_register_payment_button', 'Registrando...')}
+                </>
+              ) : (
+                <>
+                  <CheckCircle size={18} />
+                  {t('ar_register_payment_button', 'Registrar Pago')}
+                </>
+              )}
             </button>
           </div>
         </form>

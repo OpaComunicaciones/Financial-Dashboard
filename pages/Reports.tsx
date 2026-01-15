@@ -11,8 +11,10 @@ import BudgetVsActualReport from '../components/reports/BudgetVsActualReport';
 import BankStatementReport from '../components/reports/BankStatementReport';
 
 import CashReport from '../components/reports/CashReport';
+import AccountsPayableReport from '../components/reports/AccountsPayableReport';
+import { InvoiceStatus } from '../types';
 
-type ReportTab = 'pl' | 'cashflow' | 'sales' | 'expenses' | 'budget' | 'bankStatement' | 'cash';
+type ReportTab = 'pl' | 'cashflow' | 'sales' | 'expenses' | 'budget' | 'bankStatement' | 'cash' | 'ap';
 
 const Reports: React.FC = () => {
   const { t } = useTranslation();
@@ -28,6 +30,13 @@ const Reports: React.FC = () => {
   const [reportingCurrency, setReportingCurrency] = useState(state.currencies[0]?.code || '');
   const [selectedAccountId, setSelectedAccountId] = useState<string>(state.bankAccounts[0]?.id || '');
   const [selectedConceptId, setSelectedConceptId] = useState<string>('all');
+  const [selectedSupplier, setSelectedSupplier] = useState<string>('All');
+  const [selectedStatus, setSelectedStatus] = useState<InvoiceStatus | 'All'>('All');
+
+  const uniqueSuppliers = React.useMemo(() => {
+    const supplierSet = new Set(state.invoices.map(inv => inv.supplier));
+    return Array.from(supplierSet).sort();
+  }, [state.invoices]);
 
   if (state.currencies.length === 0) {
     return (
@@ -49,6 +58,7 @@ const Reports: React.FC = () => {
     { id: 'budget', label: t('reports_tab_budget') },
     { id: 'bankStatement', label: 'Informe de Bancos' },
     { id: 'cash', label: t('reports_tab_cash') },
+    { id: 'ap', label: t('reports_tab_ap') },
   ];
 
   const renderActiveReport = () => {
@@ -61,6 +71,7 @@ const Reports: React.FC = () => {
       case 'budget': return <BudgetVsActualReport {...props} />;
       case 'bankStatement': return <BankStatementReport startDate={startDate} endDate={endDate} accountId={selectedAccountId} conceptId={selectedConceptId} />;
       case 'cash': return <CashReport startDate={startDate} endDate={endDate} reportingCurrency={reportingCurrency} conceptId={selectedConceptId} />;
+      case 'ap': return <AccountsPayableReport startDate={startDate} endDate={endDate} supplier={selectedSupplier} conceptId={selectedConceptId} status={selectedStatus} />;
       default: return null;
     }
   }
@@ -104,7 +115,7 @@ const Reports: React.FC = () => {
               </select>
             </div>
           )}
-          {(activeTab === 'bankStatement' || activeTab === 'cash') && (
+          {(activeTab === 'bankStatement' || activeTab === 'cash' || activeTab === 'ap') && (
             <div>
               <label htmlFor="concept-filter" className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('daily_cash_col_concept')}</label>
               <select
@@ -126,6 +137,39 @@ const Reports: React.FC = () => {
                 </optgroup>
               </select>
             </div>
+          )}
+          {activeTab === 'ap' && (
+            <>
+              <div>
+                <label htmlFor="supplier-select" className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('accounts_payable_col_supplier')}</label>
+                <select
+                  id="supplier-select"
+                  value={selectedSupplier}
+                  onChange={e => setSelectedSupplier(e.target.value)}
+                  className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm min-w-[150px]"
+                >
+                  <option value="All">{t('accounts_payable_filter_all_suppliers')}</option>
+                  {uniqueSuppliers.map(supplier => (
+                    <option key={supplier} value={supplier}>{supplier}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="status-select" className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('accounts_payable_col_status')}</label>
+                <select
+                  id="status-select"
+                  value={selectedStatus}
+                  onChange={e => setSelectedStatus(e.target.value as InvoiceStatus | 'All')}
+                  className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
+                >
+                  <option value="All">{t('accounts_payable_filter_all')}</option>
+                  <option value="Pending">{t('accounts_payable_status_pending')}</option>
+                  <option value="Partially Paid">{t('accounts_payable_status_partially_paid')}</option>
+                  <option value="Paid">{t('accounts_payable_status_paid')}</option>
+                  <option value="Overdue">{t('accounts_payable_status_overdue')}</option>
+                </select>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -152,7 +196,7 @@ const Reports: React.FC = () => {
       <div>
         {renderActiveReport()}
       </div>
-    </div>
+    </div >
   );
 };
 

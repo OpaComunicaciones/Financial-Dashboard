@@ -64,7 +64,7 @@ const AddDebtorModal: React.FC<AddDebtorModalProps> = ({ isOpen, onClose, onSave
               onChange={(e) => setType(e.target.value as DebtorType)}
             >
               <option value="customer">{t('ar_debtor_type_customer', 'Cliente Directo')}</option>
-              <option value="delivery_platform">{t('ar_debtor_type_platform', 'Plataforma de Delivery')}</option>
+              <option value="delivery_platform">{t('ar_debtor_type_delivery_platform', 'Plataforma de Delivery')}</option>
               <option value="employee">{t('ar_debtor_type_employee', 'Empleado')}</option>
             </select>
           </div>

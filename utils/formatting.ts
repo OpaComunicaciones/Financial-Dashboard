@@ -36,3 +36,12 @@ export const formatNumber = (
 
   return new Intl.NumberFormat('de-DE', numberFormatOptions).format(value);
 };
+
+export const getCurrencySymbol = (code: string) => {
+  switch (code) {
+    case 'USD': return '$';
+    case 'COP': return '$';
+    case 'EUR': return '€';
+    default: return '$';
+  }
+};

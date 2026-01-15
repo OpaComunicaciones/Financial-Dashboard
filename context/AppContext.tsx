@@ -81,9 +81,9 @@ interface AppContextType {
   updateDebtor: (debtor: Debtor) => void;
   deleteDebtor: (id: string) => void;
   // Accounts Receivable
-  addAccountReceivable: (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>, loanDetails?: { source: 'cash' | 'bank'; bankAccountId?: string; }) => void;
-  updateAccountReceivable: (ar: AccountReceivable) => void;
-  deleteAccountReceivable: (id: string) => void;
+  addAccountReceivable: (ar: Omit<AccountReceivable, 'id' | 'status' | 'payments'>, loanDetails?: { source: 'cash' | 'bank'; bankAccountId?: string; }) => Promise<void>;
+  updateAccountReceivable: (ar: AccountReceivable) => Promise<void>;
+  deleteAccountReceivable: (id: string) => Promise<void>;
   receivePaymentForReceivables: (paymentDetails: {
     debtorId: string;
     amountReceived: number;
@@ -92,25 +92,27 @@ interface AppContextType {
     bankAccountId?: string;
     commissionAmount?: number;
     receivablesToApply: { id: string; amountApplied: number }[];
-  }) => void;
+  }) => Promise<void>;
   // Financials
   addInvoice: (invoice: Omit<Invoice, 'id' | 'status' | 'payments'>) => void;
   updateInvoice: (invoice: Invoice) => void;
-  deleteInvoice: (id: string) => void;
-  payInvoice: (invoiceId: string, payment: Omit<InvoicePayment, 'id'>) => void;
-  logDailySales: (sales: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[], platformSales: { debtorId: string; amount: number; currencyCode: string; }[]) => void;
-  updateDailySale: (sale: DailySale, transfers: any[], cardSales: any[]) => void;
+  deleteInvoice: (id: string) => Promise<void>;
+  payInvoice: (invoiceId: string, payment: Omit<InvoicePayment, 'id'>) => Promise<void>;
+  logDailySales: (sales: Omit<DailySale, 'id'>[], transfers: any[], cardSales: any[], platformSales: { debtorId: string; amount: number; currencyCode: string; }[]) => Promise<void>;
+  updateDailySale: (sale: DailySale, transfers: any[], cardSales: any[]) => Promise<void>;
   deleteDailySale: (id: string) => void;
   addMiscIncome: (income: Omit<MiscIncome, 'id'>) => void;
-  updateMiscIncome: (income: MiscIncome) => void;
-  deleteMiscIncome: (id: string) => void;
+  updateMiscIncome: (income: MiscIncome) => Promise<void>;
+  deleteMiscIncome: (id: string) => Promise<void>;
   addCashExpense: (expense: Omit<CashExpense, 'id'>) => void;
-  updateCashExpense: (expense: CashExpense) => void;
-  deleteCashExpense: (id: string) => void;
+  updateCashExpense: (expense: CashExpense) => Promise<void>;
+  deleteCashExpense: (id: string) => Promise<void>;
   addBankTransaction: (transaction: Omit<BankTransaction, 'id'>) => void;
-  updateBankTransaction: (transaction: BankTransaction) => void;
-  deleteBankTransaction: (id: string) => void;
-  saveCashClosure: (closure: CashClosure) => void;
+  updateBankTransaction: (transaction: BankTransaction) => Promise<void>;
+  deleteBankTransaction: (id: string) => Promise<void>;
+  saveCashClosure: (closure: CashClosure) => Promise<void>;
+  deleteInvoicePayment: (invoiceId: string, paymentId: string) => Promise<void>;
+  deleteReceivablePayment: (receivableId: string, paymentId: string) => Promise<void>;
   // Planning
   setIPCRecord: (record: IPCRecord) => void;
   setBudgetRecord: (record: BudgetRecord) => void;
@@ -408,6 +410,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           detail: `Préstamo a empleado: ${ar.concept}`,
           conceptId: loanType.id,
           amount: ar.amount,
+          linkedDebtId: arId,
+          linkedDebtType: 'receivable'
         });
       } else if (loanDetails.source === 'bank' && loanDetails.bankAccountId) {
         const txId = `loan_${arId}`;
@@ -419,6 +423,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           amount: -Math.abs(ar.amount),
           type: 'expense',
           conceptId: loanType.id,
+          linkedDebtId: arId,
+          linkedDebtType: 'receivable'
         });
       }
     }
@@ -443,8 +449,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await setDoc(doc(db, 'accountsReceivable', id), cleanData, { merge: true });
   };
 
-  const deleteAccountReceivable = (id: string) => {
-    deleteItem('accountsReceivable', id);
+  const deleteAccountReceivable = async (id: string) => {
+    const ar = state.accountsReceivable.find(item => item.id === id);
+    if (!ar) return;
+
+    const batch = writeBatch(db);
+    batch.delete(doc(db, 'accountsReceivable', id));
+
+    // Delete loan movement if it exists
+    batch.delete(doc(db, 'cashExpenses', `loan_${id}`));
+    batch.delete(doc(db, 'transactions', `loan_${id}`));
+
+    // Delete all linked payment movements
+    ar.payments?.forEach(p => {
+      if (p.linkedMovementId) {
+        batch.delete(doc(db, 'transactions', p.linkedMovementId));
+        batch.delete(doc(db, 'miscIncomes', p.linkedMovementId));
+      }
+    });
+
+    await batch.commit();
   };
 
   const receivePaymentForReceivables = async (paymentDetails: {
@@ -459,66 +483,118 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const { debtorId, amountReceived, paymentDate, paymentMethod, bankAccountId, commissionAmount, receivablesToApply } = paymentDetails;
     const batch = writeBatch(db);
 
-    receivablesToApply.forEach(r => {
-      const ar = state.accountsReceivable.find(item => item.id === r.id);
-      if (ar) {
-        const newPayment: ReceivablePayment = {
-          id: `${Date.now()}_${r.id}`,
-          paymentDate,
-          amount: r.amountApplied,
-          method: paymentMethod,
-          bankAccountId
-        };
-        const updatedPayments = [...ar.payments, newPayment];
-        const totalPaid = updatedPayments.reduce((sum, p) => sum + p.amount, 0);
-        const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : 'Partially Paid';
+    try {
+      const debtorName = state.debtors.find(d => d.id === debtorId)?.name || 'Unknown';
+      let movementId = '';
 
-        batch.update(doc(db, 'accountsReceivable', ar.id), { payments: updatedPayments, status });
+      // Get the currency from the first AR being applied, or default to system currency
+      const firstArId = receivablesToApply[0]?.id;
+      const firstAr = state.accountsReceivable.find(ar => ar.id === firstArId);
+      const currencyCode = firstAr?.currencyCode || state.currencies[0]?.code || 'USD';
+
+      // 1. Create the Movement (Bank or Cash)
+      if (amountReceived > 0) {
+        let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar') || state.incomeTypes.find(it => it.name === 'Accounts Receivable');
+
+        if (!arConcept) {
+          const cid = doc(collection(db, 'incomeTypes')).id;
+          arConcept = { id: cid, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
+          batch.set(doc(db, 'incomeTypes', cid), arConcept);
+        }
+
+        if (paymentMethod === 'bank' && bankAccountId) {
+          movementId = doc(collection(db, 'transactions')).id;
+          const transDoc: any = {
+            id: movementId,
+            bankAccountId,
+            date: paymentDate,
+            amount: amountReceived,
+            type: 'income',
+            conceptId: arConcept.id,
+            description: `Pago de deudor (${debtorName})`,
+            isPayment: true,
+            linkedDebtType: 'receivable',
+          };
+          if (firstArId) transDoc.linkedDebtId = firstArId;
+          batch.set(doc(db, 'transactions', movementId), transDoc);
+        } else {
+          movementId = doc(collection(db, 'miscIncomes')).id;
+          const miscDoc: any = {
+            id: movementId,
+            date: paymentDate,
+            amount: amountReceived,
+            conceptId: arConcept.id,
+            detail: `Pago de deudor (${debtorName}) en efectivo`,
+            currencyCode,
+            linkedDebtType: 'receivable'
+          };
+          if (firstArId) miscDoc.linkedDebtId = firstArId;
+          batch.set(doc(db, 'miscIncomes', movementId), miscDoc);
+        }
       }
-    });
 
-    const debtorName = state.debtors.find(d => d.id === debtorId)?.name || 'Unknown';
+      // 2. Update the Receivables
+      receivablesToApply.forEach(r => {
+        const ar = state.accountsReceivable.find(item => item.id === r.id);
+        if (ar) {
+          const newPayment: ReceivablePayment = {
+            id: `${Date.now()}_${r.id}_${Math.random().toString(36).substr(2, 5)}`,
+            paymentDate,
+            amount: r.amountApplied,
+            method: paymentMethod,
+          };
 
-    if (amountReceived > 0) {
-      let arConcept = state.incomeTypes.find(it => it.name === 'Cuentas por Cobrar');
-      if (!arConcept) {
-        const cid = doc(collection(db, 'incomeTypes')).id;
-        arConcept = { id: cid, name: 'Cuentas por Cobrar', isIncome: true, isPlannable: false };
-        batch.set(doc(db, 'incomeTypes', cid), arConcept);
-      }
+          if (paymentMethod === 'bank' && bankAccountId) {
+            newPayment.bankAccountId = bankAccountId;
+          }
+          if (movementId) {
+            newPayment.linkedMovementId = movementId;
+          }
 
-      if (paymentMethod === 'bank' && bankAccountId) {
-        const txId = doc(collection(db, 'transactions')).id;
-        batch.set(doc(db, 'transactions', txId), {
-          id: txId, bankAccountId, date: paymentDate, amount: amountReceived,
-          type: 'income', conceptId: arConcept.id, description: `Pago de deudor (${debtorName})`
-        });
-      } else {
-        const incId = doc(collection(db, 'miscIncomes')).id;
-        batch.set(doc(db, 'miscIncomes', incId), {
-          id: incId, date: paymentDate, amount: amountReceived, conceptId: arConcept.id,
-          detail: `Pago de deudor (${debtorName}) en efectivo`,
-          currencyCode: state.accountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || 'USD'
-        });
-      }
-    }
+          const payments = ar.payments || [];
+          const updatedPayments = [...payments, newPayment];
+          const totalPaid = updatedPayments.reduce((sum, p) => sum + p.amount, 0);
 
-    if (commissionAmount && commissionAmount > 0) {
-      let commConcept = state.expenseTypes.find(et => et.name === 'Comisiones Plataformas');
-      if (!commConcept) {
-        const cid = doc(collection(db, 'expenseTypes')).id;
-        commConcept = { id: cid, name: 'Comisiones Plataformas', isExpense: true, isPlannable: false };
-        batch.set(doc(db, 'expenseTypes', cid), commConcept);
-      }
-      const expId = doc(collection(db, 'cashExpenses')).id;
-      batch.set(doc(db, 'cashExpenses', expId), {
-        id: expId, date: paymentDate, amount: commissionAmount, conceptId: commConcept.id,
-        supplier: debtorName, detail: `Comisión por pago de ${debtorName}`,
-        currencyCode: state.accountsReceivable.find(ar => ar.debtorId === debtorId)?.currencyCode || 'USD'
+          let status: AccountReceivableStatus = 'Pending';
+          if (totalPaid >= ar.amount - 0.001) status = 'Paid';
+          else if (totalPaid > 0) status = 'Partially Paid';
+
+          batch.update(doc(db, 'accountsReceivable', ar.id), { payments: updatedPayments, status });
+        }
       });
-    }
 
-    await batch.commit();
+      // 3. Handle Commissions
+      if (commissionAmount && commissionAmount > 0) {
+        let commConcept = state.expenseTypes.find(et => et.name === 'Comisiones Plataformas') || state.expenseTypes.find(et => et.name === 'Platform Commissions');
+
+        if (!commConcept) {
+          const cid = doc(collection(db, 'expenseTypes')).id;
+          commConcept = { id: cid, name: 'Comisiones Plataformas', isExpense: true, isPlannable: false };
+          batch.set(doc(db, 'expenseTypes', cid), commConcept);
+        }
+
+        const expId = doc(collection(db, 'cashExpenses')).id;
+        const commDoc: any = {
+          id: expId,
+          date: paymentDate,
+          amount: commissionAmount,
+          conceptId: commConcept.id,
+          supplier: debtorName,
+          detail: `Comisión por pago de ${debtorName}`,
+          currencyCode,
+          isPayment: true,
+          linkedDebtType: 'receivable'
+        };
+        if (firstArId) commDoc.linkedDebtId = firstArId;
+
+        batch.set(doc(db, 'cashExpenses', expId), commDoc);
+      }
+
+      await batch.commit();
+    } catch (error) {
+      console.error("Error committing payment batch:", error);
+      throw error;
+    }
   };
 
   const addInvoice = (invoice: Omit<Invoice, 'id' | 'status' | 'payments'>) => {
@@ -531,8 +607,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateItem('invoices', invoice.id, invoice);
   };
 
-  const deleteInvoice = (id: string) => {
-    deleteItem('invoices', id);
+  const deleteInvoice = async (id: string) => {
+    const inv = state.invoices.find(item => item.id === id);
+    if (!inv) return;
+
+    const batch = writeBatch(db);
+    batch.delete(doc(db, 'invoices', id));
+
+    // Delete all linked payment movements
+    inv.payments?.forEach(p => {
+      if (p.linkedMovementId) {
+        batch.delete(doc(db, 'transactions', p.linkedMovementId));
+        batch.delete(doc(db, 'cashExpenses', p.linkedMovementId));
+      }
+    });
+
+    await batch.commit();
   };
 
   const payInvoice = async (invoiceId: string, payment: Omit<InvoicePayment, 'id'>) => {
@@ -540,30 +630,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!invoice) return;
 
     const batch = writeBatch(db);
-    const payId = doc(collection(db, 'invoicePayments')).id; // though we store in array
-    const newPayments = [...(invoice.payments || []), { ...payment, id: payId }];
-    const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
-    const status = totalPaid >= invoice.amount ? 'Paid' : 'Partially Paid';
-
-    batch.update(doc(db, 'invoices', invoiceId), { payments: newPayments, status });
+    const payId = doc(collection(db, 'invoicePayments')).id;
+    let movementId = '';
 
     if (payment.method === 'cash') {
-      const expId = doc(collection(db, 'cashExpenses')).id;
-      batch.set(doc(db, 'cashExpenses', expId), {
-        id: expId, date: payment.paymentDate, amount: payment.amount, conceptId: invoice.conceptId,
+      movementId = doc(collection(db, 'cashExpenses')).id;
+      batch.set(doc(db, 'cashExpenses', movementId), {
+        id: movementId, date: payment.paymentDate, amount: payment.amount, conceptId: invoice.conceptId,
         supplier: invoice.supplier, detail: `Payment for invoice #${invoice.invoiceNumber}`,
         currencyCode: invoice.currencyCode, invoiceNumber: invoice.invoiceNumber,
-        isPayment: true
+        isPayment: true, linkedDebtId: invoice.id, linkedDebtType: 'invoice'
       });
     } else if (payment.accountId) {
-      const txId = doc(collection(db, 'transactions')).id;
-      batch.set(doc(db, 'transactions', txId), {
-        id: txId, bankAccountId: payment.accountId, date: payment.paymentDate,
+      movementId = doc(collection(db, 'transactions')).id;
+      batch.set(doc(db, 'transactions', movementId), {
+        id: movementId, bankAccountId: payment.accountId, date: payment.paymentDate,
         amount: -Math.abs(payment.amount), type: 'expense', conceptId: invoice.conceptId,
         description: `Payment for invoice #${invoice.invoiceNumber} from ${invoice.supplier}`,
-        isPayment: true
+        isPayment: true, linkedDebtId: invoice.id, linkedDebtType: 'invoice'
       });
     }
+
+    const newPayments = [...(invoice.payments || []), { ...payment, id: payId, linkedMovementId: movementId || undefined }];
+    const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+    const status = totalPaid >= invoice.amount - 0.001 ? 'Paid' : 'Partially Paid';
+
+    batch.update(doc(db, 'invoices', invoiceId), { payments: newPayments, status });
 
     await batch.commit();
   };
@@ -626,33 +718,164 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await batch.commit();
   };
 
+  const deleteBankTransaction = async (id: string) => {
+    const batch = writeBatch(db);
+    batch.delete(doc(db, 'transactions', id));
+
+    // Cascade: find any invoice or AR that has a payment linked to this transaction
+    state.invoices.forEach(inv => {
+      if (inv.payments?.some(p => p.linkedMovementId === id)) {
+        const newPayments = inv.payments.filter(p => p.linkedMovementId !== id);
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= inv.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'invoices', inv.id), { payments: newPayments, status });
+      }
+    });
+
+    state.accountsReceivable.forEach(ar => {
+      if (ar.payments?.some(p => p.linkedMovementId === id)) {
+        const newPayments = ar.payments.filter(p => p.linkedMovementId !== id);
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'accountsReceivable', ar.id), { payments: newPayments, status });
+      }
+    });
+
+    await batch.commit();
+  };
+
+  const deleteMiscIncome = async (id: string) => {
+    const batch = writeBatch(db);
+    batch.delete(doc(db, 'miscIncomes', id));
+
+    state.accountsReceivable.forEach(ar => {
+      if (ar.payments?.some(p => p.linkedMovementId === id)) {
+        const newPayments = ar.payments.filter(p => p.linkedMovementId !== id);
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'accountsReceivable', ar.id), { payments: newPayments, status });
+      }
+    });
+
+    await batch.commit();
+  };
+
+  const deleteCashExpense = async (id: string) => {
+    const batch = writeBatch(db);
+    batch.delete(doc(db, 'cashExpenses', id));
+
+    state.invoices.forEach(inv => {
+      if (inv.payments?.some(p => p.linkedMovementId === id)) {
+        const newPayments = inv.payments.filter(p => p.linkedMovementId !== id);
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= inv.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'invoices', inv.id), { payments: newPayments, status });
+      }
+    });
+
+    await batch.commit();
+  };
+
   const deleteDailySale = (id: string) => deleteItem('dailySales', id);
 
-  const addMiscIncome = (income: Omit<MiscIncome, 'id'>) => addItem('miscIncomes', income);
-  const updateMiscIncome = (income: MiscIncome) => updateItem('miscIncomes', income.id, income);
-  const deleteMiscIncome = (id: string) => deleteItem('miscIncomes', id);
+  const addMiscIncome = (income: Omit<MiscIncome, 'id'>) => {
+    const id = doc(collection(db, 'miscIncomes')).id;
+    addItem('miscIncomes', { ...income, id });
+  };
 
-  const addCashExpense = (expense: Omit<CashExpense, 'id'>) => addItem('cashExpenses', expense);
-  const updateCashExpense = (expense: CashExpense) => updateItem('cashExpenses', expense.id, expense);
-  const deleteCashExpense = (id: string) => deleteItem('cashExpenses', id);
+  const updateMiscIncome = async (income: MiscIncome) => {
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'miscIncomes', income.id), income);
 
-  const addBankTransaction = (tx: Omit<BankTransaction, 'id'>) => addItem('transactions', tx);
-  const updateBankTransaction = (tx: BankTransaction) => updateItem('transactions', tx.id, tx);
-  const deleteBankTransaction = (id: string) => deleteItem('transactions', id);
+    // Cascade update to ARs
+    state.accountsReceivable.forEach(ar => {
+      const payIdx = ar.payments?.findIndex(p => p.linkedMovementId === income.id);
+      if (payIdx !== undefined && payIdx !== -1) {
+        const newPayments = [...ar.payments];
+        newPayments[payIdx] = { ...newPayments[payIdx], amount: income.amount, paymentDate: income.date };
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'accountsReceivable', ar.id), { payments: newPayments, status });
+      }
+    });
 
+    await batch.commit();
+  };
+
+  const addCashExpense = (expense: Omit<CashExpense, 'id'>) => {
+    const id = doc(collection(db, 'cashExpenses')).id;
+    addItem('cashExpenses', { ...expense, id });
+  };
+
+  const updateCashExpense = async (expense: CashExpense) => {
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'cashExpenses', expense.id), expense);
+
+    // Cascade update to Invoices
+    state.invoices.forEach(inv => {
+      const payIdx = inv.payments?.findIndex(p => p.linkedMovementId === expense.id);
+      if (payIdx !== undefined && payIdx !== -1) {
+        const newPayments = [...inv.payments];
+        newPayments[payIdx] = { ...newPayments[payIdx], amount: expense.amount, paymentDate: expense.date };
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= inv.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'invoices', inv.id), { payments: newPayments, status });
+      }
+    });
+
+    await batch.commit();
+  };
+
+  const addBankTransaction = (tx: Omit<BankTransaction, 'id'>) => {
+    const id = doc(collection(db, 'transactions')).id;
+    addItem('transactions', { ...tx, id });
+  };
+
+  const updateBankTransaction = async (tx: BankTransaction) => {
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'transactions', tx.id), tx);
+
+    const absAmount = Math.abs(tx.amount);
+
+    // Cascade update to Invoices
+    state.invoices.forEach(inv => {
+      const payIdx = inv.payments?.findIndex(p => p.linkedMovementId === tx.id);
+      if (payIdx !== undefined && payIdx !== -1) {
+        const newPayments = [...inv.payments];
+        newPayments[payIdx] = { ...newPayments[payIdx], amount: absAmount, paymentDate: tx.date };
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= inv.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'invoices', inv.id), { payments: newPayments, status });
+      }
+    });
+
+    // Cascade update to ARs
+    state.accountsReceivable.forEach(ar => {
+      const payIdx = ar.payments?.findIndex(p => p.linkedMovementId === tx.id);
+      if (payIdx !== undefined && payIdx !== -1) {
+        const newPayments = [...ar.payments];
+        newPayments[payIdx] = { ...newPayments[payIdx], amount: absAmount, paymentDate: tx.date };
+        const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+        const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+        batch.update(doc(db, 'accountsReceivable', ar.id), { payments: newPayments, status });
+      }
+    });
+
+    await batch.commit();
+  };
   const saveCashClosure = async (closure: CashClosure) => {
     const batch = writeBatch(db);
 
     let surplus = state.incomeTypes.find(it => it.name === 'Surplus');
     if (!surplus) {
       const id = doc(collection(db, 'incomeTypes')).id;
-      surplus = { id, name: 'Surplus', isIncome: true };
+      surplus = { id, name: 'Surplus', isIncome: true, isPlannable: false };
       batch.set(doc(db, 'incomeTypes', id), surplus);
     }
     let shortage = state.expenseTypes.find(et => et.name === 'Shortage');
     if (!shortage) {
       const id = doc(collection(db, 'expenseTypes')).id;
-      shortage = { id, name: 'Shortage', isExpense: true };
+      shortage = { id, name: 'Shortage', isExpense: true, isPlannable: false };
       batch.set(doc(db, 'expenseTypes', id), shortage);
     }
 
@@ -733,6 +956,54 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await batch.commit();
   };
 
+  const deleteInvoicePayment = async (invoiceId: string, paymentId: string) => {
+    const inv = state.invoices.find(i => i.id === invoiceId);
+    if (!inv) return;
+
+    const payment = inv.payments?.find(p => p.id === paymentId);
+    if (!payment) return;
+
+    const batch = writeBatch(db);
+
+    // Update invoice: remove payment and recalculate status
+    const newPayments = inv.payments.filter(p => p.id !== paymentId);
+    const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+    const status = totalPaid >= inv.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+    batch.update(doc(db, 'invoices', invoiceId), { payments: newPayments, status });
+
+    // Cascade delete the associated movement
+    if (payment.linkedMovementId) {
+      batch.delete(doc(db, 'transactions', payment.linkedMovementId));
+      batch.delete(doc(db, 'cashExpenses', payment.linkedMovementId));
+    }
+
+    await batch.commit();
+  };
+
+  const deleteReceivablePayment = async (receivableId: string, paymentId: string) => {
+    const ar = state.accountsReceivable.find(a => a.id === receivableId);
+    if (!ar) return;
+
+    const payment = ar.payments?.find(p => p.id === paymentId);
+    if (!payment) return;
+
+    const batch = writeBatch(db);
+
+    // Update AR: remove payment and recalculate status
+    const newPayments = ar.payments.filter(p => p.id !== paymentId);
+    const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+    const status = totalPaid >= ar.amount - 0.001 ? 'Paid' : (totalPaid > 0 ? 'Partially Paid' : 'Pending');
+    batch.update(doc(db, 'accountsReceivable', receivableId), { payments: newPayments, status });
+
+    // Cascade delete the associated movement
+    if (payment.linkedMovementId) {
+      batch.delete(doc(db, 'transactions', payment.linkedMovementId));
+      batch.delete(doc(db, 'miscIncomes', payment.linkedMovementId));
+    }
+
+    await batch.commit();
+  };
+
   const contextValue: AppContextType = {
     state, isLoading, setSharedDate, exportData, importData, resetDatabase, setGeminiApiKey, toggleTheme,
     addConfigItem, updateConfigItem, deleteConfigItem, addIncomeType, updateIncomeType,
@@ -745,6 +1016,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateDailySale, deleteDailySale, addMiscIncome, updateMiscIncome, deleteMiscIncome,
     addCashExpense, updateCashExpense, deleteCashExpense, addBankTransaction,
     updateBankTransaction, deleteBankTransaction, saveCashClosure,
+    deleteInvoicePayment, deleteReceivablePayment,
     setIPCRecord, setBudgetRecord, setYearlyBudgetForCategory
   };
 
