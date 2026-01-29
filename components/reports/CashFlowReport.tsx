@@ -43,28 +43,52 @@ const CashFlowReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCu
       return rates.length > 0 ? rates[0].rate : null;
     }
 
-    // 1. Calculate Initial Balances
-    state.cashClosures.forEach(c => {
-      const d = new Date(c.date);
-      if (d < start) {
-        const rate = getConversionRate(c.currencyCode, d);
-        if (rate !== null) cf.initialCashBalance += c.finalBalance * rate;
-        else if (c.currencyCode !== reportingCurrency) unconverted.add(c.currencyCode);
+    // ============================================================================
+    // 1. SALDO INICIAL DE CAJA - Tomar el último cierre ANTES de la fecha inicial
+    // ============================================================================
+    const cashClosuresBeforeStart = state.cashClosures
+      .filter(c => new Date(c.date) < start)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    // Agrupar por moneda y tomar el más reciente de cada una
+    const lastClosuresByCurrency: Record<string, typeof state.cashClosures[0]> = {};
+    cashClosuresBeforeStart.forEach(closure => {
+      if (!lastClosuresByCurrency[closure.currencyCode]) {
+        lastClosuresByCurrency[closure.currencyCode] = closure;
       }
     });
+
+    // Sumar los últimos cierres convertidos
+    Object.values(lastClosuresByCurrency).forEach(closure => {
+      const rate = getConversionRate(closure.currencyCode, new Date(closure.date));
+      if (rate !== null) {
+        cf.initialCashBalance += closure.finalBalance * rate;
+      } else if (closure.currencyCode !== reportingCurrency) {
+        unconverted.add(closure.currencyCode);
+      }
+    });
+
+    // ============================================================================
+    // 2. SALDO INICIAL DE BANCOS - Sumar todas las transacciones ANTES de la fecha inicial
+    // ============================================================================
     state.transactions.forEach(tx => {
       const d = new Date(tx.date);
       if (d < start) {
         const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
         if (account) {
           const rate = getConversionRate(account.currencyCode, d);
-          if (rate !== null) cf.initialBankBalance += tx.amount * rate;
-          else if (account.currencyCode !== reportingCurrency) unconverted.add(account.currencyCode);
+          if (rate !== null) {
+            cf.initialBankBalance += tx.amount * rate;
+          } else if (account.currencyCode !== reportingCurrency) {
+            unconverted.add(account.currencyCode);
+          }
         }
       }
     });
 
-    // 2. Process transactions within the period
+    // ============================================================================
+    // 3. PROCESAR FLUJOS DENTRO DEL PERÍODO
+    // ============================================================================
     const processFlow = (date: Date, currencyCode: string, amount: number, name: string, type: 'cashIn' | 'bankIn' | 'cashOut' | 'bankOut') => {
       if (date < start || date > end) return;
 
@@ -100,40 +124,80 @@ const CashFlowReport: React.FC<ReportProps> = ({ startDate, endDate, reportingCu
       targetGroup[name].amount += convertedAmount;
     };
 
-    // --- INFLOWS ---
-    // Cash Inflows are from daily cash sales and misc cash incomes.
-    state.dailySales.forEach(s => {
-      if (s.cash > 0) processFlow(new Date(s.date), s.currencyCode, s.cash, t('reports_cash_flow_sales_cash'), 'cashIn');
-    });
-    state.miscIncomes.forEach(i => {
-      let conceptName = state.incomeTypes.find(it => it.id === i.conceptId)?.name || 'Misc Income';
-      if (conceptName === 'Surplus') conceptName = t('special_concept_surplus');
-      processFlow(new Date(i.date), i.currencyCode, i.amount, conceptName, 'cashIn');
-    });
+    // ============================================================================
+    // INGRESOS DE CAJA - TODO lo que entra en efectivo
+    // ============================================================================
 
-    // Bank Inflows are all positive bank transactions (which includes card/transfer sales).
-    state.transactions.forEach(tx => {
-      if (tx.amount > 0) {
-        const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
-        const conceptName = state.incomeTypes.find(it => it.id === tx.conceptId)?.name || tx.description;
-        if (account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, conceptName, 'bankIn');
+    // Ventas en efectivo
+    state.dailySales.forEach(s => {
+      if (s.cash > 0) {
+        processFlow(new Date(s.date), s.currencyCode, s.cash, t('reports_cash_flow_sales_cash'), 'cashIn');
       }
     });
 
-    // --- OUTFLOWS ---
-    // Cash Outflows are all cash expenses.
+    // TODOS los otros ingresos en efectivo (miscIncomes)
+    state.miscIncomes.forEach(i => {
+      const concept = state.incomeTypes.find(it => it.id === i.conceptId) ||
+        state.expenseTypes.find(et => et.id === i.conceptId);
+
+      let conceptName = concept?.name || i.detail || 'Misc Income';
+      if (conceptName === 'Surplus') conceptName = t('special_concept_surplus');
+
+      processFlow(new Date(i.date), i.currencyCode, i.amount, conceptName, 'cashIn');
+    });
+
+    // ============================================================================
+    // INGRESOS BANCARIOS - TODO lo que entra en bancos
+    // ============================================================================
+
+    state.transactions.forEach(tx => {
+      // Solo transacciones de ingreso (positivas o marcadas como income)
+      if (tx.amount > 0 || tx.type === 'income') {
+        const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
+        if (!account) return;
+
+        // Buscar el nombre del concepto
+        const concept = state.incomeTypes.find(it => it.id === tx.conceptId) ||
+          state.expenseTypes.find(et => et.id === tx.conceptId);
+
+        const conceptName = concept?.name || tx.description || 'Bank Income';
+
+        processFlow(new Date(tx.date), account.currencyCode, Math.abs(tx.amount), conceptName, 'bankIn');
+      }
+    });
+
+    // ============================================================================
+    // EGRESOS DE CAJA - TODO lo que sale en efectivo
+    // ============================================================================
+
     state.cashExpenses.forEach(e => {
-      let conceptName = state.expenseTypes.find(et => et.id === e.conceptId)?.name || 'Cash Expense';
+      // Buscar el concepto
+      const concept = state.expenseTypes.find(et => et.id === e.conceptId) ||
+        state.incomeTypes.find(it => it.id === e.conceptId);
+
+      let conceptName = concept?.name || e.detail || 'Cash Expense';
       if (conceptName === 'Shortage') conceptName = t('special_concept_shortage');
+
       processFlow(new Date(e.date), e.currencyCode, e.amount, conceptName, 'cashOut');
     });
 
-    // Bank Outflows are all negative bank transactions.
+    // ============================================================================
+    // EGRESOS BANCARIOS - TODO lo que sale en bancos
+    // ============================================================================
+
     state.transactions.forEach(tx => {
-      if (tx.amount < 0) {
+      // Solo transacciones de egreso (negativas o marcadas como expense)
+      if (tx.amount < 0 || tx.type === 'expense') {
         const account = state.bankAccounts.find(a => a.id === tx.bankAccountId);
-        const conceptName = state.expenseTypes.find(et => et.id === tx.conceptId)?.name || tx.description;
-        if (account) processFlow(new Date(tx.date), account.currencyCode, tx.amount, conceptName, 'bankOut');
+        if (!account) return;
+
+        // Buscar el nombre del concepto
+        const concept = state.expenseTypes.find(et => et.id === tx.conceptId) ||
+          state.incomeTypes.find(it => it.id === tx.conceptId);
+
+        const conceptName = concept?.name || tx.description || 'Bank Expense';
+
+        processFlow(new Date(tx.date), account.currencyCode, Math.abs(tx.amount), conceptName, 'bankOut');
       }
     });
 
